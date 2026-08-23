@@ -65,16 +65,32 @@
   },
   {
     "id": "drum_major",
-    "name": "ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด",
+    "name": "ฝ่ายดรัมเมเยอร์",
     "icon": "🥁",
-    "description": "คทากรผู้นำวงและทีมโบกธงริบบิ้นสุดสง่างามในขบวนพาเหรด",
+    "description": "คทากรผู้นำวงและผู้นำขบวนพาเหรดคณะสีแสด",
     "allowedGrades": [2, 3, 4, 5, 6],
     "allowedGenders": ["ชาย", "หญิง"],
     "type": "single",
-    "maxQuota": 20,
+    "maxQuota": 10,
     "roleName": "ดรัมเมเยอร์",
     "lineGroup": {
-      "name": "กลุ่ม LINE ดรัมเมเยอร์ & คัลเลอร์การ์ด คณะสีแสด 69",
+      "name": "กลุ่ม LINE ดรัมเมเยอร์ คณะสีแสด 69",
+      "qrImage": "images/qr_drum.svg",
+      "link": "https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "colorguard",
+    "name": "ฝ่ายคัลเลอร์การ์ด",
+    "icon": "🚩",
+    "description": "ทีมคัลเลอร์การ์ดโบกธงริบบิ้นสุดสง่างามในขบวนพาเหรด",
+    "allowedGrades": [2, 3, 4, 5, 6],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 15,
+    "roleName": "คัลเลอร์การ์ด",
+    "lineGroup": {
+      "name": "กลุ่ม LINE คัลเลอร์การ์ด คณะสีแสด 69",
       "qrImage": "images/qr_drum.svg",
       "link": "https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
     }
@@ -116,7 +132,8 @@
       { "id": "staff_welfare", "title": "สตาฟฝ่ายสวัสดิการ", "roleName": "สตาฟสวัสดิการ", "icon": "🍵" },
       { "id": "staff_props", "title": "สตาฟฝ่ายพร็อพ", "roleName": "สตาฟพร็อพ", "icon": "🎨" },
       { "id": "staff_parade", "title": "สตาฟฝ่ายขบวน", "roleName": "สตาฟขบวน", "icon": "🚩" },
-      { "id": "staff_drum_cheerlead", "title": "สตาฟเชียร์ลีดเดอร์ & ดรัมเมเยอร์", "roleName": "สตาฟหลีด", "icon": "🥁" }
+      { "id": "staff_drum", "title": "สตาฟดรัมเมเยอร์", "roleName": "สตาฟดรัม", "icon": "🥁" },
+      { "id": "staff_colorguard", "title": "สตาฟคัลเลอร์การ์ด", "roleName": "สตาฟการ์ด", "icon": "🚩" }
     ],
     "lineGroup": {
       "name": "กลุ่ม LINE สตาฟคณะสีแสด 69 (ม.5)",

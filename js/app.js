@@ -224,7 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
               else if (dutyItem.includes('หลีด') || dutyItem.includes('ลีด') || dutyItem.includes('cheer')) { deptName = 'ฝ่ายเชียร์ลีดเดอร์'; deptId = 'cheerleader'; }
               else if (dutyItem.includes('พร็อพ')) { deptName = 'ฝ่ายพร็อพ'; deptId = 'props'; }
               else if (dutyItem.includes('ขบวน') || dutyItem.includes('พาเหรด')) { deptName = 'ฝ่ายขบวนพาเหรด'; deptId = 'parade'; }
-              else if (dutyItem.includes('ดรัม') || dutyItem.includes('คัลเลอร์')) { deptName = 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด'; deptId = 'drum_major'; }
+              else if (dutyItem.includes('ดรัม')) { deptName = 'ฝ่ายดรัมเมเยอร์'; deptId = 'drum_major'; }
+              else if (dutyItem.includes('คัลเลอร์') || dutyItem.includes('การ์ด')) { deptName = 'ฝ่ายคัลเลอร์การ์ด'; deptId = 'colorguard'; }
               else if (dutyItem.includes('สวัสดิ')) { deptName = 'ฝ่ายสวัสดิการ'; deptId = 'welfare'; }
               else if (dutyItem.includes('สตาฟ') || dutyItem.includes('ประธาน') || dutyItem.includes('เหรัญญิก') || dutyItem.includes('หัวหน้า')) { deptName = 'ฝ่ายสตาฟ (ม.5)'; deptId = 'staff'; }
               else if (dutyItem.includes('กีฬา') || dutyItem.includes('บอล') || dutyItem.includes('วอลเลย์') || dutyItem.includes('บาส') || dutyItem.includes('กรีฑา') || dutyItem.includes('ตะกร้อ') || dutyItem.includes('เปตอง') || dutyItem.includes('16 ขา')) { deptName = 'ฝ่ายกีฬา'; deptId = 'sports'; }

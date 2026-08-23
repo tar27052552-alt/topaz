@@ -654,7 +654,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'parade', name: 'ฝ่ายขบวนพาเหรด' },
     { id: 'props', name: 'ฝ่ายพร็อพ' },
     { id: 'cheerleader', name: 'ฝ่ายเชียร์ลีดเดอร์' },
-    { id: 'drum_major', name: 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด' },
+    { id: 'drum_major', name: 'ฝ่ายดรัมเมเยอร์' },
+    { id: 'colorguard', name: 'ฝ่ายคัลเลอร์การ์ด' },
     { id: 'welfare', name: 'ฝ่ายสวัสดิการ' },
     { id: 'staff', name: 'ฝ่ายสตาฟ (ม.5)' },
     { id: 'sports', name: 'ฝ่ายกีฬา' }
