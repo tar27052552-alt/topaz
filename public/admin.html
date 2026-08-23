@@ -632,13 +632,59 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
-          <div style="flex: 1; min-width: 260px; position: relative;">
-            <input type="text" id="studentSearchQuery" placeholder="🔍 พิมพ์รหัสนักเรียน 5 หลัก, ชื่อ-นามสกุล, หรือหน้าที่..." style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.95rem; outline: none;">
+        <div style="display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;">
+          <div style="flex: 2; min-width: 240px; position: relative;">
+            <input type="text" id="studentSearchQuery" placeholder="🔍 พิมพ์รหัสนักเรียน 5 หลัก, ชื่อ-นามสกุล, หน้าที่, หรือเบอร์โทร..." style="width: 100%; padding: 11px 16px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.95rem; outline: none;">
           </div>
-          <button type="button" id="btnRefreshStudents" class="btn btn-secondary">
+          <div style="flex: 1; min-width: 150px;">
+            <select id="filterDepartment" style="width: 100%; padding: 11px 14px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.9rem; outline: none;">
+              <option value="">🏢 ทุกฝ่าย/กิจกรรม</option>
+              <option value="none">❌ ยังไม่มีหน้าที่ (ว่าง)</option>
+              <option value="has_duty">✅ มีหน้าที่แล้ว</option>
+              <option value="ขบวนพาเหรด">🎨 ขบวนพาเหรด</option>
+              <option value="สแตนเชียร์">🎪 สแตนเชียร์</option>
+              <option value="เชียร์ลีดเดอร์">📣 เชียร์ลีดเดอร์</option>
+              <option value="ดรัมเมเยอร์">🥁 ดรัมเมเยอร์ / คัลเลอร์การ์ด</option>
+              <option value="สตาฟ">🧡 ฝ่ายสตาฟ (ม.5)</option>
+              <option value="สวัสดิการ">🍵 ฝ่ายสวัสดิการ</option>
+              <option value="ฟุตบอล">⚽ ฟุตบอล</option>
+              <option value="บาสเกตบอล">🏀 บาสเกตบอล</option>
+              <option value="วอลเลย์บอล">🏐 วอลเลย์บอล</option>
+              <option value="ตะกร้อ">🏸 เซปักตะกร้อ</option>
+              <option value="เปตอง">⚪ เปตอง</option>
+              <option value="กรีฑา">🏃 กรีฑา</option>
+              <option value="16 ขา">🏃‍♂️ วิ่ง 16 ขา</option>
+            </select>
+          </div>
+          <div style="flex: 1; min-width: 130px;">
+            <select id="filterGender" style="width: 100%; padding: 11px 14px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.9rem; outline: none;">
+              <option value="">🚻 ทุกเพศ</option>
+              <option value="ชาย">👨 ชาย</option>
+              <option value="หญิง">👩 หญิง</option>
+            </select>
+          </div>
+          <div style="flex: 1; min-width: 140px;">
+            <select id="filterRegStatus" style="width: 100%; padding: 11px 14px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.9rem; outline: none;">
+              <option value="">📋 สถานะการสมัคร</option>
+              <option value="registered">✅ สมัครผ่านเว็บแล้ว</option>
+              <option value="not_registered">⏳ ยังไม่เคยสมัครในเว็บ</option>
+            </select>
+          </div>
+          <button type="button" id="btnRefreshStudents" class="btn btn-secondary" style="padding: 10px 16px;">
             <i class="fa-solid fa-rotate"></i> รีเฟรช
           </button>
+        </div>
+
+        <!-- Filter Counter & Quick Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.88rem; color: #64748b; flex-wrap: wrap; gap: 8px;">
+          <div>
+            แสดงผล: <strong id="studentFilterCount" style="color: #ea580c;">492</strong> / 492 คน
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btnQuickExportCSV" class="btn btn-secondary btn-xs" style="padding: 5px 12px; font-size: 0.82rem;">
+              <i class="fa-solid fa-file-csv text-orange"></i> ดาวน์โหลด CSV ตารางนี้
+            </button>
+          </div>
         </div>
 
         <div class="admin-table-wrapper">

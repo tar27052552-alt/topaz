@@ -49,252 +49,318 @@ document.addEventListener('DOMContentLoaded', () => {
   // DOM Elements - Students Tab
   const gradeFilterContainer = document.getElementById('gradeFilterContainer');
   const studentSearchQuery = document.getElementById('studentSearchQuery');
+  const filterDepartment = document.getElementById('filterDepartment');
+  const filterGender = document.getElementById('filterGender');
+  const filterRegStatus = document.getElementById('filterRegStatus');
+  const studentFilterCount = document.getElementById('studentFilterCount');
+  const btnQuickExportCSV = document.getElementById('btnQuickExportCSV');
   const btnRefreshStudents = document.getElementById('btnRefreshStudents');
   const studentsTableBody = document.getElementById('studentsTableBody');
 
-  // DOM Elements - Control Tab
-  const toggleMasterSystem = document.getElementById('toggleMasterSystem');
-  const inputCloseMessage = document.getElementById('inputCloseMessage');
-  const deptTogglesContainer = document.getElementById('deptTogglesContainer');
-  const sportTogglesContainer = document.getElementById('sportTogglesContainer');
-  const btnSaveSettings = document.getElementById('btnSaveSettings');
-  const inputNewAdminPassword = document.getElementById('inputNewAdminPassword');
-  const btnChangePassword = document.getElementById('btnChangePassword');
-  const btnSyncDocs = document.getElementById('btnSyncDocs');
-
-  // DOM Elements - Registrations Tab
-  const btnRefreshRegs = document.getElementById('btnRefreshRegs');
-  const registrationsTableBody = document.getElementById('registrationsTableBody');
-
-  // DOM Elements - Edit Student Modal
-  const editStudentModal = document.getElementById('editStudentModal');
-  const closeEditModalBtn = document.getElementById('closeEditModalBtn');
-  const btnCancelEdit = document.getElementById('btnCancelEdit');
-  const editStudentForm = document.getElementById('editStudentForm');
-  const editStudentId = document.getElementById('editStudentId');
-  const editModalStudentName = document.getElementById('editModalStudentName');
-  const editModalStudentMeta = document.getElementById('editModalStudentMeta');
-  const editDutyInput = document.getElementById('editDutyInput');
-  const editPhoneInput = document.getElementById('editPhoneInput');
-  const editNoteInput = document.getElementById('editNoteInput');
-  const editResetRegCheckbox = document.getElementById('editResetRegCheckbox');
-  const btnSaveStudentEdit = document.getElementById('btnSaveStudentEdit');
-
-  // Toast
-  const toast = document.getElementById('toast');
-
-  function showToast(message, type = 'info') {
-    if (!toast) return;
-    toast.textContent = message;
-    toast.className = `toast show ${type}`;
-    setTimeout(() => {
-      toast.className = 'toast';
-    }, 3500);
-  }
-
-  function checkAuth() {
-    if (authToken) {
-      authOverlay.classList.add('hidden');
-      initDashboard();
-    } else {
-      authOverlay.classList.remove('hidden');
-      if (adminPasswordInput) adminPasswordInput.focus();
-    }
-  }
-
-  adminLoginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const pwd = adminPasswordInput.value.trim();
-    if (!pwd) return;
-
-    // Check if on Static Hosting (e.g. GitHub Pages)
-    const isStatic = window.location.protocol === 'file:' || window.location.hostname.endsWith('github.io');
-
-    if (isStatic) {
-      // Direct client check for GitHub Pages
-      if (pwd === 'topaz69' || pwd === 'toapz69') {
-        authToken = 'adm_topaz69_' + Date.now();
-        sessionStorage.setItem('admin_token', authToken);
-        authOverlay.classList.add('hidden');
-        showToast('เข้าสู่ระบบแอดมินสำเร็จ!', 'success');
-        initDashboard();
-      } else {
-        showToast('รหัสผ่านผู้ดูแลระบบไม่ถูกต้อง', 'error');
-        adminPasswordInput.value = '';
-        adminPasswordInput.focus();
-      }
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pwd })
-      });
-      const data = await res.json();
-      if (data.success) {
-        authToken = data.token;
-        sessionStorage.setItem('admin_token', authToken);
-        authOverlay.classList.add('hidden');
-        showToast('เข้าสู่ระบบสำเร็จ!', 'success');
-        initDashboard();
-      } else {
-        showToast(data.message || 'รหัสผ่านไม่ถูกต้อง', 'error');
-        adminPasswordInput.value = '';
-        adminPasswordInput.focus();
-      }
-    } catch (err) {
-      // Fallback if backend API unreachable
-      if (pwd === 'topaz69' || pwd === 'toapz69') {
-        authToken = 'adm_topaz69_' + Date.now();
-        sessionStorage.setItem('admin_token', authToken);
-        authOverlay.classList.add('hidden');
-        showToast('เข้าสู่ระบบแอดมินสำเร็จ!', 'success');
-        initDashboard();
-      } else {
-        showToast('รหัสผ่านไม่ถูกต้อง หรือเกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
-      }
-    }
-  });
-
-  btnLogout.addEventListener('click', () => {
-    authToken = null;
-    sessionStorage.removeItem('admin_token');
-    authOverlay.classList.remove('hidden');
-    adminPasswordInput.value = '';
-    showToast('ออกจากระบบเรียบร้อยแล้ว', 'info');
-  });
+  let cachedAllStudents = [];
+  let cachedAllRegistrations = [];
+  let firestoreUnsubscribe = null;
 
   // =========================================================================
-  // 2. Tabs Navigation
+  // 4. Students Tab: Search & Advanced Filtering
   // =========================================================================
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const targetTab = btn.getAttribute('data-tab');
-
-      Object.keys(tabContents).forEach(key => {
-        if (key === targetTab) {
-          tabContents[key].classList.remove('hidden');
-        } else {
-          tabContents[key].classList.add('hidden');
+  function setupFilters() {
+    if (gradeFilterContainer) {
+      gradeFilterContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('grade-pill')) {
+          document.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('active'));
+          e.target.classList.add('active');
+          currentGradeFilter = e.target.getAttribute('data-grade');
+          applyStudentFilters();
         }
       });
+    }
 
-      if (targetTab === 'students') loadStudents();
-      if (targetTab === 'control') loadSettings();
-      if (targetTab === 'registrations') loadRegistrations();
-      if (targetTab === 'analytics') loadAnalytics();
-    });
-  });
+    if (studentSearchQuery) {
+      studentSearchQuery.addEventListener('input', () => {
+        clearTimeout(studentSearchTimeout);
+        studentSearchTimeout = setTimeout(applyStudentFilters, 250);
+      });
+    }
 
-  // =========================================================================
-  // 3. Dashboard Init & Stats
-  // =========================================================================
-  async function initDashboard() {
-    loadStats();
-    loadStudents();
-    loadSettings();
-  }
+    if (filterDepartment) filterDepartment.addEventListener('change', applyStudentFilters);
+    if (filterGender) filterGender.addEventListener('change', applyStudentFilters);
+    if (filterRegStatus) filterRegStatus.addEventListener('change', applyStudentFilters);
+    if (btnRefreshStudents) btnRefreshStudents.addEventListener('click', loadStudents);
 
-  async function loadStats() {
-    try {
-      const res = await fetch('/api/admin/stats');
-      const json = await res.json();
-      if (json.success) {
-        const d = json.data;
-        statSystemStatus.innerHTML = d.isOpen ? '<span style="color: #4ade80;">🟢 เปิดรับสมัคร</span>' : '<span style="color: #f87171;">🔴 ปิดรับสมัคร</span>';
-        statTotalStudents.textContent = d.totalStudentsInColor || 492;
-        statOnlineRegs.textContent = d.totalRegistrations || 0;
-        statUniqueRegs.textContent = d.uniqueStudents || 0;
-        return;
-      }
-    } catch (e) {
-      // Static fallback
-      try {
-        const [sRes, rRes] = await Promise.all([
-          fetch('data/students_master.json'),
-          fetch('data/registrations.json')
-        ]);
-        const sData = await sRes.json();
-        const rData = await rRes.json();
-        statSystemStatus.innerHTML = '<span style="color: #4ade80;">🟢 เปิดรับสมัคร</span>';
-        statTotalStudents.textContent = sData.length || 492;
-        statOnlineRegs.textContent = rData.length || 0;
-        statUniqueRegs.textContent = new Set(rData.map(r => r.studentId)).size || 0;
-      } catch (err) {
-        statSystemStatus.innerHTML = '<span style="color: #4ade80;">🟢 เปิดรับสมัคร</span>';
-        statTotalStudents.textContent = '492';
-      }
+    if (btnQuickExportCSV) {
+      btnQuickExportCSV.addEventListener('click', () => {
+        exportTableToCSV('topaz_students_filtered.csv');
+      });
     }
   }
 
-  // =========================================================================
-  // 4. Students Tab: Search & Duty Management
-  // =========================================================================
-  gradeFilterContainer.addEventListener('click', (e) => {
-    if (e.target.classList.contains('grade-pill')) {
-      document.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('active'));
-      e.target.classList.add('active');
-      currentGradeFilter = e.target.getAttribute('data-grade');
-      loadStudents();
-    }
-  });
-
-  studentSearchQuery.addEventListener('input', () => {
-    clearTimeout(studentSearchTimeout);
-    studentSearchTimeout = setTimeout(() => {
-      loadStudents();
-    }, 300);
-  });
-
-  btnRefreshStudents.addEventListener('click', loadStudents);
-
-  let cachedStaticStudents = null;
+  setupFilters();
 
   async function loadStudents() {
     studentsTableBody.innerHTML = `
       <tr>
-        <td colspan="9" style="text-align: center; padding: 24px; color: #94a3b8;">
-          <i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดข้อมูล...
+        <td colspan="9" style="text-align: center; padding: 28px; color: #64748b;">
+          <i class="fa-solid fa-spinner fa-spin text-orange" style="font-size: 1.4rem; margin-bottom: 8px; display: block;"></i>
+          กำลังดึงข้อมูลนักเรียนล่าสุด (Real-time Cloud Sync)...
         </td>
       </tr>
     `;
 
-    const q = studentSearchQuery.value.trim().toLowerCase();
-
-    // 1. Try Node backend API
     try {
-      let url = `/api/admin/students/search?q=${encodeURIComponent(q)}`;
-      if (currentGradeFilter) url += `&grade=${currentGradeFilter}`;
-      const res = await fetch(url);
-      const json = await res.json();
-      if (json.success) {
-        renderStudentsTable(json.data);
-        return;
+      // 1. Fetch Master & Regs base
+      const [sRes, rRes] = await Promise.all([
+        fetch('data/students_master.json'),
+        fetch('data/registrations.json')
+      ]);
+      cachedAllStudents = await sRes.json();
+      cachedAllRegistrations = await rRes.json();
+
+      // 2. ⚡ Live Firestore Real-Time Listener (if connected)
+      if (db) {
+        try {
+          if (firestoreUnsubscribe) firestoreUnsubscribe();
+          
+          firestoreUnsubscribe = db.collection('students').onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => {
+              const data = change.doc.data();
+              const id = change.doc.id;
+              const idx = cachedAllStudents.findIndex(s => s.id === id);
+              if (idx !== -1) {
+                cachedAllStudents[idx] = { ...cachedAllStudents[idx], ...data };
+              } else if (change.type === 'added') {
+                cachedAllStudents.push({ id, ...data });
+              }
+            });
+            applyStudentFilters();
+            loadStats();
+          }, fErr => {
+            console.warn('Firestore snapshot warning:', fErr);
+          });
+        } catch (e) {
+          console.warn('Firestore realtime init error:', e);
+        }
       }
-    } catch (err) {}
 
-    // 2. Static Fallback for GitHub Pages
-    try {
-      if (!cachedStaticStudents) {
-        const sRes = await fetch('data/students_master.json');
-        cachedStaticStudents = await sRes.json();
-      }
-
-      let filtered = cachedStaticStudents.filter(s => {
-        if (currentGradeFilter && String(s.grade) !== String(currentGradeFilter)) return false;
-        if (!q) return true;
-        const text = (s.id + ' ' + s.name + ' ' + (s.roomFull || '') + ' ' + (s.duty || '') + ' ' + (s.phone || '')).toLowerCase();
-        return text.includes(q);
-      });
-
-      renderStudentsTable(filtered);
-    } catch (e) {
-      studentsTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f87171;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+      applyStudentFilters();
+    } catch (err) {
+      studentsTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
     }
+  }
+
+  function applyStudentFilters() {
+    const q = (studentSearchQuery ? studentSearchQuery.value.trim().toLowerCase() : '');
+    const deptFilter = (filterDepartment ? filterDepartment.value : '');
+    const genderFilter = (filterGender ? filterGender.value : '');
+    const regStatusFilter = (filterRegStatus ? filterRegStatus.value : '');
+
+    let filtered = cachedAllStudents.filter(s => {
+      // 1. Grade
+      if (currentGradeFilter && String(s.grade) !== String(currentGradeFilter)) return false;
+
+      // 2. Gender
+      if (genderFilter && s.gender !== genderFilter) return false;
+
+      // 3. Department / Duty
+      const duty = (s.duty || '').trim();
+      if (deptFilter === 'none') {
+        if (duty && duty !== '-') return false;
+      } else if (deptFilter === 'has_duty') {
+        if (!duty || duty === '-') return false;
+      } else if (deptFilter) {
+        if (!duty.includes(deptFilter)) return false;
+      }
+
+      // 4. Online Reg Status
+      const hasReg = cachedAllRegistrations.some(r => r.studentId === s.id);
+      if (regStatusFilter === 'registered' && !hasReg) return false;
+      if (regStatusFilter === 'not_registered' && hasReg) return false;
+
+      // 5. Query Search (ID, Name, Room, Duty, Phone)
+      if (q) {
+        const text = `${s.id} ${s.name} ${s.roomFull || ''} ${s.duty || ''} ${s.phone || ''}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+
+      return true;
+    });
+
+    if (studentFilterCount) {
+      studentFilterCount.textContent = filtered.length;
+    }
+
+    renderStudentsTable(filtered);
+  }
+
+  function renderStudentsTable(students) {
+    if (!students || students.length === 0) {
+      studentsTableBody.innerHTML = `
+        <tr>
+          <td colspan="9" style="text-align: center; padding: 36px; color: #94a3b8;">
+            <i class="fa-solid fa-folder-open" style="font-size: 1.8rem; margin-bottom: 8px; display: block; color: #cbd5e1;"></i>
+            ไม่พบรายชื่อนักเรียนที่ตรงกับเงื่อนไขการค้นหา
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    studentsTableBody.innerHTML = students.map(st => {
+      const duties = st.duty ? st.duty.split(',').map(d => d.trim()).filter(Boolean) : [];
+      let dutyBadges = '<span style="color: #94a3b8;">- (ว่าง)</span>';
+      if (duties.length > 0 && duties[0] !== '-') {
+        dutyBadges = duties.map(d => {
+          let bg = '#ea580c';
+          if (d.includes('สแตน')) bg = '#ea580c';
+          else if (d.includes('หลีด') || d.includes('ลีด')) bg = '#ec4899';
+          else if (d.includes('ดรัม') || d.includes('คัลเลอร์')) bg = '#8b5cf6';
+          else if (d.includes('ขบวน')) bg = '#3b82f6';
+          else if (d.includes('สวัสดิ')) bg = '#10b981';
+          else if (d.includes('สตาฟ') || d.includes('ประธาน')) bg = '#f59e0b';
+          else bg = '#ef4444';
+          return `<span class="badge" style="background: ${bg}; color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.78rem; margin: 2px;">${d}</span>`;
+        }).join(' ');
+      }
+
+      const hasOnlineReg = cachedAllRegistrations.some(r => r.studentId === st.id);
+      const regStatus = hasOnlineReg 
+        ? `<span style="color: #16a34a; font-weight: 600; font-size: 0.84rem;"><i class="fa-solid fa-circle-check"></i> สมัครแล้ว</span>` 
+        : `<span style="color: #94a3b8; font-size: 0.84rem;">-</span>`;
+
+      const safePhone = st.phone && st.phone !== '-' ? `<a href="tel:${st.phone}" style="color: #0284c7; text-decoration: none;"><i class="fa-solid fa-phone"></i> ${st.phone}</a>` : '<span style="color: #cbd5e1;">-</span>';
+
+      return `
+        <tr>
+          <td><strong style="color: #ea580c; font-family: monospace; font-size: 1rem;">${st.id}</strong></td>
+          <td><span class="badge badge-dark">${st.roomFull || `ม.${st.grade}/${st.room}`}</span></td>
+          <td>${st.classNo || '-'}</td>
+          <td><strong>${st.name}</strong></td>
+          <td>${st.gender === 'ชาย' ? '👨 ชาย' : '👩 หญิง'}</td>
+          <td>${dutyBadges}</td>
+          <td>${safePhone}</td>
+          <td>${regStatus}</td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn btn-secondary btn-xs btn-edit-student" data-id="${st.id}" title="แก้ไขหน้าที่และเบอร์โทร">
+                <i class="fa-solid fa-pen-to-square text-orange"></i> แก้ไข
+              </button>
+              <button type="button" class="btn btn-danger btn-xs btn-unlock-student" data-id="${st.id}" data-name="${st.name}" title="ปลดล็อค/ล้างหน้าที่">
+                <i class="fa-solid fa-unlock"></i> ปลดล็อค
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Attach Edit button events
+    document.querySelectorAll('.btn-edit-student').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        openEditModal(id);
+      });
+    });
+
+    // Attach Direct Unlock button events
+    document.querySelectorAll('.btn-unlock-student').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        if (!confirm(`ต้องการ "ปลดล็อค & ล้างหน้าที่" ของ [${id}] ${name} หรือไม่?`)) return;
+
+        showToast(`กำลังปลดล็อค [${id}] ${name}...`, 'info');
+
+        // 1. Clear Firestore
+        if (db) {
+          try {
+            await db.collection('students').doc(id).set({
+              duty: '',
+              phone: '',
+              note: '',
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+          } catch (e) {}
+        }
+
+        // 2. Clear Google Sheet Webhook
+        try {
+          await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              timestamp: new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+              studentId: id,
+              name: name,
+              roleName: '',
+              categoryTitle: '',
+              phone: '',
+              note: '',
+              overwrite: true
+            })
+          });
+        } catch (e) {}
+
+        // 3. Update local cache
+        const std = cachedAllStudents.find(s => s.id === id);
+        if (std) {
+          std.duty = '';
+          std.phone = '';
+          std.note = '';
+        }
+        cachedAllRegistrations = cachedAllRegistrations.filter(r => r.studentId !== id);
+
+        applyStudentFilters();
+        loadStats();
+        showToast(`ปลดล็อค [${id}] ${name} เรียบร้อยแล้ว! ✅`, 'success');
+      });
+    });
+  }
+
+  // Export Filtered Table to CSV Function
+  function exportTableToCSV(filename) {
+    const q = (studentSearchQuery ? studentSearchQuery.value.trim().toLowerCase() : '');
+    const deptFilter = (filterDepartment ? filterDepartment.value : '');
+    const genderFilter = (filterGender ? filterGender.value : '');
+    const regStatusFilter = (filterRegStatus ? filterRegStatus.value : '');
+
+    let filtered = cachedAllStudents.filter(s => {
+      if (currentGradeFilter && String(s.grade) !== String(currentGradeFilter)) return false;
+      if (genderFilter && s.gender !== genderFilter) return false;
+      const duty = (s.duty || '').trim();
+      if (deptFilter === 'none') {
+        if (duty && duty !== '-') return false;
+      } else if (deptFilter === 'has_duty') {
+        if (!duty || duty === '-') return false;
+      } else if (deptFilter) {
+        if (!duty.includes(deptFilter)) return false;
+      }
+      const hasReg = cachedAllRegistrations.some(r => r.studentId === s.id);
+      if (regStatusFilter === 'registered' && !hasReg) return false;
+      if (regStatusFilter === 'not_registered' && hasReg) return false;
+      if (q) {
+        const text = `${s.id} ${s.name} ${s.roomFull || ''} ${s.duty || ''} ${s.phone || ''}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+
+    let csvContent = '\uFEFF'; // UTF-8 BOM
+    csvContent += 'รหัสนักเรียน,ระดับชั้น,เลขที่,ชื่อ-นามสกุล,เพศ,หน้าที่,เบอร์โทรศัพท์\n';
+
+    filtered.forEach(s => {
+      const cleanDuty = (s.duty || '-').replace(/"/g, '""');
+      const cleanName = (s.name || '').replace(/"/g, '""');
+      csvContent += `"${s.id}","${s.roomFull || ''}","${s.classNo || ''}","${cleanName}","${s.gender || ''}","${cleanDuty}","${s.phone || ''}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function renderStudentsTable(students) {
