@@ -47,6 +47,15 @@ function doPost(e) {
     }
 
     // กรณีสั่ง Clean/Deduplicate ทุกหน้า
+    if (data.action === "cleanAllNotes") {
+      var cleanNoteCount = cleanAllNotesInAllGradeSheets();
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "ล้างหมายเหตุทั้งหมดแล้ว " + cleanNoteCount + " รายการ",
+        cleanedCount: cleanNoteCount
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     if (data.action === "cleanAllDuties") {
       var cleanCount = cleanDuplicateDutiesInAllGradeSheets();
       return ContentService.createTextOutput(JSON.stringify({
@@ -231,7 +240,37 @@ function updateStudentRow(sheet, rowNum, activityTitle, phone, note, overwrite) 
       noteItems.push(note);
     }
     sheet.getRange(rowNum, 11).setValue(noteItems.join(" | "));
+  } else if (overwrite) {
+    sheet.getRange(rowNum, 11).setValue("");
   }
+}
+
+function cleanAllNotesInAllGradeSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var allGrades = ["ม.1", "ม.2", "ม.3", "ม.4", "ม.5", "ม.6"];
+  var cleanedCount = 0;
+
+  for (var g = 0; g < allGrades.length; g++) {
+    var sheet = ss.getSheetByName(allGrades[g]);
+    if (!sheet) continue;
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 5) continue;
+    var range = sheet.getRange(5, 11, lastRow - 4, 1);
+    var values = range.getValues();
+    var hasValues = false;
+
+    for (var r = 0; r < values.length; r++) {
+      if (values[r][0] !== "") {
+        values[r][0] = "";
+        cleanedCount++;
+        hasValues = true;
+      }
+    }
+    if (hasValues) {
+      range.setValues(values);
+    }
+  }
+  return cleanedCount;
 }
 
 function cleanDuplicateDutiesInAllGradeSheets() {
