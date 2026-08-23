@@ -650,13 +650,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Settings & Control Tab (Cloud Firestore Sync)
   // =========================================================================
   const DEPARTMENTS = [
-    { id: 'sports', name: 'ฝ่ายกีฬา' },
     { id: 'stand_cheer', name: 'ฝ่ายสแตนเชียร์' },
+    { id: 'parade', name: 'ฝ่ายขบวนพาเหรด' },
+    { id: 'props', name: 'ฝ่ายพร็อพ' },
     { id: 'cheerleader', name: 'ฝ่ายเชียร์ลีดเดอร์' },
     { id: 'drum_major', name: 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด' },
-    { id: 'parade_props', name: 'ฝ่ายขบวนพาเหรด' },
     { id: 'welfare', name: 'ฝ่ายสวัสดิการ' },
-    { id: 'staff', name: 'ฝ่ายสตาฟคณะสี (ม.5)' }
+    { id: 'staff', name: 'ฝ่ายสตาฟ (ม.5)' },
+    { id: 'sports', name: 'ฝ่ายกีฬา' }
   ];
 
   const SPORTS = [

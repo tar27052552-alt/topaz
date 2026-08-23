@@ -1,9 +1,134 @@
 [
   {
+    "id": "stand_cheer",
+    "name": "ฝ่ายสแตนเชียร์",
+    "icon": "🎪",
+    "description": "ร่วมร้องเพลงเชียร์ แปรอักษร และสร้างพลังเสียงเชียร์สุดกระหึ่มบนอัฒจันทร์ (นักเรียน ม.1 ทุกคน)",
+    "allowedGrades": [1],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 100,
+    "roleName": "สแตนเชียร์",
+    "lineGroup": {
+      "name": "สแตนสีแสด topaz 69🧡",
+      "qrImage": "images/qr_stand.png",
+      "link": "https://line.me/ti/g2/Ek0P8BIqQulkFrip7vb1kZxydezo-hstexlc7g?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "parade",
+    "name": "ฝ่ายขบวนพาเหรด",
+    "icon": "🚩",
+    "description": "ร่วมเดินขบวนพาเหรดพิธีเปิดสุดอลังการและยิ่งใหญ่ของคณะสีแสด",
+    "allowedGrades": [2, 3, 4, 5, 6],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 60,
+    "roleName": "ขบวนพาเหรด",
+    "lineGroup": {
+      "name": "กลุ่ม LINE ขบวนพาเหรด คณะสีแสด 69",
+      "qrImage": "images/qr_main.svg",
+      "link": "https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "props",
+    "name": "ฝ่ายพร็อพ",
+    "icon": "🎨",
+    "description": "ร่วมออกแบบและประดิษฐ์อุปกรณ์ประกอบฉาก พร็อพเชียร์ และของตกแต่งขบวน",
+    "allowedGrades": [2, 3, 4, 5, 6],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 50,
+    "roleName": "สตาฟพร็อพ",
+    "lineGroup": {
+      "name": "พร้อบ ม.4,ม.5 (คณะสีแสด 69)",
+      "qrImage": "images/qr_props.png",
+      "link": "https://line.me/ti/g2/b-2h-ADgPThYMhI_-UFmXS-plBlweqx5yj5xTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "cheerleader",
+    "name": "ฝ่ายเชียร์ลีดเดอร์",
+    "icon": "📣",
+    "description": "ผู้นำเชียร์และเชียร์ลีดเดอร์คณะสีแสด โชว์การแสดงสุดประทับใจ",
+    "allowedGrades": [2, 3, 4, 5, 6],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 25,
+    "roleName": "เชียร์ลีดเดอร์",
+    "lineGroup": {
+      "name": "🧡 คัดหลีดสีแสด🧡🧡",
+      "qrImage": "images/qr_cheer.png",
+      "link": "https://line.me/ti/g2/Aw_XBt-lsIixme57NmkIUu0OdPYAHTwFtT8h6Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "drum_major",
+    "name": "ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด",
+    "icon": "🥁",
+    "description": "คทากรผู้นำวงและทีมโบกธงริบบิ้นสุดสง่างามในขบวนพาเหรด",
+    "allowedGrades": [2, 3, 4, 5, 6],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 20,
+    "roleName": "ดรัมเมเยอร์",
+    "lineGroup": {
+      "name": "กลุ่ม LINE ดรัมเมเยอร์ & คัลเลอร์การ์ด คณะสีแสด 69",
+      "qrImage": "images/qr_drum.svg",
+      "link": "https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "welfare",
+    "name": "ฝ่ายสวัสดิการ",
+    "icon": "🍵",
+    "description": "ดูแลจัดเตรียมนม น้ำดื่ม อาหาร และบริการอำนวยความสะดวกเพื่อนๆ และนักกีฬา",
+    "allowedGrades": [2, 3, 4, 5, 6],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "single",
+    "maxQuota": 25,
+    "roleName": "สวัสดิการ",
+    "lineGroup": {
+      "name": "กลุ่ม LINE ฝ่ายสวัสดิการ คณะสีแสด 69",
+      "qrImage": "images/qr_welfare.svg",
+      "link": "https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    }
+  },
+  {
+    "id": "staff",
+    "name": "ฝ่ายสตาฟ",
+    "icon": "👑",
+    "description": "พี่สตาฟหลักดำเนินงานและดูแลกิจกรรมคณะสีแสด (เฉพาะ ม.5)",
+    "allowedGrades": [5],
+    "allowedGenders": ["ชาย", "หญิง"],
+    "type": "staff",
+    "items": [
+      { "id": "staff_fb_m", "title": "สตาฟฟุตบอลชาย", "roleName": "สตาฟบอลชาย", "icon": "⚽" },
+      { "id": "staff_fb_f", "title": "สตาฟฟุตบอลหญิง", "roleName": "สตาฟบอลหญิง", "icon": "⚽" },
+      { "id": "staff_bb", "title": "สตาฟบาสเกตบอล", "roleName": "สตาฟบาส", "icon": "🏀" },
+      { "id": "staff_vb", "title": "สตาฟวอลเลย์บอล", "roleName": "สตาฟวอลเลย์", "icon": "🏐" },
+      { "id": "staff_tk", "title": "สตาฟตะกร้อ", "roleName": "สตาฟตะกร้อ", "icon": "🏸" },
+      { "id": "staff_pt", "title": "สตาฟเปตอง", "roleName": "สตาฟเปตอง", "icon": "⚪" },
+      { "id": "staff_at", "title": "สตาฟกรีฑา / วิ่ง", "roleName": "สตาฟกรีฑา", "icon": "🏃" },
+      { "id": "staff_r16", "title": "สตาฟวิ่ง 16 ขา", "roleName": "สตาฟ 16 ขา", "icon": "🏃‍♂️" },
+      { "id": "staff_cheer", "title": "สตาฟเชียร์ / สแตนเชียร์", "roleName": "สตาฟเชียร์", "icon": "📣" },
+      { "id": "staff_welfare", "title": "สตาฟฝ่ายสวัสดิการ", "roleName": "สตาฟสวัสดิการ", "icon": "🍵" },
+      { "id": "staff_props", "title": "สตาฟฝ่ายพร็อพ", "roleName": "สตาฟพร็อพ", "icon": "🎨" },
+      { "id": "staff_parade", "title": "สตาฟฝ่ายขบวน", "roleName": "สตาฟขบวน", "icon": "🚩" },
+      { "id": "staff_drum_cheerlead", "title": "สตาฟเชียร์ลีดเดอร์ & ดรัมเมเยอร์", "roleName": "สตาฟหลีด", "icon": "🥁" }
+    ],
+    "lineGroup": {
+      "name": "กลุ่ม LINE สตาฟคณะสีแสด 69 (ม.5)",
+      "qrImage": "images/qr_staff.png",
+      "link": "https://line.me/R/ti/g/SsSYeWdtVP"
+    }
+  },
+  {
     "id": "sports",
     "name": "ฝ่ายกีฬา",
     "icon": "⚽",
-    "description": "ร่วมแข่งขันกีฬา-กรีฑาสีภายใน 7 ชนิดกีฬา (เลือกได้สูงสุด 1 ชนิดกีฬา)",
+    "description": "ร่วมแข่งขันกีฬา-กรีฑาสีภายใน 7 ชนิดกีฬา (เลือกได้ 1 ชนิดกีฬา)",
     "allowedGrades": [1, 2, 3, 4, 5, 6],
     "allowedGenders": ["ชาย", "หญิง"],
     "type": "sports",
@@ -64,7 +189,7 @@
       },
       {
         "id": "takraw",
-        "name": "ตะกร้อ",
+        "name": "เซปักตะกร้อ",
         "icon": "🏸",
         "lineGroup": {
           "name": "กลุ่ม LINE ตะกร้อ คณะสีแสด 69",
@@ -72,8 +197,8 @@
           "link": "https://line.me/ti/g/qGKycLzNaL"
         },
         "categories": [
-          { "id": "tk_jr_m", "title": "ตะกร้อ ทีมชาย ม.ต้น", "grades": [1, 2, 3], "gender": "ชาย", "maxQuota": 6 },
-          { "id": "tk_sr_m", "title": "ตะกร้อ ทีมชาย ม.ปลาย", "grades": [4, 5, 6], "gender": "ชาย", "maxQuota": 6 }
+          { "id": "tk_jr_m", "title": "เซปักตะกร้อ ทีมชาย ม.ต้น", "grades": [1, 2, 3], "gender": "ชาย", "maxQuota": 6 },
+          { "id": "tk_sr_m", "title": "เซปักตะกร้อ ทีมชาย ม.ปลาย", "grades": [4, 5, 6], "gender": "ชาย", "maxQuota": 6 }
         ]
       },
       {
@@ -119,130 +244,5 @@
         ]
       }
     ]
-  },
-  {
-    "id": "welfare",
-    "name": "ฝ่ายสวัสดิการ",
-    "icon": "🍵",
-    "description": "ดูแลจัดเตรียมนม น้ำดื่ม อาหาร ยา และปฐมพยาบาลดูแลเพื่อนๆ และนักกีฬา",
-    "allowedGrades": [4, 5, 6],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "single",
-    "maxQuota": 20,
-    "roleName": "สวัสดิการ",
-    "lineGroup": {
-      "name": "กลุ่ม LINE ฝ่ายสวัสดิการ คณะสีแสด 69",
-      "qrImage": "images/qr_welfare.svg",
-      "link": "https://line.me"
-    }
-  },
-  {
-    "id": "cheerleader",
-    "name": "ฝ่ายเชียร์ลีดเดอร์",
-    "icon": "📣",
-    "description": "ผู้นำเชียร์และเชียร์ลีดเดอร์คณะสีแสด โชว์การแสดงสุดอลังการ",
-    "allowedGrades": [2, 3, 4, 5, 6],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "single",
-    "maxQuota": 25,
-    "roleName": "เชียร์ลีดเดอร์",
-    "lineGroup": {
-      "name": "🧡 คัดหลีดสีแสด🧡🧡",
-      "qrImage": "images/qr_cheer.png",
-      "link": "https://line.me/ti/g2/Aw_XBt-lsIixme57NmkIUu0OdPYAHTwFtT8h6Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
-    }
-  },
-  {
-    "id": "drum_major",
-    "name": "ฝ่ายดรัมเมเยอร์",
-    "icon": "🥁",
-    "description": "คทากรผู้นำวงและผู้นำขบวนพาเหรดคณะสีแสด",
-    "allowedGrades": [2, 3, 4, 5, 6],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "single",
-    "maxQuota": 10,
-    "roleName": "ดรัมเมเยอร์",
-    "lineGroup": {
-      "name": "กลุ่ม LINE ดรัมเมเยอร์ คณะสีแสด 69",
-      "qrImage": "images/qr_drum.svg",
-      "link": "https://line.me"
-    }
-  },
-  {
-    "id": "colorguard",
-    "name": "ฝ่ายคัลเลอร์การ์ด",
-    "icon": "🚩",
-    "description": "ทีมคัลเลอร์การ์ดโชว์โบกธงสีแสดและริบบิ้นสุดสง่างามในขบวนพาเหรด",
-    "allowedGrades": [2, 3, 4, 5, 6],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "single",
-    "maxQuota": 15,
-    "roleName": "คัลเลอร์การ์ด",
-    "lineGroup": {
-      "name": "กลุ่ม LINE คัลเลอร์การ์ด คณะสีแสด 69",
-      "qrImage": "images/qr_drum.svg",
-      "link": "https://line.me"
-    }
-  },
-  {
-    "id": "parade_props",
-    "name": "ฝ่ายพร็อพ",
-    "icon": "🎨",
-    "description": "ร่วมออกแบบ จัดทำอุปกรณ์พร็อพเชียร์ และจัดเตรียมพร็อพขบวนคณะสีแสด",
-    "allowedGrades": [1, 2, 3, 4, 5, 6],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "single",
-    "maxQuota": 50,
-    "roleName": "สตาฟพร็อพ",
-    "lineGroup": {
-      "name": "พร้อบ ม.4,ม.5 (คณะสีแสด 69)",
-      "qrImage": "images/qr_props.png",
-      "link": "https://line.me/ti/g2/b-2h-ADgPThYMhI_-UFmXS-plBlweqx5yj5xTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
-    }
-  },
-  {
-    "id": "stand_cheer",
-    "name": "ฝ่ายสแตนเชียร์",
-    "icon": "🎪",
-    "description": "ร่วมร้องเพลงเชียร์ แปรอักษร และสร้างพลังเสียงเชียร์สุดกระหึ่มบนอัฒจันทร์",
-    "allowedGrades": [1, 2, 3],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "single",
-    "maxQuota": 100,
-    "roleName": "สแตนเชียร์",
-    "lineGroup": {
-      "name": "สแตนสีแสด topaz 69🧡",
-      "qrImage": "images/qr_stand.png",
-      "link": "https://line.me/ti/g2/Ek0P8BIqQulkFrip7vb1kZxydezo-hstexlc7g?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
-    }
-  },
-  {
-    "id": "staff",
-    "name": "ฝ่ายสตาฟคณะสี (ม.5)",
-    "icon": "🧡",
-    "description": "พี่สตาฟหลักดำเนินงานคณะสีแสด (เลือกหน้าที่ฝ่ายสตาฟที่รับผิดชอบ)",
-    "allowedGrades": [5],
-    "allowedGenders": ["ชาย", "หญิง"],
-    "type": "staff",
-    "items": [
-      { "id": "staff_fb_m", "title": "สตาฟฟุตบอลชาย", "roleName": "สตาฟบอลชาย", "icon": "⚽" },
-      { "id": "staff_fb_f", "title": "สตาฟฟุตบอลหญิง", "roleName": "สตาฟบอลหญิง", "icon": "⚽" },
-      { "id": "staff_bb", "title": "สตาฟบาสเกตบอล", "roleName": "สตาฟบาส", "icon": "🏀" },
-      { "id": "staff_vb", "title": "สตาฟวอลเลย์บอล", "roleName": "สตาฟวอลเลย์", "icon": "🏐" },
-      { "id": "staff_tk", "title": "สตาฟตะกร้อ", "roleName": "สตาฟตะกร้อ", "icon": "🏸" },
-      { "id": "staff_pt", "title": "สตาฟเปตอง", "roleName": "สตาฟเปตอง", "icon": "⚪" },
-      { "id": "staff_at", "title": "สตาฟกรีฑา / วิ่ง", "roleName": "สตาฟกรีฑา", "icon": "🏃" },
-      { "id": "staff_r16", "title": "สตาฟวิ่ง 16 ขา", "roleName": "สตาฟ 16 ขา", "icon": "🏃‍♂️" },
-      { "id": "staff_cheer", "title": "สตาฟเชียร์ / สแตนเชียร์", "roleName": "สตาฟเชียร์", "icon": "📣" },
-      { "id": "staff_welfare", "title": "สตาฟฝ่ายสวัสดิการ", "roleName": "สตาฟสวัสดิการ", "icon": "🍵" },
-      { "id": "staff_props", "title": "สตาฟฝ่ายพร็อพ", "roleName": "สตาฟพร็อพ", "icon": "🎨" },
-      { "id": "staff_parade", "title": "สตาฟฝ่ายขบวน & การแสดง", "roleName": "สตาฟขบวน", "icon": "🚩" },
-      { "id": "staff_drum_cheerlead", "title": "สตาฟเชียร์ลีดเดอร์ & ดรัมเมเยอร์", "roleName": "สตาฟหลีด", "icon": "🥁" }
-    ],
-    "lineGroup": {
-      "name": "กลุ่ม LINE สตาฟคณะสีแสด 69 (ม.5)",
-      "qrImage": "images/qr_staff.png",
-      "link": "https://line.me/R/ti/g/SsSYeWdtVP"
-    }
   }
 ]
