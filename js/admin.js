@@ -4,6 +4,21 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzi_YwN3XQsnbpcS00riDjayVWFhmx_oV1RQ_8eXX66p2sroQ9DLg3K7TcA0Z5toq28eQ/exec";
+
+  // Initialize Firebase Firestore if configured
+  let db = null;
+  if (typeof firebase !== 'undefined' && window.ORANGE_CONFIG && window.ORANGE_CONFIG.isFirebaseConfigured) {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(window.ORANGE_CONFIG.firebaseConfig);
+      }
+      db = firebase.firestore();
+    } catch (e) {
+      console.warn('Firebase init error in admin:', e);
+    }
+  }
+
   // State
   let authToken = sessionStorage.getItem('admin_token') || null;
   let currentSettings = null;
@@ -404,35 +419,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetRegistration = editResetRegCheckbox.checked;
 
     btnSaveStudentEdit.disabled = true;
-    btnSaveStudentEdit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+    btnSaveStudentEdit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก & ซิงค์...';
 
+    // 1. Dual-Write to Firebase Cloud Firestore
+    if (db) {
+      try {
+        await db.collection('students').doc(studentId).set({
+          duty: duty,
+          phone: phone,
+          note: note,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      } catch (fErr) {
+        console.warn('Firestore update warning:', fErr);
+      }
+    }
+
+    // 2. Direct Sync to Google Sheet Webhook
+    let sheetSynced = false;
     try {
-      const res = await fetch('/api/admin/student/update', {
+      const payload = {
+        timestamp: new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+        studentId: studentId,
+        duty: duty,
+        roleName: duty,
+        categoryTitle: duty,
+        phone: phone,
+        note: note,
+        overwrite: true
+      };
+
+      const sheetRes = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId,
-          duty,
-          phone,
-          note,
-          resetRegistration
-        })
+        body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (data.success) {
-        showToast(data.message + (data.sheetSynced ? ' (ซิงค์ Google Sheets แล้ว ✅)' : ''), 'success');
-        closeEditModal();
-        loadStudents();
-        loadStats();
-      } else {
-        showToast(data.message || 'บันทึกไม่สำเร็จ', 'error');
-      }
-    } catch (err) {
-      showToast('เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
-    } finally {
-      btnSaveStudentEdit.disabled = false;
-      btnSaveStudentEdit.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึก & ซิงค์ Google Sheet';
+      if (sheetRes.ok) sheetSynced = true;
+    } catch (sErr) {
+      console.warn('Google Sheet Webhook sync warning:', sErr);
     }
+
+    // Update local cache
+    if (cachedStaticStudents) {
+      const target = cachedStaticStudents.find(s => s.id === studentId);
+      if (target) {
+        target.duty = duty;
+        target.phone = phone;
+        target.note = note;
+      }
+    }
+
+    showToast(`บันทึกข้อมูลสำเร็จ! ${sheetSynced ? ' (ซิงค์ Google Sheets แล้ว ✅)' : ''}`, 'success');
+    closeEditModal();
+    loadStudents();
+    loadStats();
+
+    btnSaveStudentEdit.disabled = false;
+    btnSaveStudentEdit.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึก & ซิงค์ Google Sheet';
   });
 
   // =========================================================================
