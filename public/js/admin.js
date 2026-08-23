@@ -680,12 +680,13 @@ document.addEventListener('DOMContentLoaded', () => {
         overwrite: true
       };
 
-      const sheetRes = await fetch(WEBHOOK_URL, {
+      await fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
-      if (sheetRes.ok) sheetSynced = true;
+      sheetSynced = true;
     } catch (sErr) {
       console.warn('Google Sheet Webhook sync warning:', sErr);
     }

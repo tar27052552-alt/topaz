@@ -1356,15 +1356,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // Sync to Google Sheet Webhook
+        // Sync to Google Sheet Webhook (use mode no-cors / text/plain for 100% reliable delivery)
         try {
-          fetch(WEBHOOK_URL, {
+          await fetch(WEBHOOK_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(webhookPayload),
-            redirect: 'follow'
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(webhookPayload)
           });
-        } catch (sErr) {}
+        } catch (sErr) {
+          console.warn('Google Sheet Webhook delivery warning:', sErr);
+        }
 
         result = {
           success: true,
