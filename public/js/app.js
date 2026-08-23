@@ -199,11 +199,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       let result = null;
 
-      // 0. ⚡ Ultra-Fast: Query directly from Firebase Firestore (0.05s)
+      // 0. ⚡ Fast Fetch: Try Firebase Firestore with 1.5s timeout
       if (db) {
         try {
-          const docSnap = await db.collection('students').doc(id).get();
-          if (docSnap.exists) {
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 1500));
+          const docSnap = await Promise.race([db.collection('students').doc(id).get(), timeoutPromise]);
+          if (docSnap && docSnap.exists) {
             const student = docSnap.data();
             
             if (!state.cachedDepartments) {
@@ -270,14 +271,17 @@ document.addEventListener('DOMContentLoaded', () => {
             };
           }
         } catch (fErr) {
-          console.warn('Firestore fetch error, fallback to Sheet Webhook...', fErr);
+          console.warn('Firestore fetch timeout/error, fallback to Sheet Webhook...', fErr);
         }
       }
 
-      // 1. 🌟 Primary Webhook: Fetch LIVE directly from Google Sheets Webhook
+      // 1. 🌟 Primary Webhook: Fetch LIVE directly from Google Sheets Webhook (3.5s timeout)
       if (!result || !result.success) {
         try {
-          const sheetRes = await fetch(`${WEBHOOK_URL}?studentId=${encodeURIComponent(id)}`);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
+          const sheetRes = await fetch(`${WEBHOOK_URL}?studentId=${encodeURIComponent(id)}`, { signal: controller.signal });
+          clearTimeout(timeoutId);
           const sheetData = await sheetRes.json();
           
           if (sheetData && sheetData.status === 'success' && sheetData.data) {
