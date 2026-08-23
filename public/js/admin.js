@@ -994,7 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <i class="fa-solid fa-graduation-cap text-orange"></i> ความคืบหน้าการจัดสรรหน้าที่แยกตามระดับชั้น (ม.1 - ม.6):
             </h4>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
-              ${gradeCardsHtml}
+                ${gradeCardsHtml}
             </div>
           </div>
         `;
@@ -1005,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 9. PDF Generation & Print Engine (Client-Side)
+  // 9. PDF Generation & Print Engine (Client-Side matching Official Folder Format)
   // =========================================================================
   const pdfSelectDept = document.getElementById('pdfSelectDept');
   const pdfSelectSport = document.getElementById('pdfSelectSport');
@@ -1034,22 +1034,22 @@ document.addEventListener('DOMContentLoaded', () => {
       studentsToPrint = [...cachedAllStudents];
     } else if (type === 'dept') {
       const dept = pdfSelectDept.value;
-      title = `บัญชีรายชื่อนักเรียน ${dept}`;
-      subtitle = `คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569`;
+      title = `รายชื่อฝ่าย${dept} — คณะสีแสด`;
+      subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
       studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(dept));
     } else if (type === 'sport') {
       const sport = pdfSelectSport.value;
-      title = `บัญชีรายชื่อนักกีฬา ฝ่าย${sport}`;
-      subtitle = `คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569`;
+      title = `รายชื่อนักกีฬา ฝ่าย${sport} — คณะสีแสด`;
+      subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
       studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(sport));
     } else if (type === 'grade') {
       const g = pdfSelectGrade.value;
-      title = `บัญชีรายชื่อนักเรียน ชั้นมัธยมศึกษาปีที่ ${g}`;
-      subtitle = `คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569`;
+      title = `บัญชีรายชื่อนักเรียน ชั้นมัธยมศึกษาปีที่ ${g} — คณะสีแสด`;
+      subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
       studentsToPrint = cachedAllStudents.filter(s => String(s.grade) === String(g));
     } else if (type === 'unassigned') {
-      title = 'บัญชีรายชื่อนักเรียนที่ "ยังไม่มีหน้าที่" (สำหรับติดตามตัว)';
-      subtitle = 'คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569';
+      title = 'บัญชีรายชื่อนักเรียนที่ "ยังไม่มีหน้าที่" — คณะสีแสด';
+      subtitle = 'สำหรับคณะกรรมการใช้ติดตามตัวมาจัดสรรหน้าที่ ประจำปีการศึกษา 2569';
       studentsToPrint = cachedAllStudents.filter(s => !s.duty || s.duty.trim() === '-' || s.duty.trim() === '');
     }
 
@@ -1057,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
     studentsToPrint.sort((a, b) => {
       if (a.grade !== b.grade) return (a.grade || 0) - (b.grade || 0);
       if (a.room !== b.room) return (a.room || 0) - (b.room || 0);
-      return (parseInt(a.classNo) || 0) - (parseInt(b.classNo) || 0);
+      return (parseInt(a.classNo) || 0) - (parseInt(a.classNo) || 0);
     });
 
     const nowTh = new Date().toLocaleDateString('th-TH', {
@@ -1065,7 +1065,10 @@ document.addEventListener('DOMContentLoaded', () => {
       hour: '2-digit', minute: '2-digit'
     });
 
-    // Create a printable HTML document inside an iframe or popup window
+    const maleCount = studentsToPrint.filter(s => s.gender === 'ชาย').length;
+    const femaleCount = studentsToPrint.filter(s => s.gender === 'หญิง').length;
+
+    // Create a printable HTML document inside a popup window
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       showToast('เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาตป๊อปอัปเพื่อเปิด PDF', 'error');
@@ -1073,16 +1076,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const rowsHtml = studentsToPrint.map((s, idx) => `
-      <tr>
-        <td style="text-align: center; width: 45px;">${idx + 1}</td>
-        <td style="text-align: center; font-weight: bold; width: 70px;">${s.id}</td>
-        <td style="text-align: center; width: 75px;">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
-        <td style="text-align: center; width: 50px;">${s.classNo || '-'}</td>
-        <td style="text-align: left; padding-left: 10px; font-weight: 500;">${s.name}</td>
-        <td style="text-align: center; width: 50px;">${s.gender || '-'}</td>
-        <td style="text-align: left; padding-left: 10px; font-weight: 600; color: #c2410c;">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#94a3b8; font-weight:normal;">-</span>'}</td>
-        <td style="text-align: center; width: 110px; font-family: monospace;">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
-        <td style="width: 80px;"></td>
+      <tr class="${idx % 2 === 1 ? 'even' : 'odd'}">
+        <td class="center font-bold">${idx + 1}</td>
+        <td class="center font-bold text-orange">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
+        <td class="center">${s.classNo || '-'}</td>
+        <td class="center font-mono">${s.id}</td>
+        <td class="left font-bold">${s.name}</td>
+        <td class="center">${s.gender || '-'}</td>
+        <td class="left text-orange font-bold">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#94a3b8; font-weight:normal;">-</span>'}</td>
+        <td class="center font-mono">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
+        <td style="width: 75px;"></td>
       </tr>
     `).join('');
 
