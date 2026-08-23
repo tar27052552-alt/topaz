@@ -741,7 +741,7 @@ function getSettings() {
 }
 
 // 0. สถานะระบบรับสมัคร (Public)
-app.get('/api/system/status', (req, res) => {
+app.get(['/api/system/status', '/api/system-status'], (req, res) => {
   const settings = getSettings();
   res.json({
     success: true,
