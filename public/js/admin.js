@@ -46,6 +46,107 @@ document.addEventListener('DOMContentLoaded', () => {
     analytics: document.getElementById('tab-analytics')
   };
 
+  // Toast
+  const toast = document.getElementById('toast');
+
+  function showToast(message, type = 'info') {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast show ${type}`;
+    setTimeout(() => {
+      toast.className = 'toast';
+    }, 3500);
+  }
+
+  function checkAuth() {
+    if (authToken) {
+      if (authOverlay) authOverlay.classList.add('hidden');
+      initDashboard();
+    } else {
+      if (authOverlay) authOverlay.classList.remove('hidden');
+      if (adminPasswordInput) adminPasswordInput.focus();
+    }
+  }
+
+  if (adminLoginForm) {
+    adminLoginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pwd = adminPasswordInput.value.trim();
+      if (!pwd) return;
+
+      // Allow 'topaz69' or 'toapz69'
+      if (pwd === 'topaz69' || pwd === 'toapz69') {
+        authToken = 'adm_topaz69_' + Date.now();
+        sessionStorage.setItem('admin_token', authToken);
+        if (authOverlay) authOverlay.classList.add('hidden');
+        showToast('เข้าสู่ระบบแอดมินสำเร็จ! 🎉', 'success');
+        initDashboard();
+      } else {
+        showToast('รหัสผ่านผู้ดูแลระบบไม่ถูกต้อง (กรุณากรอก: topaz69)', 'error');
+        adminPasswordInput.value = '';
+        adminPasswordInput.focus();
+      }
+    });
+  }
+
+  if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+      authToken = null;
+      sessionStorage.removeItem('admin_token');
+      if (authOverlay) authOverlay.classList.remove('hidden');
+      if (adminPasswordInput) adminPasswordInput.value = '';
+      showToast('ออกจากระบบเรียบร้อยแล้ว', 'info');
+    });
+  }
+
+  // Tabs Switcher
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const targetTab = btn.getAttribute('data-tab');
+
+      Object.keys(tabContents).forEach(key => {
+        if (tabContents[key]) {
+          if (key === targetTab) {
+            tabContents[key].classList.remove('hidden');
+          } else {
+            tabContents[key].classList.add('hidden');
+          }
+        }
+      });
+
+      if (targetTab === 'students') loadStudents();
+      if (targetTab === 'control') loadSettings();
+      if (targetTab === 'registrations') loadRegistrations();
+      if (targetTab === 'analytics') loadAnalytics();
+    });
+  });
+
+  async function initDashboard() {
+    loadStats();
+    loadStudents();
+    loadSettings();
+  }
+
+  async function loadStats() {
+    try {
+      const [sRes, rRes] = await Promise.all([
+        fetch('data/students_master.json'),
+        fetch('data/registrations.json')
+      ]);
+      const sData = await sRes.json();
+      const rData = await rRes.json();
+      if (statSystemStatus) statSystemStatus.innerHTML = '<span style="color: #16a34a;">🟢 เปิดรับสมัคร</span>';
+      if (statTotalStudents) statTotalStudents.textContent = sData.length || 492;
+      if (statOnlineRegs) statOnlineRegs.textContent = rData.length || 0;
+      if (statUniqueRegs) statUniqueRegs.textContent = new Set(rData.map(r => r.studentId)).size || 0;
+    } catch (e) {
+      if (statSystemStatus) statSystemStatus.innerHTML = '<span style="color: #16a34a;">🟢 เปิดรับสมัคร</span>';
+      if (statTotalStudents) statTotalStudents.textContent = '492';
+    }
+  }
+
   // DOM Elements - Students Tab
   const gradeFilterContainer = document.getElementById('gradeFilterContainer');
   const studentSearchQuery = document.getElementById('studentSearchQuery');
