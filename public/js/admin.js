@@ -1334,7 +1334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <style>
           @page {
             size: A4 portrait;
-            margin: 10mm;
+            margin: 12mm 10mm 12mm 10mm;
           }
           * {
             box-sizing: border-box;
@@ -1342,8 +1342,8 @@ document.addEventListener('DOMContentLoaded', () => {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          html, body {
-            background-color: #ffffff;
+          body {
+            background: #ffffff;
             color: #0f172a;
             font-size: 11px;
             line-height: 1.3;
@@ -1351,17 +1351,16 @@ document.addEventListener('DOMContentLoaded', () => {
             padding: 0;
           }
           .pdf-page {
-            background-color: #ffffff;
+            background: #ffffff;
             width: 100%;
-            max-width: 210mm;
-            margin: 0 auto 30px auto;
-            padding: 10px;
+            margin: 0 0 20px 0;
+            padding: 0;
             page-break-after: always;
             break-after: page;
           }
           .pdf-page:last-child {
-            page-break-after: avoid;
-            break-after: avoid;
+            page-break-after: auto;
+            break-after: auto;
           }
 
           /* 🌟 EXACT MATCH PDF HEADER */
@@ -1520,7 +1519,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
           @media print {
             .no-print { display: none !important; }
-            .pdf-page { margin: 0; padding: 0; width: 100%; box-shadow: none; }
           }
         </style>
       </head>
@@ -1528,7 +1526,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="no-print" style="position: sticky; top: 0; z-index: 9999; width: 100%; background: #0f172a; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
           <div>
             <strong style="font-size: 15px; color: #f97316;">📄 ${title}</strong>
-            <div style="font-size: 12px; color: #cbd5e1;">คลิกปุ่มสีส้มขวาบน ➜ เลือกเครื่องพิมพ์เป็น "Save as PDF (บันทึกเป็น PDF)" ➜ กดบันทึก</div>
+            <div style="font-size: 12px; color: #cbd5e1;">คลิกปุ่มสีส้มขวาบน ➜ เลือกปลายทางเป็น "บันทึกเป็น PDF (Save as PDF)" ➜ กดบันทึก</div>
           </div>
           <div>
             <button onclick="window.print()" style="background: #ea580c; color: white; font-weight: 700; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);">
@@ -1537,7 +1535,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <div style="padding: 0 10px;">
+        <div style="max-width: 210mm; margin: 0 auto; padding: 0 10px;">
           ${pagesHtml}
         </div>
       </body>
