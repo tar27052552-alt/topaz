@@ -1316,235 +1316,89 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // 🚀 Open Clean Ready-to-Save PDF Document
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      showToast('เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาตป๊อปอัปเพื่อเปิด PDF', 'error');
-      return;
+    // 🚀 Direct 1-Click File Download (.pdf) - No Print Popup
+    showToast('⏳ กำลังประมวลผลและสร้างไฟล์ PDF...', 'info');
+
+    let exportBox = document.getElementById('tempPdfExportWrapper');
+    if (!exportBox) {
+      exportBox = document.createElement('div');
+      exportBox.id = 'tempPdfExportWrapper';
+      exportBox.style.position = 'fixed';
+      exportBox.style.left = '0';
+      exportBox.style.top = '0';
+      exportBox.style.width = '210mm';
+      exportBox.style.background = '#ffffff';
+      exportBox.style.zIndex = '-9999';
+      exportBox.style.opacity = '1';
+      exportBox.style.pointerEvents = 'none';
+      document.body.appendChild(exportBox);
     }
 
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html lang="th">
-      <head>
-        <meta charset="UTF-8">
-        <title>${title} — คณะสีแสด 2569</title>
-        <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <style>
-          @page {
-            size: A4 portrait;
-            margin: 12mm 10mm 12mm 10mm;
-          }
-          * {
-            box-sizing: border-box;
-            font-family: 'Sarabun', sans-serif;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          body {
-            background: #ffffff;
-            color: #0f172a;
-            font-size: 11px;
-            line-height: 1.3;
-            margin: 0;
-            padding: 0;
-          }
-          .pdf-page {
-            background: #ffffff;
-            width: 100%;
-            margin: 0 0 20px 0;
-            padding: 0;
-            page-break-after: always;
-            break-after: page;
-          }
-          .pdf-page:last-child {
-            page-break-after: auto;
-            break-after: auto;
-          }
-
-          /* 🌟 EXACT MATCH PDF HEADER */
-          .pdf-header-card {
-            background-color: #fff3e0 !important;
-            border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 14px;
-            border-left: 6px solid #ea580c;
-          }
-          .pdf-badge-tag {
-            display: inline-block;
-            background-color: #ea580c !important;
-            color: #ffffff !important;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 10px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-          }
-          .pdf-main-title {
-            font-family: 'Prompt', sans-serif;
-            font-size: 20px;
-            font-weight: 800;
-            color: #c2410c;
-            margin: 0 0 2px 0;
-          }
-          .pdf-sub-title {
-            font-size: 12px;
-            color: #78716c;
-          }
-
-          /* 🌟 STAT KPI 4 BOXES */
-          .pdf-stat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-          }
-          .pdf-stat-box {
-            background-color: #ffffff !important;
-            border: 1.5px solid #fed7aa;
-            border-radius: 10px;
-            padding: 12px 8px;
-            text-align: center;
-          }
-          .pdf-stat-num {
-            font-family: 'Prompt', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: #ea580c;
-            line-height: 1;
-            margin-bottom: 4px;
-          }
-          .pdf-stat-lbl {
-            font-size: 11px;
-            color: #57534e;
-            font-weight: 600;
-          }
-
-          /* 🌟 SUMMARY TABLE */
-          .pdf-section-title {
-            font-family: 'Prompt', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: #292524;
-            margin-bottom: 8px;
-          }
-          .pdf-summary-table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          .pdf-summary-table th {
-            background-color: #ea580c !important;
-            color: #ffffff !important;
-            font-family: 'Prompt', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 6px 8px;
-            border: 1px solid #c2410c;
-            text-align: center;
-          }
-          .pdf-summary-table td {
-            border: 1px solid #e7e5e4;
-            padding: 5px 8px;
-            font-size: 11px;
-          }
-          .pdf-summary-table tbody tr:nth-child(even) td {
-            background-color: #fafaf9 !important;
-          }
-          .pdf-summary-total-row td {
-            background-color: #ffedd5 !important;
-            border-top: 2px solid #ea580c;
-          }
-
-          /* 🌟 GRADE ROSTER TABLE */
-          .pdf-grade-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff3e0 !important;
-            padding: 8px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 4px solid #ea580c;
-          }
-          .pdf-grade-title {
-            font-family: 'Prompt', sans-serif;
-            font-size: 14px;
-            font-weight: 800;
-            color: #c2410c;
-            margin: 0;
-          }
-          .pdf-grade-sub {
-            font-size: 11px;
-            color: #78716c;
-            margin-top: 1px;
-          }
-          .pdf-grade-badge {
-            background-color: #ea580c !important;
-            color: #ffffff !important;
-            font-family: 'Prompt', sans-serif;
-            font-weight: 800;
-            font-size: 14px;
-            padding: 4px 12px;
-            border-radius: 6px;
-          }
-          .pdf-roster-table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          .pdf-roster-table th {
-            background-color: #ea580c !important;
-            color: #ffffff !important;
-            font-family: 'Prompt', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 5px 4px;
-            border: 1px solid #c2410c;
-            text-align: center;
-          }
-          .pdf-roster-table td {
-            border: 1px solid #e7e5e4;
-            padding: 4px 4px;
-            font-size: 10.5px;
-            vertical-align: middle;
-          }
-          .pdf-roster-table tbody tr:nth-child(even) td {
-            background-color: #fafaf9 !important;
-          }
-          .center { text-align: center; }
-          .left { text-align: left; }
-          .font-bold { font-weight: 700; }
-          .text-orange { color: #c2410c; }
-          .font-mono { font-family: monospace; font-size: 10.5px; }
-
-          @media print {
-            .no-print { display: none !important; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="no-print" style="position: sticky; top: 0; z-index: 9999; width: 100%; background: #0f172a; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
-          <div>
-            <strong style="font-size: 15px; color: #f97316;">📄 ${title}</strong>
-            <div style="font-size: 12px; color: #cbd5e1;">คลิกปุ่มสีส้มขวาบน ➜ เลือกปลายทางเป็น "บันทึกเป็น PDF (Save as PDF)" ➜ กดบันทึก</div>
-          </div>
-          <div>
-            <button onclick="window.print()" style="background: #ea580c; color: white; font-weight: 700; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);">
-              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็นไฟล์ PDF
-            </button>
-          </div>
-        </div>
-
-        <div style="max-width: 210mm; margin: 0 auto; padding: 0 10px;">
-          ${pagesHtml}
-        </div>
-      </body>
-      </html>
+    exportBox.innerHTML = `
+      <style>
+        * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
+        .export-page { width: 210mm; min-height: 296mm; background: #fff; padding: 10mm 10mm; box-sizing: border-box; margin-bottom: 20px; }
+        .pdf-header-card { background-color: #fff3e0; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; border-left: 6px solid #ea580c; }
+        .pdf-badge-tag { display: inline-block; background-color: #ea580c; color: #ffffff; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 6px; margin-bottom: 6px; }
+        .pdf-main-title { font-family: 'Prompt', sans-serif; font-size: 20px; font-weight: 800; color: #c2410c; margin: 0 0 2px 0; }
+        .pdf-sub-title { font-size: 12px; color: #78716c; }
+        .pdf-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        .pdf-stat-box { background-color: #ffffff; border: 1.5px solid #fed7aa; border-radius: 10px; padding: 12px 8px; text-align: center; }
+        .pdf-stat-num { font-family: 'Prompt', sans-serif; font-size: 24px; font-weight: 800; color: #ea580c; line-height: 1; margin-bottom: 4px; }
+        .pdf-stat-lbl { font-size: 11px; color: #57534e; font-weight: 600; }
+        .pdf-section-title { font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; color: #292524; margin-bottom: 8px; }
+        .pdf-summary-table { width: 100%; border-collapse: collapse; }
+        .pdf-summary-table th { background-color: #ea580c; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700; padding: 6px 8px; border: 1px solid #c2410c; text-align: center; }
+        .pdf-summary-table td { border: 1px solid #e7e5e4; padding: 5px 8px; font-size: 11px; }
+        .pdf-summary-table tbody tr:nth-child(even) td { background-color: #fafaf9; }
+        .pdf-summary-total-row td { background-color: #ffedd5; border-top: 2px solid #ea580c; }
+        .pdf-grade-header { display: flex; justify-content: space-between; align-items: center; background-color: #fff3e0; padding: 8px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #ea580c; }
+        .pdf-grade-title { font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 800; color: #c2410c; margin: 0; }
+        .pdf-grade-sub { font-size: 11px; color: #78716c; margin-top: 1px; }
+        .pdf-grade-badge { background-color: #ea580c; color: #ffffff; font-family: 'Prompt', sans-serif; font-weight: 800; font-size: 14px; padding: 4px 12px; border-radius: 6px; }
+        .pdf-roster-table { width: 100%; border-collapse: collapse; }
+        .pdf-roster-table th { background-color: #ea580c; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700; padding: 5px 4px; border: 1px solid #c2410c; text-align: center; }
+        .pdf-roster-table td { border: 1px solid #e7e5e4; padding: 4px 4px; font-size: 10.5px; vertical-align: middle; }
+        .pdf-roster-table tbody tr:nth-child(even) td { background-color: #fafaf9; }
+        .center { text-align: center; }
+        .left { text-align: left; }
+        .font-bold { font-weight: 700; }
+        .text-orange { color: #c2410c; }
+        .font-mono { font-family: monospace; font-size: 10.5px; }
+      </style>
+      ${pagesHtml.replace(/class="pdf-page/g, 'class="export-page')}
     `;
 
-    printWindow.document.open();
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
+    setTimeout(async () => {
+      try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pages = exportBox.querySelectorAll('.export-page');
+        
+        for (let i = 0; i < pages.length; i++) {
+          const pageElem = pages[i];
+          const canvas = await html2canvas(pageElem, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          });
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          
+          if (i > 0) pdf.addPage('a4', 'p');
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        }
+
+        const safeFilename = `${title.replace(/[\/\\?%*:|"<>]/g, '_')}_2569.pdf`;
+        pdf.save(safeFilename);
+        
+        showToast('🎉 บันทึกและดาวน์โหลดไฟล์ PDF เรียบร้อยแล้ว!', 'success');
+        exportBox.innerHTML = '';
+      } catch (err) {
+        console.error('PDF Generation Error:', err);
+        showToast('เกิดข้อผิดพลาดในการดาวน์โหลด PDF', 'error');
+      }
+    }, 400);
   }
 
   // Initial check
