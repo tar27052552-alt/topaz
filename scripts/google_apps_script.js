@@ -127,12 +127,55 @@ function doPost(e) {
 function doGet(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var action = e.parameter.action;
+
+    // ดึงข้อมูลนักเรียนทั้งหมด 492 คนในครั้งเดียว (Bulk Dump)
+    if (action === "getAllMaster") {
+      var allGrades = ["ม.1", "ม.2", "ม.3", "ม.4", "ม.5", "ม.6"];
+      var allList = [];
+
+      for (var g = 0; g < allGrades.length; g++) {
+        var sheet = ss.getSheetByName(allGrades[g]);
+        if (!sheet) continue;
+        var lastRow = sheet.getLastRow();
+        if (lastRow < 5) continue;
+
+        var values = sheet.getRange(5, 1, lastRow - 4, 11).getValues();
+        for (var r = 0; r < values.length; r++) {
+          var row = values[r];
+          var sId = String(row[5]).replace(/[^\d]/g, "").trim();
+          if (!sId) continue;
+
+          allList.push({
+            seq: row[0],
+            gradeName: row[1],
+            grade: (g + 1),
+            roomNo: row[2],
+            roomFull: row[3],
+            classNo: row[4],
+            id: sId,
+            name: row[6],
+            gender: row[7],
+            duty: row[8] || "",
+            phone: row[9] ? formatPhoneNumber(String(row[9])) : "",
+            note: row[10] || ""
+          });
+        }
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        total: allList.length,
+        data: allList
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     var queryId = e.parameter.studentId || e.parameter.id;
 
     if (!queryId) {
       return ContentService.createTextOutput(JSON.stringify({
         status: "error",
-        message: "กรุณาระบุ studentId"
+        message: "กรุณาระบุ studentId หรือ action=getAllMaster"
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
