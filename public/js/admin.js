@@ -1091,10 +1091,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let title = '';
     let subtitle = '';
     let studentsToPrint = [];
+    const isMaster = (type === 'master');
 
-    if (type === 'master') {
-      title = 'บัญชีรายชื่อนักเรียนและหน้าที่ทั้งหมด (Master Roster)';
-      subtitle = 'คณะสีแสด (สีบุษราคัม) กีฬาสีสรรพวิทยาคม ประจำปีการศึกษา 2569 (รวม 492 คน)';
+    if (isMaster) {
+      title = 'ทำเนียบรายชื่อนักเรียน';
+      subtitle = 'คณะสีแสด (สีบุษราคัม) ประจำปีการศึกษา 2569';
       studentsToPrint = [...cachedAllStudents];
     } else if (type === 'dept') {
       const dept = pdfSelectDept.value;
@@ -1108,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
       studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(sport));
     } else if (type === 'grade') {
       const g = pdfSelectGrade.value;
-      title = `บัญชีรายชื่อนักเรียน ชั้นมัธยมศึกษาปีที่ ${g} — คณะสีแสด`;
+      title = `รายชื่อนักเรียน คณะสีแสด — ระดับชั้นมัธยมศึกษาปีที่ ${g}`;
       subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
       studentsToPrint = cachedAllStudents.filter(s => String(s.grade) === String(g));
     } else if (type === 'unassigned') {
@@ -1125,33 +1126,201 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const nowTh = new Date().toLocaleDateString('th-TH', {
-      year: 'numeric', month: 'long', day: 'numeric',
-      hour: '2-digit', minute: '2-digit'
+      year: 'numeric', month: 'long', day: 'numeric'
     });
 
-    const maleCount = studentsToPrint.filter(s => s.gender === 'ชาย').length;
-    const femaleCount = studentsToPrint.filter(s => s.gender === 'หญิง').length;
+    const totalStudents = cachedAllStudents.length;
+    const maleTotal = cachedAllStudents.filter(s => s.gender === 'ชาย').length;
+    const femaleTotal = cachedAllStudents.filter(s => s.gender === 'หญิง').length;
+    const assignedTotal = cachedAllStudents.filter(s => s.duty && s.duty.trim() !== '-' && s.duty.trim() !== '').length;
 
-    // Create a printable HTML document inside a popup window
+    // Build Grade Breakdown for Cover Page
+    const gradeRowsSummaryHtml = [1, 2, 3, 4, 5, 6].map(g => {
+      const list = cachedAllStudents.filter(s => s.grade === g);
+      const m = list.filter(s => s.gender === 'ชาย').length;
+      const f = list.filter(s => s.gender === 'หญิง').length;
+      const assigned = list.filter(s => s.duty && s.duty.trim() !== '-' && s.duty.trim() !== '').length;
+      return `
+        <tr>
+          <td style="text-align: left; padding: 6px 12px; font-weight: 500;">มัธยมศึกษาปีที่ ${g}</td>
+          <td style="text-align: center; padding: 6px 8px; font-weight: 700;">${list.length}</td>
+          <td style="text-align: center; padding: 6px 8px;">${m}</td>
+          <td style="text-align: center; padding: 6px 8px;">${f}</td>
+          <td style="text-align: center; padding: 6px 8px; font-weight: 700; color: #ea580c;">${assigned}</td>
+        </tr>
+      `;
+    }).join('');
+
+    // Group students by Grade for printing
+    let pagesHtml = '';
+
+    if (isMaster) {
+      // 🌟 Page 1: EXACT MATCH Cover Summary Page
+      pagesHtml += `
+        <div class="pdf-page cover-page">
+          <!-- Header Banner -->
+          <div class="pdf-header-card">
+            <div class="pdf-badge-tag"><i class="fa-solid fa-clipboard-list"></i> ทำเนียบรายชื่อนักเรียน</div>
+            <h1 class="pdf-main-title">คณะสีแสด (สีบุษราคัม) ประจำปีการศึกษา 2569</h1>
+            <div class="pdf-sub-title">โรงเรียนสรรพวิทยาคม ตาก | การแข่งขันกีฬา-กรีฑาสีภายใน</div>
+          </div>
+
+          <!-- Stat KPI 4 Boxes Grid -->
+          <div class="pdf-stat-grid">
+            <div class="pdf-stat-box">
+              <div class="pdf-stat-num">${totalStudents}</div>
+              <div class="pdf-stat-lbl">นักเรียนทั้งหมด (คน)</div>
+            </div>
+            <div class="pdf-stat-box">
+              <div class="pdf-stat-num">${maleTotal}</div>
+              <div class="pdf-stat-lbl">นักเรียนชาย (คน)</div>
+            </div>
+            <div class="pdf-stat-box">
+              <div class="pdf-stat-num">${femaleTotal}</div>
+              <div class="pdf-stat-lbl">นักเรียนหญิง (คน)</div>
+            </div>
+            <div class="pdf-stat-box">
+              <div class="pdf-stat-num text-orange">${assignedTotal}</div>
+              <div class="pdf-stat-lbl">ผู้มีหน้าที่ / นักกีฬา / สตาฟ (คน)</div>
+            </div>
+          </div>
+
+          <!-- Grade Summary Table -->
+          <div class="pdf-section-title">
+            📊 สรุปยอดจำนวนนักเรียนแยกตามระดับชั้น
+          </div>
+          <table class="pdf-summary-table">
+            <thead>
+              <tr>
+                <th style="text-align: left; width: 30%;">ระดับชั้น</th>
+                <th style="width: 17%;">จำนวนนักเรียน (คน)</th>
+                <th style="width: 17%;">ชาย (คน)</th>
+                <th style="width: 17%;">หญิง (คน)</th>
+                <th style="width: 19%;">นักกีฬา / สตาฟ / ผู้มีหน้าที่ (คน)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${gradeRowsSummaryHtml}
+              <tr class="pdf-summary-total-row">
+                <td style="text-align: left; font-weight: 700;">รวมทุกระดับชั้น</td>
+                <td style="text-align: center; font-weight: 700;">${totalStudents}</td>
+                <td style="text-align: center; font-weight: 700;">${maleTotal}</td>
+                <td style="text-align: center; font-weight: 700;">${femaleTotal}</td>
+                <td style="text-align: center; font-weight: 700; color: #ea580c;">${assignedTotal}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 40px; text-align: right; color: #94a3b8; font-size: 11px;">
+            เอกสารสรุปยอดอย่างเป็นทางการ คณะสีแสด 2569 • พิมพ์เมื่อ ${nowTh}
+          </div>
+        </div>
+      `;
+
+      // 🌟 Pages 2+: Grade by Grade List
+      [1, 2, 3, 4, 5, 6].forEach(g => {
+        const gradeStudents = cachedAllStudents.filter(s => s.grade === g);
+        if (gradeStudents.length === 0) return;
+
+        const gMale = gradeStudents.filter(s => s.gender === 'ชาย').length;
+        const gFemale = gradeStudents.filter(s => s.gender === 'หญิง').length;
+        const gAssigned = gradeStudents.filter(s => s.duty && s.duty.trim() !== '-' && s.duty.trim() !== '').length;
+
+        const rows = gradeStudents.map((s, idx) => `
+          <tr>
+            <td class="center font-bold">${idx + 1}</td>
+            <td class="center font-bold text-orange">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
+            <td class="center">${s.classNo || '-'}</td>
+            <td class="center font-mono">${s.id}</td>
+            <td class="left font-bold">${s.name}</td>
+            <td class="center">${s.gender || '-'}</td>
+            <td class="left text-orange font-bold">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#cbd5e1; font-weight:normal;">-</span>'}</td>
+            <td class="center font-mono">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
+          </tr>
+        `).join('');
+
+        pagesHtml += `
+          <div class="pdf-page">
+            <div class="pdf-grade-header">
+              <div>
+                <h2 class="pdf-grade-title">รายชื่อนักเรียน คณะสีแสด — ระดับชั้นมัธยมศึกษาปีที่ ${g}</h2>
+                <div class="pdf-grade-sub">จำนวนนักเรียน: ${gradeStudents.length} คน | ชาย ${gMale} คน | หญิง ${gFemale} คน | ผู้มีหน้าที่ ${gAssigned} คน</div>
+              </div>
+              <div class="pdf-grade-badge">ม.${g}</div>
+            </div>
+
+            <table class="pdf-roster-table">
+              <thead>
+                <tr>
+                  <th style="width: 5%;">ลำดับ</th>
+                  <th style="width: 8%;">ห้อง</th>
+                  <th style="width: 6%;">เลขที่</th>
+                  <th style="width: 11%;">รหัสประจำตัว</th>
+                  <th style="width: 26%; text-align: left; padding-left: 8px;">ชื่อ - นามสกุล</th>
+                  <th style="width: 7%;">เพศ</th>
+                  <th style="width: 23%; text-align: left; padding-left: 8px;">ฝ่าย / หน้าที่</th>
+                  <th style="width: 14%;">เบอร์โทรศัพท์</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          </div>
+        `;
+      });
+
+    } else {
+      // Non-master (single page or filtered)
+      const rows = studentsToPrint.map((s, idx) => `
+        <tr>
+          <td class="center font-bold">${idx + 1}</td>
+          <td class="center font-bold text-orange">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
+          <td class="center">${s.classNo || '-'}</td>
+          <td class="center font-mono">${s.id}</td>
+          <td class="left font-bold">${s.name}</td>
+          <td class="center">${s.gender || '-'}</td>
+          <td class="left text-orange font-bold">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#cbd5e1; font-weight:normal;">-</span>'}</td>
+          <td class="center font-mono">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
+        </tr>
+      `).join('');
+
+      pagesHtml += `
+        <div class="pdf-page">
+          <div class="pdf-grade-header">
+            <div>
+              <h2 class="pdf-grade-title">${title}</h2>
+              <div class="pdf-grade-sub">${subtitle} • จำนวน: ${studentsToPrint.length} คน</div>
+            </div>
+            <div class="pdf-grade-badge">สีแสด</div>
+          </div>
+
+          <table class="pdf-roster-table">
+            <thead>
+              <tr>
+                <th style="width: 5%;">ลำดับ</th>
+                <th style="width: 8%;">ห้อง</th>
+                <th style="width: 6%;">เลขที่</th>
+                <th style="width: 11%;">รหัสประจำตัว</th>
+                <th style="width: 26%; text-align: left; padding-left: 8px;">ชื่อ - นามสกุล</th>
+                <th style="width: 7%;">เพศ</th>
+                <th style="width: 23%; text-align: left; padding-left: 8px;">ฝ่าย / หน้าที่</th>
+                <th style="width: 14%;">เบอร์โทรศัพท์</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       showToast('เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาตป๊อปอัปเพื่อเปิด PDF', 'error');
       return;
     }
-
-    const rowsHtml = studentsToPrint.map((s, idx) => `
-      <tr class="${idx % 2 === 1 ? 'even' : 'odd'}">
-        <td class="center font-bold">${idx + 1}</td>
-        <td class="center font-bold text-orange">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
-        <td class="center">${s.classNo || '-'}</td>
-        <td class="center font-mono">${s.id}</td>
-        <td class="left font-bold">${s.name}</td>
-        <td class="center">${s.gender || '-'}</td>
-        <td class="left text-orange font-bold">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#94a3b8; font-weight:normal;">-</span>'}</td>
-        <td class="center font-mono">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
-        <td style="width: 75px;"></td>
-      </tr>
-    `).join('');
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -1159,11 +1328,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <head>
         <meta charset="UTF-8">
         <title>${title} — คณะสีแสด 2569</title>
-        <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
           @page {
             size: A4 portrait;
-            margin: 12mm 12mm 15mm 12mm;
+            margin: 10mm 10mm 10mm 10mm;
           }
           * {
             box-sizing: border-box;
@@ -1172,142 +1342,200 @@ document.addEventListener('DOMContentLoaded', () => {
           body {
             background: #fff;
             color: #0f172a;
-            font-size: 13px;
-            line-height: 1.3;
+            font-size: 11.5px;
+            line-height: 1.25;
             margin: 0;
             padding: 0;
           }
-          .header {
-            text-align: center;
-            border-bottom: 2px solid #ea580c;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+          .pdf-page {
+            page-break-after: always;
+            padding: 0;
           }
-          .title {
-            font-family: 'Prompt', sans-serif;
-            font-size: 18px;
+          .pdf-page:last-child {
+            page-break-after: avoid;
+          }
+
+          /* 🌟 EXACT MATCH PDF HEADER */
+          .pdf-header-card {
+            background: #fff3e0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border-left: 6px solid #ea580c;
+          }
+          .pdf-badge-tag {
+            display: inline-block;
+            background: #ea580c;
+            color: #fff;
+            font-size: 11px;
             font-weight: 700;
-            color: #c2410c;
-            margin: 0 0 4px 0;
-          }
-          .subtitle {
-            font-size: 13px;
-            color: #475569;
-            margin: 0 0 4px 0;
-          }
-          .meta-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11.5px;
-            color: #64748b;
-            margin-top: 6px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-          }
-          th {
-            background: #fff7ed;
-            color: #9a3412;
-            border: 1px solid #fed7aa;
-            padding: 6px 4px;
-            font-size: 12px;
-            font-weight: 700;
-            text-align: center;
-          }
-          td {
-            border: 1px solid #e2e8f0;
-            padding: 5.5px 4px;
-            font-size: 12px;
-            vertical-align: middle;
-          }
-          tr:nth-child(even) td {
-            background-color: #fafafa;
-          }
-          .footer {
-            margin-top: 24px;
-            display: flex;
-            justify-content: space-between;
-            page-break-inside: avoid;
-          }
-          .sign-box {
-            text-align: center;
-            width: 200px;
-          }
-          .sign-line {
-            margin-top: 36px;
-            border-bottom: 1px dotted #94a3b8;
+            padding: 2px 10px;
+            border-radius: 6px;
             margin-bottom: 6px;
           }
+          .pdf-main-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #c2410c;
+            margin: 0 0 2px 0;
+          }
+          .pdf-sub-title {
+            font-size: 12px;
+            color: #78716c;
+          }
+
+          /* 🌟 STAT KPI 4 BOXES */
+          .pdf-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+          }
+          .pdf-stat-box {
+            background: #fff;
+            border: 1.5px solid #fed7aa;
+            border-radius: 10px;
+            padding: 14px 10px;
+            text-align: center;
+          }
+          .pdf-stat-num {
+            font-family: 'Prompt', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #ea580c;
+            line-height: 1;
+            margin-bottom: 4px;
+          }
+          .pdf-stat-lbl {
+            font-size: 11px;
+            color: #57534e;
+            font-weight: 600;
+          }
+
+          /* 🌟 SUMMARY TABLE */
+          .pdf-section-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #292524;
+            margin-bottom: 8px;
+          }
+          .pdf-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          .pdf-summary-table th {
+            background: #ea580c;
+            color: #ffffff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 8px;
+            border: 1px solid #c2410c;
+          }
+          .pdf-summary-table td {
+            border: 1px solid #e7e5e4;
+            padding: 5px 8px;
+            font-size: 11px;
+          }
+          .pdf-summary-table tbody tr:nth-child(even) {
+            background: #fafaf9;
+          }
+          .pdf-summary-total-row td {
+            background: #ffedd5 !important;
+            border-top: 2px solid #ea580c;
+          }
+
+          /* 🌟 GRADE ROSTER TABLE */
+          .pdf-grade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff3e0;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #ea580c;
+          }
+          .pdf-grade-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: #c2410c;
+            margin: 0;
+          }
+          .pdf-grade-sub {
+            font-size: 10.5px;
+            color: #78716c;
+            margin-top: 1px;
+          }
+          .pdf-grade-badge {
+            background: #ea580c;
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 6px;
+          }
+          .pdf-roster-table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          .pdf-roster-table th {
+            background: #ea580c;
+            color: #ffffff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 4.5px 4px;
+            border: 1px solid #c2410c;
+            text-align: center;
+          }
+          .pdf-roster-table td {
+            border: 1px solid #e7e5e4;
+            padding: 3.5px 4px;
+            font-size: 10px;
+            vertical-align: middle;
+          }
+          .pdf-roster-table tbody tr:nth-child(even) {
+            background: #fafaf9;
+          }
+          .center { text-align: center; }
+          .left { text-align: left; }
+          .font-bold { font-weight: 700; }
+          .text-orange { color: #c2410c; }
+          .font-mono { font-family: monospace; font-size: 10.5px; }
+
           @media print {
             .no-print { display: none !important; }
-            th { background-color: #ffedd5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            th { background-color: #ea580c !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .pdf-header-card { background-color: #fff3e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .pdf-grade-header { background-color: #fff3e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .pdf-stat-box { background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           }
         </style>
       </head>
       <body>
-        <div class="no-print" style="background: #ea580c; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-radius: 8px;">
+        <div class="no-print" style="background: #ea580c; color: white; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-radius: 8px;">
           <div>
-            <strong>📄 เอกสารพร้อมพิมพ์ / บันทึก PDF</strong> (${studentsToPrint.length} รายการ)
+            <strong>📄 เอกสาร PDF ทางการ คณะสีแสด 2569 (ฉบับสมบูรณ์ 100%)</strong>
           </div>
           <div>
-            <button onclick="window.print()" style="background: white; color: #ea580c; font-weight: bold; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 14px;">
-              🖨️ พิมพ์เอกสาร / Save PDF
+            <button onclick="window.print()" style="background: white; color: #ea580c; font-weight: bold; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
+              🖨️ พิมพ์เอกสาร / บันทึกเป็น PDF
             </button>
           </div>
         </div>
 
-        <div class="header">
-          <h1 class="title">${title}</h1>
-          <div class="subtitle">${subtitle}</div>
-          <div class="meta-bar">
-            <span>จำนวนผู้มีรายชื่อ: <strong>${studentsToPrint.length}</strong> คน</span>
-            <span>ข้อมูล ณ วันที่: ${nowTh} น.</span>
-            <span>โรงเรียนสรรพวิทยาคม อ.แม่สอด จ.ตาก</span>
-          </div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>ลำดับ</th>
-              <th>รหัสนักเรียน</th>
-              <th>ชั้น/ห้อง</th>
-              <th>เลขที่</th>
-              <th>ชื่อ - นามสกุล</th>
-              <th>เพศ</th>
-              <th>หน้าที่ที่ได้รับมอบหมาย</th>
-              <th>เบอร์โทรศัพท์</th>
-              <th>ลายมือชื่อ</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml || '<tr><td colspan="9" style="text-align:center; padding:20px;">ไม่มีข้อมูล</td></tr>'}
-          </tbody>
-        </table>
-
-        <div class="footer">
-          <div class="sign-box">
-            <div>ผู้จัดทำเอกสาร / ตัวแทนฝ่าย</div>
-            <div class="sign-line"></div>
-            <div>(......................................................)</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">กรรมการสตาฟ คณะสีแสด 69</div>
-          </div>
-          <div class="sign-box">
-            <div>ผู้ตรวจรับรอง / ครูที่ปรึกษา</div>
-            <div class="sign-line"></div>
-            <div>(......................................................)</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">ครูที่ปรึกษา คณะสีแสด</div>
-          </div>
-        </div>
+        ${pagesHtml}
 
         <script>
           window.onload = function() {
-            // Auto open print dialog
             setTimeout(function() {
               window.print();
-            }, 500);
+            }, 600);
           };
         </script>
       </body>
