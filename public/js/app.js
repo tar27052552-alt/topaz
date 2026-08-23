@@ -359,15 +359,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
 
-          result = {
-            success: true,
-            data: student,
-            eligibleDepartments: eligibleDepartments,
-            existingRegistrations: studentRegs
-          };
+            result = {
+              success: true,
+              data: student,
+              eligibleDepartments: eligibleDepartments,
+              existingRegistrations: studentRegs
+            };
+          }
+        } catch (err) {
+          console.warn('Live Google Sheet fetch failed, trying local fallback...', err);
         }
-      } catch (err) {
-        console.warn('Live Google Sheet fetch failed, trying local fallback...', err);
       }
 
       // 2. 🛡️ Secondary Fallback: Try local node API or static master JSON
