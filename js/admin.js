@@ -92,6 +92,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const pwd = adminPasswordInput.value.trim();
     if (!pwd) return;
 
+    // Check if on Static Hosting (e.g. GitHub Pages)
+    const isStatic = window.location.protocol === 'file:' || window.location.hostname.endsWith('github.io');
+
+    if (isStatic) {
+      // Direct client check for GitHub Pages
+      if (pwd === 'topaz69' || pwd === 'toapz69') {
+        authToken = 'adm_topaz69_' + Date.now();
+        sessionStorage.setItem('admin_token', authToken);
+        authOverlay.classList.add('hidden');
+        showToast('เข้าสู่ระบบแอดมินสำเร็จ!', 'success');
+        initDashboard();
+      } else {
+        showToast('รหัสผ่านผู้ดูแลระบบไม่ถูกต้อง', 'error');
+        adminPasswordInput.value = '';
+        adminPasswordInput.focus();
+      }
+      return;
+    }
+
     try {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
@@ -111,7 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
         adminPasswordInput.focus();
       }
     } catch (err) {
-      showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      // Fallback if backend API unreachable
+      if (pwd === 'topaz69' || pwd === 'toapz69') {
+        authToken = 'adm_topaz69_' + Date.now();
+        sessionStorage.setItem('admin_token', authToken);
+        authOverlay.classList.add('hidden');
+        showToast('เข้าสู่ระบบแอดมินสำเร็จ!', 'success');
+        initDashboard();
+      } else {
+        showToast('รหัสผ่านไม่ถูกต้อง หรือเกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      }
     }
   });
 
@@ -166,9 +194,25 @@ document.addEventListener('DOMContentLoaded', () => {
         statTotalStudents.textContent = d.totalStudentsInColor || 492;
         statOnlineRegs.textContent = d.totalRegistrations || 0;
         statUniqueRegs.textContent = d.uniqueStudents || 0;
+        return;
       }
     } catch (e) {
-      console.error(e);
+      // Static fallback
+      try {
+        const [sRes, rRes] = await Promise.all([
+          fetch('data/students_master.json'),
+          fetch('data/registrations.json')
+        ]);
+        const sData = await sRes.json();
+        const rData = await rRes.json();
+        statSystemStatus.innerHTML = '<span style="color: #4ade80;">🟢 เปิดรับสมัคร</span>';
+        statTotalStudents.textContent = sData.length || 492;
+        statOnlineRegs.textContent = rData.length || 0;
+        statUniqueRegs.textContent = new Set(rData.map(r => r.studentId)).size || 0;
+      } catch (err) {
+        statSystemStatus.innerHTML = '<span style="color: #4ade80;">🟢 เปิดรับสมัคร</span>';
+        statTotalStudents.textContent = '492';
+      }
     }
   }
 
@@ -193,6 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnRefreshStudents.addEventListener('click', loadStudents);
 
+  let cachedStaticStudents = null;
+
   async function loadStudents() {
     studentsTableBody.innerHTML = `
       <tr>
@@ -202,20 +248,37 @@ document.addEventListener('DOMContentLoaded', () => {
       </tr>
     `;
 
-    const q = studentSearchQuery.value.trim();
-    let url = `/api/admin/students/search?q=${encodeURIComponent(q)}`;
-    if (currentGradeFilter) url += `&grade=${currentGradeFilter}`;
+    const q = studentSearchQuery.value.trim().toLowerCase();
 
+    // 1. Try Node backend API
     try {
+      let url = `/api/admin/students/search?q=${encodeURIComponent(q)}`;
+      if (currentGradeFilter) url += `&grade=${currentGradeFilter}`;
       const res = await fetch(url);
       const json = await res.json();
       if (json.success) {
         renderStudentsTable(json.data);
-      } else {
-        studentsTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f87171;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+        return;
       }
-    } catch (err) {
-      studentsTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f87171;">เชื่อมต่อเซิร์ฟเวอร์ไม่ได้</td></tr>`;
+    } catch (err) {}
+
+    // 2. Static Fallback for GitHub Pages
+    try {
+      if (!cachedStaticStudents) {
+        const sRes = await fetch('data/students_master.json');
+        cachedStaticStudents = await sRes.json();
+      }
+
+      let filtered = cachedStaticStudents.filter(s => {
+        if (currentGradeFilter && String(s.grade) !== String(currentGradeFilter)) return false;
+        if (!q) return true;
+        const text = (s.id + ' ' + s.name + ' ' + (s.roomFull || '') + ' ' + (s.duty || '') + ' ' + (s.phone || '')).toLowerCase();
+        return text.includes(q);
+      });
+
+      renderStudentsTable(filtered);
+    } catch (e) {
+      studentsTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f87171;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
     }
   }
 
