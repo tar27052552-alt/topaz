@@ -1334,45 +1334,48 @@ document.addEventListener('DOMContentLoaded', () => {
         <style>
           @page {
             size: A4 portrait;
-            margin: 8mm 8mm 8mm 8mm;
+            margin: 10mm;
           }
           * {
             box-sizing: border-box;
             font-family: 'Sarabun', sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
-          body {
-            background: #f1f5f9;
+          html, body {
+            background-color: #ffffff;
             color: #0f172a;
             font-size: 11px;
-            line-height: 1.25;
+            line-height: 1.3;
             margin: 0;
-            padding: 20px 0;
+            padding: 0;
           }
           .pdf-page {
-            background: #ffffff;
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto 20px auto;
-            padding: 12mm 12mm 15mm 12mm;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto 30px auto;
+            padding: 10px;
             page-break-after: always;
+            break-after: page;
           }
           .pdf-page:last-child {
             page-break-after: avoid;
+            break-after: avoid;
           }
 
           /* 🌟 EXACT MATCH PDF HEADER */
           .pdf-header-card {
-            background: #fff3e0;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
+            background-color: #fff3e0 !important;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
             border-left: 6px solid #ea580c;
           }
           .pdf-badge-tag {
             display: inline-block;
-            background: #ea580c;
-            color: #fff;
+            background-color: #ea580c !important;
+            color: #ffffff !important;
             font-size: 11px;
             font-weight: 700;
             padding: 2px 10px;
@@ -1395,14 +1398,14 @@ document.addEventListener('DOMContentLoaded', () => {
           .pdf-stat-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
           }
           .pdf-stat-box {
-            background: #fff;
+            background-color: #ffffff !important;
             border: 1.5px solid #fed7aa;
             border-radius: 10px;
-            padding: 14px 10px;
+            padding: 12px 8px;
             text-align: center;
           }
           .pdf-stat-num {
@@ -1432,24 +1435,25 @@ document.addEventListener('DOMContentLoaded', () => {
             border-collapse: collapse;
           }
           .pdf-summary-table th {
-            background: #ea580c;
-            color: #ffffff;
+            background-color: #ea580c !important;
+            color: #ffffff !important;
             font-family: 'Prompt', sans-serif;
             font-size: 11px;
             font-weight: 700;
             padding: 6px 8px;
             border: 1px solid #c2410c;
+            text-align: center;
           }
           .pdf-summary-table td {
             border: 1px solid #e7e5e4;
             padding: 5px 8px;
             font-size: 11px;
           }
-          .pdf-summary-table tbody tr:nth-child(even) {
-            background: #fafaf9;
+          .pdf-summary-table tbody tr:nth-child(even) td {
+            background-color: #fafaf9 !important;
           }
           .pdf-summary-total-row td {
-            background: #ffedd5 !important;
+            background-color: #ffedd5 !important;
             border-top: 2px solid #ea580c;
           }
 
@@ -1458,7 +1462,7 @@ document.addEventListener('DOMContentLoaded', () => {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #fff3e0;
+            background-color: #fff3e0 !important;
             padding: 8px 14px;
             border-radius: 8px;
             margin-bottom: 8px;
@@ -1472,13 +1476,13 @@ document.addEventListener('DOMContentLoaded', () => {
             margin: 0;
           }
           .pdf-grade-sub {
-            font-size: 10.5px;
+            font-size: 11px;
             color: #78716c;
             margin-top: 1px;
           }
           .pdf-grade-badge {
-            background: #ea580c;
-            color: #fff;
+            background-color: #ea580c !important;
+            color: #ffffff !important;
             font-family: 'Prompt', sans-serif;
             font-weight: 800;
             font-size: 14px;
@@ -1490,10 +1494,10 @@ document.addEventListener('DOMContentLoaded', () => {
             border-collapse: collapse;
           }
           .pdf-roster-table th {
-            background: #ea580c;
-            color: #ffffff;
+            background-color: #ea580c !important;
+            color: #ffffff !important;
             font-family: 'Prompt', sans-serif;
-            font-size: 10.5px;
+            font-size: 11px;
             font-weight: 700;
             padding: 5px 4px;
             border: 1px solid #c2410c;
@@ -1505,8 +1509,8 @@ document.addEventListener('DOMContentLoaded', () => {
             font-size: 10.5px;
             vertical-align: middle;
           }
-          .pdf-roster-table tbody tr:nth-child(even) {
-            background: #fafaf9;
+          .pdf-roster-table tbody tr:nth-child(even) td {
+            background-color: #fafaf9 !important;
           }
           .center { text-align: center; }
           .left { text-align: left; }
@@ -1515,30 +1519,27 @@ document.addEventListener('DOMContentLoaded', () => {
           .font-mono { font-family: monospace; font-size: 10.5px; }
 
           @media print {
-            body { background: transparent; padding: 0; }
             .no-print { display: none !important; }
-            .pdf-page { box-shadow: none; margin: 0; padding: 0; width: 100%; min-height: auto; }
-            th { background-color: #ea580c !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .pdf-header-card { background-color: #fff3e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .pdf-grade-header { background-color: #fff3e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .pdf-stat-box { background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .pdf-page { margin: 0; padding: 0; width: 100%; box-shadow: none; }
           }
         </style>
       </head>
       <body>
-        <div class="no-print" style="position: sticky; top: 10px; z-index: 9999; max-width: 210mm; margin: 0 auto 15px auto; background: #0f172a; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+        <div class="no-print" style="position: sticky; top: 0; z-index: 9999; width: 100%; background: #0f172a; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
           <div>
             <strong style="font-size: 15px; color: #f97316;">📄 ${title}</strong>
-            <div style="font-size: 12px; color: #94a3b8;">กดปุ่มสีส้มด้านขวา ➜ เลือกปลายทางเป็น "บันทึกเป็น PDF (Save as PDF)"</div>
+            <div style="font-size: 12px; color: #cbd5e1;">คลิกปุ่มสีส้มขวาบน ➜ เลือกเครื่องพิมพ์เป็น "Save as PDF (บันทึกเป็น PDF)" ➜ กดบันทึก</div>
           </div>
           <div>
-            <button onclick="window.print()" style="background: #ea580c; color: white; font-weight: 700; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);">
+            <button onclick="window.print()" style="background: #ea580c; color: white; font-weight: 700; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);">
               <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็นไฟล์ PDF
             </button>
           </div>
         </div>
 
-        ${pagesHtml}
+        <div style="padding: 0 10px;">
+          ${pagesHtml}
+        </div>
       </body>
       </html>
     `;
