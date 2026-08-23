@@ -10,16 +10,17 @@
  */
 
 const FIREBASE_CONFIG = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBEJrULPmcGyBH1T0H9j4yiiz94VDpS_7k",
+  authDomain: "toapz-c6acf.firebaseapp.com",
+  projectId: "toapz-c6acf",
+  storageBucket: "toapz-c6acf.firebasestorage.app",
+  messagingSenderId: "67963668623",
+  appId: "1:67963668623:web:5f43320f98f19b8e8548fa",
+  measurementId: "G-FZ7Q544FS6"
 };
 
 // 📌 วาง URL ของ Google Apps Script Webhook ที่นี่ (เพื่อยิงข้อมูลลง Google Sheet อัตโนมัติ)
-const GOOGLE_SHEET_WEBHOOK_URL = localStorage.getItem('orange_sheet_webhook') || "";
+const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzi_YwN3XQsnbpcS00riDjayVWFhmx_oV1RQ_8eXX66p2sroQ9DLg3K7TcA0Z5toq28eQ/exec";
 
 // ตรวจสอบว่าใส่ Firebase Config แล้วหรือยัง
 const IS_FIREBASE_CONFIGURED = FIREBASE_CONFIG.apiKey !== "YOUR_FIREBASE_API_KEY" && FIREBASE_CONFIG.projectId !== "YOUR_PROJECT_ID";

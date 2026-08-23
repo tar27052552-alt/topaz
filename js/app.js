@@ -7,6 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzi_YwN3XQsnbpcS00riDjayVWFhmx_oV1RQ_8eXX66p2sroQ9DLg3K7TcA0Z5toq28eQ/exec";
   const isStaticHosting = window.location.protocol === 'file:' || window.location.hostname.endsWith('github.io') || window.location.hostname === 'localhost' && window.location.port !== '3000';
 
+  // Initialize Firebase Firestore if configured
+  let db = null;
+  if (typeof firebase !== 'undefined' && window.ORANGE_CONFIG && window.ORANGE_CONFIG.isFirebaseConfigured) {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(window.ORANGE_CONFIG.firebaseConfig);
+      }
+      db = firebase.firestore();
+      console.log('⚡ Firebase Cloud Firestore Initialized Successfully!');
+    } catch (e) {
+      console.warn('Firebase init error:', e);
+    }
+  }
+
   // App State
   const state = {
     currentStep: 1,
@@ -185,64 +199,140 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       let result = null;
 
-      // 1. 🌟 Primary: Fetch LIVE directly from Google Sheets Webhook
-      try {
-        const sheetRes = await fetch(`${WEBHOOK_URL}?studentId=${encodeURIComponent(id)}`);
-        const sheetData = await sheetRes.json();
-        
-        if (sheetData && sheetData.status === 'success' && sheetData.data) {
-          const d = sheetData.data;
-          const gradeNum = parseInt(String(d.gradeName || d.roomFull || '1').replace(/[^\d]/g, '')) || 1;
-          
-          let student = {
-            id: d.id || id,
-            name: d.name || '',
-            grade: gradeNum,
-            room: parseInt(String(d.roomNo || '1')) || 1,
-            roomFull: d.roomFull || `ม.${gradeNum}/${d.roomNo || 1}`,
-            classNo: d.classNo || '-',
-            gender: d.gender || 'ชาย',
-            duty: d.duty || '',
-            phone: d.phone || '',
-            level: gradeNum >= 4 ? 'senior' : 'junior'
-          };
+      // 0. ⚡ Ultra-Fast: Query directly from Firebase Firestore (0.05s)
+      if (db) {
+        try {
+          const docSnap = await db.collection('students').doc(id).get();
+          if (docSnap.exists) {
+            const student = docSnap.data();
+            
+            if (!state.cachedDepartments) {
+              const dRes = await fetch('data/departments_config.json');
+              state.cachedDepartments = await dRes.json();
+            }
 
-          if (!state.cachedDepartments) {
-            const dRes = await fetch('data/departments_config.json');
-            state.cachedDepartments = await dRes.json();
-          }
+            const studentRegs = [];
+            const officialDuties = (student.duty && student.duty.trim() !== '' && student.duty !== '-')
+              ? student.duty.split(',').map(s => s.trim()).filter(Boolean)
+              : (student.grade === 1 ? ['สแตนเชียร์'] : []);
 
-          // Build existing registrations from Sheet duty
-          const studentRegs = [];
-          const officialDuties = (student.duty && student.duty.trim() !== '' && student.duty !== '-')
-            ? student.duty.split(',').map(s => s.trim()).filter(Boolean)
-            : (student.grade === 1 ? ['สแตนเชียร์'] : []);
+            officialDuties.forEach(dutyItem => {
+              let deptName = 'ฝ่ายกิจกรรม';
+              let deptId = 'general';
+              if (dutyItem.includes('สแตน')) { deptName = 'ฝ่ายสแตนเชียร์'; deptId = 'stand_cheer'; }
+              else if (dutyItem.includes('หลีด') || dutyItem.includes('ลีด') || dutyItem.includes('cheer')) { deptName = 'ฝ่ายเชียร์ลีดเดอร์'; deptId = 'cheerleader'; }
+              else if (dutyItem.includes('พร็อพ') || dutyItem.includes('ขบวน') || dutyItem.includes('พาเหรด')) { deptName = 'ฝ่ายพร็อพ & ขบวนพาเหรด'; deptId = 'parade_props'; }
+              else if (dutyItem.includes('ดรัม') || dutyItem.includes('คัลเลอร์')) { deptName = 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด'; deptId = 'drum_major'; }
+              else if (dutyItem.includes('สวัสดิ')) { deptName = 'ฝ่ายสวัสดิการ'; deptId = 'welfare'; }
+              else if (dutyItem.includes('สตาฟ') || dutyItem.includes('ประธาน') || dutyItem.includes('เหรัญญิก') || dutyItem.includes('หัวหน้า')) { deptName = 'ฝ่ายสตาฟคณะสี (ม.5)'; deptId = 'staff'; }
+              else if (dutyItem.includes('กีฬา') || dutyItem.includes('บอล') || dutyItem.includes('วอลเลย์') || dutyItem.includes('บาส') || dutyItem.includes('กรีฑา') || dutyItem.includes('ตะกร้อ') || dutyItem.includes('เปตอง') || dutyItem.includes('16 ขา')) { deptName = 'ฝ่ายกีฬา'; deptId = 'sports'; }
 
-          officialDuties.forEach(dutyItem => {
-            let deptName = 'ฝ่ายกิจกรรม';
-            let deptId = 'general';
-            if (dutyItem.includes('สแตน')) { deptName = 'ฝ่ายสแตนเชียร์'; deptId = 'stand_cheer'; }
-            else if (dutyItem.includes('หลีด') || dutyItem.includes('ลีด') || dutyItem.includes('cheer')) { deptName = 'ฝ่ายเชียร์ลีดเดอร์'; deptId = 'cheerleader'; }
-            else if (dutyItem.includes('พร็อพ') || dutyItem.includes('ขบวน') || dutyItem.includes('พาเหรด')) { deptName = 'ฝ่ายพร็อพ & ขบวนพาเหรด'; deptId = 'parade_props'; }
-            else if (dutyItem.includes('ดรัม') || dutyItem.includes('คัลเลอร์')) { deptName = 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด'; deptId = 'drum_major'; }
-            else if (dutyItem.includes('สวัสดิ')) { deptName = 'ฝ่ายสวัสดิการ'; deptId = 'welfare'; }
-            else if (dutyItem.includes('สตาฟ') || dutyItem.includes('ประธาน') || dutyItem.includes('เหรัญญิก') || dutyItem.includes('หัวหน้า')) { deptName = 'ฝ่ายสตาฟคณะสี (ม.5)'; deptId = 'staff'; }
-            else if (dutyItem.includes('กีฬา') || dutyItem.includes('บอล') || dutyItem.includes('วอลเลย์') || dutyItem.includes('บาส') || dutyItem.includes('กรีฑา') || dutyItem.includes('ตะกร้อ') || dutyItem.includes('เปตอง') || dutyItem.includes('16 ขา')) { deptName = 'ฝ่ายกีฬา'; deptId = 'sports'; }
-
-            studentRegs.push({
-              id: `sheet_${student.id}_${deptId}_${dutyItem}`,
-              studentId: student.id,
-              name: student.name,
-              grade: student.grade,
-              roomFull: student.roomFull,
-              departmentId: deptId,
-              departmentName: deptName,
-              categoryTitle: dutyItem.includes('สแตน') ? 'สแตนเชียร์ (กองเชียร์บนอัฒจันทร์)' : dutyItem,
-              roleName: dutyItem,
-              phone: student.phone || '',
-              createdAt: new Date().toISOString()
+              studentRegs.push({
+                id: `firestore_${student.id}_${deptId}_${dutyItem}`,
+                studentId: student.id,
+                name: student.name,
+                grade: student.grade,
+                roomFull: student.roomFull,
+                departmentId: deptId,
+                departmentName: deptName,
+                categoryTitle: dutyItem.includes('สแตน') ? 'สแตนเชียร์ (กองเชียร์บนอัฒจันทร์)' : dutyItem,
+                roleName: dutyItem,
+                phone: student.phone || '',
+                createdAt: new Date().toISOString()
+              });
             });
-          });
+
+            const eligibleDepartments = (state.cachedDepartments || []).filter(dept => {
+              if (dept.allowedGrades && !dept.allowedGrades.includes(student.grade)) return false;
+              if (dept.allowedGenders && !dept.allowedGenders.includes(student.gender)) return false;
+              return true;
+            }).map(dept => {
+              if (dept.type === 'sports' && dept.items) {
+                const filteredItems = dept.items.map(sport => {
+                  const matchingCategories = sport.categories.filter(cat => {
+                    const gradeMatch = cat.grades.includes(student.grade);
+                    const genderMatch = cat.gender === 'ทั้งหมด' || cat.gender === student.gender;
+                    return gradeMatch && genderMatch;
+                  }).map(cat => ({ ...cat, currentCount: 0, isFull: false, availableSeats: 9999 }));
+                  return { ...sport, categories: matchingCategories };
+                }).filter(sport => sport.categories.length > 0);
+                return { ...dept, items: filteredItems };
+              } else {
+                return { ...dept, currentCount: 0, isFull: false, availableSeats: 9999 };
+              }
+            });
+
+            result = {
+              success: true,
+              data: student,
+              eligibleDepartments: eligibleDepartments,
+              existingRegistrations: studentRegs
+            };
+          }
+        } catch (fErr) {
+          console.warn('Firestore fetch error, fallback to Sheet Webhook...', fErr);
+        }
+      }
+
+      // 1. 🌟 Primary Webhook: Fetch LIVE directly from Google Sheets Webhook
+      if (!result || !result.success) {
+        try {
+          const sheetRes = await fetch(`${WEBHOOK_URL}?studentId=${encodeURIComponent(id)}`);
+          const sheetData = await sheetRes.json();
+          
+          if (sheetData && sheetData.status === 'success' && sheetData.data) {
+            const d = sheetData.data;
+            const gradeNum = parseInt(String(d.gradeName || d.roomFull || '1').replace(/[^\d]/g, '')) || 1;
+            
+            let student = {
+              id: d.id || id,
+              name: d.name || '',
+              grade: gradeNum,
+              room: parseInt(String(d.roomNo || '1')) || 1,
+              roomFull: d.roomFull || `ม.${gradeNum}/${d.roomNo || 1}`,
+              classNo: d.classNo || '-',
+              gender: d.gender || 'ชาย',
+              duty: d.duty || '',
+              phone: d.phone || '',
+              level: gradeNum >= 4 ? 'senior' : 'junior'
+            };
+
+            if (!state.cachedDepartments) {
+              const dRes = await fetch('data/departments_config.json');
+              state.cachedDepartments = await dRes.json();
+            }
+
+            // Build existing registrations from Sheet duty
+            const studentRegs = [];
+            const officialDuties = (student.duty && student.duty.trim() !== '' && student.duty !== '-')
+              ? student.duty.split(',').map(s => s.trim()).filter(Boolean)
+              : (student.grade === 1 ? ['สแตนเชียร์'] : []);
+
+            officialDuties.forEach(dutyItem => {
+              let deptName = 'ฝ่ายกิจกรรม';
+              let deptId = 'general';
+              if (dutyItem.includes('สแตน')) { deptName = 'ฝ่ายสแตนเชียร์'; deptId = 'stand_cheer'; }
+              else if (dutyItem.includes('หลีด') || dutyItem.includes('ลีด') || dutyItem.includes('cheer')) { deptName = 'ฝ่ายเชียร์ลีดเดอร์'; deptId = 'cheerleader'; }
+              else if (dutyItem.includes('พร็อพ') || dutyItem.includes('ขบวน') || dutyItem.includes('พาเหรด')) { deptName = 'ฝ่ายพร็อพ & ขบวนพาเหรด'; deptId = 'parade_props'; }
+              else if (dutyItem.includes('ดรัม') || dutyItem.includes('คัลเลอร์')) { deptName = 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด'; deptId = 'drum_major'; }
+              else if (dutyItem.includes('สวัสดิ')) { deptName = 'ฝ่ายสวัสดิการ'; deptId = 'welfare'; }
+              else if (dutyItem.includes('สตาฟ') || dutyItem.includes('ประธาน') || dutyItem.includes('เหรัญญิก') || dutyItem.includes('หัวหน้า')) { deptName = 'ฝ่ายสตาฟคณะสี (ม.5)'; deptId = 'staff'; }
+              else if (dutyItem.includes('กีฬา') || dutyItem.includes('บอล') || dutyItem.includes('วอลเลย์') || dutyItem.includes('บาส') || dutyItem.includes('กรีฑา') || dutyItem.includes('ตะกร้อ') || dutyItem.includes('เปตอง') || dutyItem.includes('16 ขา')) { deptName = 'ฝ่ายกีฬา'; deptId = 'sports'; }
+
+              studentRegs.push({
+                id: `sheet_${student.id}_${deptId}_${dutyItem}`,
+                studentId: student.id,
+                name: student.name,
+                grade: student.grade,
+                roomFull: student.roomFull,
+                departmentId: deptId,
+                departmentName: deptName,
+                categoryTitle: dutyItem.includes('สแตน') ? 'สแตนเชียร์ (กองเชียร์บนอัฒจันทร์)' : dutyItem,
+                roleName: dutyItem,
+                phone: student.phone || '',
+                createdAt: new Date().toISOString()
+              });
+            });
 
           // Eligible departments calculation
           const eligibleDepartments = (state.cachedDepartments || []).filter(dept => {
@@ -1234,13 +1324,40 @@ document.addEventListener('DOMContentLoaded', () => {
           overwrite: false
         };
 
-        const res = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(webhookPayload),
-          redirect: 'follow'
-        });
-        const gData = await res.json();
+        // Save to Firestore in real-time if db is connected
+        if (db) {
+          try {
+            await db.collection('students').doc(state.student.id).set({
+              duty: activityTitle,
+              phone: state.phone
+            }, { merge: true });
+
+            await db.collection('registrations').add({
+              studentId: state.student.id,
+              studentName: state.student.name,
+              roomFull: state.student.roomFull,
+              grade: state.student.grade,
+              departmentName: state.selectedDepartment.name,
+              departmentId: state.selectedDepartment.id,
+              roleName: activityTitle,
+              categoryTitle: activityTitle,
+              phone: state.phone,
+              createdAt: new Date().toISOString()
+            });
+          } catch (dbErr) {
+            console.warn('Firestore write warning:', dbErr);
+          }
+        }
+
+        // Sync to Google Sheet Webhook
+        try {
+          fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(webhookPayload),
+            redirect: 'follow'
+          });
+        } catch (sErr) {}
 
         result = {
           success: true,

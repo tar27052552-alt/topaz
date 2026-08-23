@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>🔥 Firestore Auto-Uploader</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 40px; background: #0f172a; color: white; text-align: center; }
+    .card { background: #1e293b; padding: 30px; border-radius: 16px; max-width: 600px; margin: auto; }
+    button { background: #ea580c; color: white; border: none; padding: 14px 28px; font-size: 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    #status { margin-top: 20px; font-size: 16px; color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🔥 อัปโหลดข้อมูลนักเรียน 492 คนขึ้น Firebase Firestore</h2>
+    <p>กดปุ่มด้านล่างเพื่อนำเข้าข้อมูลขึ้น Cloud ทันที</p>
+    <button id="btnStart" onclick="startUpload()">🚀 เริ่มต้นอัปโหลดข้อมูล</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    firebase.initializeApp(window.ORANGE_CONFIG.firebaseConfig);
+    const db = firebase.firestore();
+
+    async function startUpload() {
+      const btn = document.getElementById('btnStart');
+      const status = document.getElementById('status');
+      btn.disabled = true;
+      status.innerText = "กำลังโหลดข้อมูลนักเรียนจาก students_master.json...";
+
+      try {
+        const res = await fetch('data/students_master.json');
+        const students = await res.json();
+        status.innerText = `พบข้อมูลนักเรียน ${students.length} คน กำลังอัปโหลด...`;
+
+        let count = 0;
+        // Firestore batch allows up to 500 operations
+        const batch = db.batch();
+        for (const s of students) {
+          const docRef = db.collection('students').doc(String(s.id));
+          batch.set(docRef, {
+            id: String(s.id),
+            name: s.name || '',
+            grade: s.grade || 1,
+            room: s.room || 1,
+            roomFull: s.roomFull || `ม.${s.grade}/${s.room}`,
+            classNo: s.classNo || '-',
+            gender: s.gender || 'ชาย',
+            level: s.level || (s.grade >= 4 ? 'senior' : 'junior'),
+            duty: s.duty || '',
+            phone: s.phone || ''
+          });
+          count++;
+        }
+
+        await batch.commit();
+        status.innerHTML = `<b style="color: #4ade80;">🎉 สำเร็จเรียบร้อยแล้ว! นำเข้านักเรียนครบทั้ง ${count} คนขึ้น Firebase Firestore!</b>`;
+      } catch (err) {
+        status.innerHTML = `<b style="color: #f87171;">❌ เกิดข้อผิดพลาด: ${err.message}</b>`;
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
