@@ -1518,25 +1518,40 @@ document.addEventListener('DOMContentLoaded', () => {
         </style>
       </head>
       <body>
-        <div class="no-print" style="background: #ea580c; color: white; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-radius: 8px;">
+        <div class="no-print" style="background: #ea580c; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);">
           <div>
-            <strong>📄 เอกสาร PDF ทางการ คณะสีแสด 2569 (ฉบับสมบูรณ์ 100%)</strong>
+            <strong style="font-size: 15px;">📄 เอกสาร PDF ทางการ คณะสีแสด 2569</strong>
+            <div style="font-size: 12px; opacity: 0.9;">บันทึกเป็นไฟล์ .pdf ลงเครื่องคอมพิวเตอร์ / โทรศัพท์มือถือได้ทันที</div>
           </div>
-          <div>
-            <button onclick="window.print()" style="background: white; color: #ea580c; font-weight: bold; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
-              🖨️ พิมพ์เอกสาร / บันทึกเป็น PDF
+          <div style="display: flex; gap: 10px;">
+            <button onclick="downloadDirectPDF()" style="background: #ffffff; color: #ea580c; font-weight: 800; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+              <i class="fa-solid fa-file-arrow-down"></i> บันทึกไฟล์ PDF ลงเครื่อง
+            </button>
+            <button onclick="window.print()" style="background: rgba(255,255,255,0.2); color: white; font-weight: 600; border: 1px solid rgba(255,255,255,0.4); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 14px;">
+              <i class="fa-solid fa-print"></i> พิมพ์
             </button>
           </div>
         </div>
 
-        ${pagesHtml}
+        <div id="pdfContentToSave">
+          ${pagesHtml}
+        </div>
 
+        <!-- html2pdf bundle for direct download -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         <script>
-          window.onload = function() {
-            setTimeout(function() {
-              window.print();
-            }, 600);
-          };
+          function downloadDirectPDF() {
+            var element = document.getElementById('pdfContentToSave');
+            var opt = {
+              margin:       [8, 8, 8, 8],
+              filename:     '${title.replace(/[\/\\?%*:|"<>]/g, '_')}_2569.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2, useCORS: true, logging: false },
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+              pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save();
+          }
         </script>
       </body>
       </html>

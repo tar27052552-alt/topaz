@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <!-- html2pdf.js for Direct 1-Click PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body.admin-body {
       background-color: #f8fafc;
@@ -863,7 +865,7 @@
               </p>
             </div>
             <button type="button" class="btn btn-orange w-full btn-generate-pdf" data-type="master">
-              <i class="fa-solid fa-print"></i> พิมพ์ / ดาวน์โหลด PDF ฉบับรวม
+              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF ฉบับรวม
             </button>
           </div>
 
@@ -880,7 +882,7 @@
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
-                เลือกพิมพ์รายชื่อเฉพาะฝ่าย เช่น ขบวนพาเหรด, สแตนเชียร์, เชียร์ลีดเดอร์, สตาฟ, สวัสดิการ
+                เลือกบันทึกรายชื่อเฉพาะฝ่าย เช่น ขบวนพาเหรด, สแตนเชียร์, เชียร์ลีดเดอร์, สตาฟ, สวัสดิการ
               </p>
               <div style="margin-bottom: 16px;">
                 <select id="pdfSelectDept" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
@@ -896,7 +898,7 @@
               </div>
             </div>
             <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="dept" style="color: #db2777; border-color: #fbcfe8;">
-              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF รายฝ่าย
+              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF รายฝ่าย
             </button>
           </div>
 
@@ -913,7 +915,7 @@
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
-                เลือกพิมพ์รายชื่อนักกีฬาแต่ละประเภทสำหรับส่งฝ่ายจัดการแข่งขัน
+                เลือกบันทึกรายชื่อนักกีฬาแต่ละประเภทสำหรับส่งฝ่ายจัดการแข่งขัน
               </p>
               <div style="margin-bottom: 16px;">
                 <select id="pdfSelectSport" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
@@ -928,7 +930,7 @@
               </div>
             </div>
             <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="sport" style="color: #2563eb; border-color: #bfdbfe;">
-              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF รายกีฬา
+              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF รายกีฬา
             </button>
           </div>
 
@@ -945,7 +947,7 @@
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
-                เลือกพิมพ์รายชื่อนักเรียนเพื่อส่งคุณครูที่ปรึกษาประจำห้อง หรือดูรายระดับชั้น
+                เลือกบันทึกรายชื่อนักเรียนเพื่อส่งคุณครูที่ปรึกษาประจำห้อง หรือดูรายระดับชั้น
               </p>
               <div style="margin-bottom: 16px;">
                 <select id="pdfSelectGrade" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
@@ -959,7 +961,7 @@
               </div>
             </div>
             <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="grade" style="color: #16a34a; border-color: #bbf7d0;">
-              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF รายชั้น
+              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF รายชั้น
             </button>
           </div>
 
@@ -976,11 +978,11 @@
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
-                พิมพ์ใบรายชื่อนักเรียนที่ยังไม่ได้รับมอบหมายหน้าที่ สำหรับคณะกรรมการใช้ติดตามตัวมาจัดสรรหน้าที่
+                บันทึกใบรายชื่อนักเรียนที่ยังไม่ได้รับมอบหมายหน้าที่ สำหรับคณะกรรมการใช้ติดตามตัวมาจัดสรรหน้าที่
               </p>
             </div>
             <button type="button" class="btn btn-danger w-full btn-generate-pdf" data-type="unassigned">
-              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF คนที่ยังว่าง
+              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF คนที่ยังว่าง
             </button>
           </div>
 
