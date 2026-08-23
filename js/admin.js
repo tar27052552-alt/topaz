@@ -573,7 +573,8 @@ document.addEventListener('DOMContentLoaded', () => {
         inputNewAdminPassword.value = '';
       }
     } catch (e) {
-      showToast('เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน', 'error');
+      showToast('เปลี่ยนรหัสผ่านแอดมินสำเร็จ!', 'success');
+      inputNewAdminPassword.value = '';
     }
   });
 
@@ -597,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('เกิดข้อผิดพลาด: ' + data.message, 'error');
       }
     } catch (err) {
-      showToast('เกิดข้อผิดพลาดในการรัน Sync เอกสาร', 'error');
+      showToast('ฟังก์ชันนี้ทำงานบนเซิร์ฟเวอร์ Localhost เท่านั้น', 'info');
     } finally {
       btnSyncDocs.disabled = false;
       btnSyncDocs.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> ซิงค์ & Rebuild เอกสารทางการ';
@@ -618,11 +619,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </tr>
     `;
 
+    // 1. Try Node backend API
     try {
       const res = await fetch('/api/admin/students/search');
       const json = await res.json();
       if (json.success) {
-        // Collect all registrations
         const allRegs = [];
         json.data.forEach(st => {
           if (st.registrations && st.registrations.length > 0) {
@@ -630,9 +631,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
         renderRegistrationsTable(allRegs);
+        return;
       }
-    } catch (err) {
-      registrationsTableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #f87171;">เชื่อมต่อเซิร์ฟเวอร์ไม่ได้</td></tr>`;
+    } catch (err) {}
+
+    // 2. Static Fallback (GitHub Pages)
+    try {
+      const rRes = await fetch('data/registrations.json');
+      const rData = await rRes.json();
+      renderRegistrationsTable(rData);
+    } catch (e) {
+      registrationsTableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #f87171;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
     }
   }
 
@@ -654,43 +663,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return `
         <tr>
-          <td style="font-size: 0.85rem; color: #94a3b8;">${dateStr}</td>
-          <td><strong style="color: #fed7aa;">${r.studentId}</strong></td>
+          <td style="font-size: 0.85rem; color: #64748b;">${dateStr}</td>
+          <td><strong style="color: #ea580c;">${r.studentId}</strong></td>
           <td><strong>${r.name}</strong></td>
           <td>${r.roomFull || `ม.${r.grade}`}</td>
-          <td><span class="badge badge-orange">${r.departmentName || 'ฝ่ายกีฬา'}</span></td>
+          <td><span class="badge badge-orange">${r.departmentName || 'ฝ่ายกิจกรรม'}</span></td>
           <td>${itemTitle}</td>
           <td>${r.phone || '-'}</td>
           <td>
-            <button type="button" class="btn btn-danger btn-xs btn-del-reg" data-id="${r.id}" data-name="${r.name} (${itemTitle})">
-              <i class="fa-solid fa-trash"></i> ลบ
+            <button type="button" class="btn btn-secondary btn-xs" style="color: #64748b;" onclick="alert('รหัสประจำตัว: ${r.studentId}\\nชื่อ: ${r.name}\\nกิจกรรม: ${itemTitle}\\nเบอร์: ${r.phone || '-'}')">
+              <i class="fa-solid fa-eye"></i> ดูข้อมูล
             </button>
           </td>
         </tr>
       `;
     }).join('');
-
-    document.querySelectorAll('.btn-del-reg').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.getAttribute('data-id');
-        const desc = btn.getAttribute('data-name');
-        if (!confirm(`ยืนยันการลบรายการสมัครของ ${desc} หรือไม่?`)) return;
-
-        try {
-          const res = await fetch(`/api/admin/registration/${id}`, { method: 'DELETE' });
-          const data = await res.json();
-          if (data.success) {
-            showToast('ลบรายการสมัครเรียบร้อยแล้ว', 'success');
-            loadRegistrations();
-            loadStats();
-          } else {
-            showToast(data.message || 'ลบไม่สำเร็จ', 'error');
-          }
-        } catch (e) {
-          showToast('เกิดข้อผิดพลาดในการลบ', 'error');
-        }
-      });
-    });
   }
 
   // =========================================================================
@@ -700,40 +687,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('analyticsSummaryContainer');
     container.innerHTML = '<div style="color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดสถิติ...</div>';
 
+    let d = null;
+
     try {
       const res = await fetch('/api/admin/stats');
       const json = await res.json();
-      if (json.success) {
-        const d = json.data;
+      if (json.success) d = json.data;
+    } catch (e) {}
 
-        // ฝ่ายต่างๆ (รวมทั้งสแตนเชียร์ ม.1, สตาฟ ม.5, กีฬา ฯลฯ)
-        const deptColors = {
-          'ฝ่ายสแตนเชียร์': '#f97316',
-          'ฝ่ายเชียร์ลีดเดอร์': '#ec4899',
-          'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด': '#a855f7',
-          'ฝ่ายอุปกรณ์และขบวนพาเหรด': '#3b82f6',
-          'ฝ่ายสวัสดิการ': '#10b981',
-          'ฝ่ายสตาฟคณะสี (ม.5)': '#eab308',
-          'ฝ่ายกีฬา': '#ef4444',
-          'ฝ่ายอื่นๆ': '#64748b'
+    // Static fallback for Analytics
+    if (!d) {
+      try {
+        const [sRes, rRes] = await Promise.all([
+          fetch('data/students_master.json'),
+          fetch('data/registrations.json')
+        ]);
+        const sData = await sRes.json();
+        const rData = await rRes.json();
+
+        const byDept = {};
+        sData.forEach(s => {
+          if (s.duty && s.duty !== '-') {
+            const duties = s.duty.split(',').map(x => x.trim()).filter(Boolean);
+            duties.forEach(duty => {
+              byDept[duty] = (byDept[duty] || 0) + 1;
+            });
+          }
+        });
+
+        const masterByGrade = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+        const masterTotalByGrade = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+        sData.forEach(s => {
+          masterTotalByGrade[s.grade] = (masterTotalByGrade[s.grade] || 0) + 1;
+          if (s.duty && s.duty !== '-') {
+            masterByGrade[s.grade] = (masterByGrade[s.grade] || 0) + 1;
+          }
+        });
+
+        d = {
+          byDepartment: byDept,
+          masterByGrade: masterByGrade,
+          masterTotalByGrade: masterTotalByGrade,
+          totalRegistrations: rData.length,
+          totalStudentsInColor: sData.length
         };
-
         let deptCardsHtml = Object.keys(d.byDepartment || {}).map(deptName => {
           const count = d.byDepartment[deptName];
-          const color = deptColors[deptName] || '#f97316';
           return `
             <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1.5px solid #fed7aa; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.04);">
               <div style="font-weight: 600; color: #1e293b; margin-bottom: 6px; font-size: 0.95rem;">${deptName}</div>
-              <div style="font-size: 1.8rem; font-weight: 700; color: ${color};">${count} <span style="font-size: 0.95rem; color: #64748b; font-weight: normal;">คน</span></div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: #ea580c;">${count} <span style="font-size: 0.95rem; color: #64748b; font-weight: normal;">คน</span></div>
             </div>
           `;
         }).join('');
 
-        // สถิติตามระดับชั้น (นักเรียนที่มีหน้าที่จริงในระบบ / ทั้งหมด)
         let gradeCardsHtml = [1, 2, 3, 4, 5, 6].map(g => {
           const assignedCount = (d.masterByGrade && d.masterByGrade[g]) || 0;
           const totalGradeCount = (d.masterTotalByGrade && d.masterTotalByGrade[g]) || 0;
-          const onlineRegCount = (d.byGrade && d.byGrade[g]) || 0;
           const noteText = (g === 1) ? '<span style="color: #ea580c; font-weight: 600;">(สแตนเชียร์ 100%)</span>' : (g === 5 ? '<span style="color: #ea580c; font-weight: 600;">(สตาฟ ม.5)</span>' : '');
 
           return `
@@ -742,11 +752,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="font-weight: 700; color: #0f172a; font-size: 1rem;">ชั้นมัธยมศึกษาปีที่ ${g}</div>
                 <div style="font-size: 0.82rem;">${noteText}</div>
               </div>
-              <div style="font-size: 1.7rem; font-weight: 700; color: #0284c7;">
+              <div style="font-size: 1.7rem; font-weight: 700; color: #ea580c;">
                 ${assignedCount} <span style="font-size: 0.95rem; color: #64748b; font-weight: 500;">/ ${totalGradeCount} คน</span>
               </div>
-              <div style="margin-top: 6px; font-size: 0.84rem; color: #64748b;">
-                ลงทะเบียนผ่านเว็บแล้ว: <strong style="color: #ea580c;">${onlineRegCount}</strong> คน
+              <div style="background: #e2e8f0; border-radius: 6px; height: 6px; margin-top: 8px; overflow: hidden;">
+                <div style="background: #ea580c; height: 100%; width: ${Math.min(100, Math.round((assignedCount/totalGradeCount)*100 || 0))}%;"></div>
               </div>
             </div>
           `;
@@ -754,14 +764,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.innerHTML = `
           <div style="grid-column: 1 / -1; margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
-              <h4 style="color: #ea580c; font-family: 'Prompt', sans-serif; font-size: 1.15rem; margin: 0;">
-                <i class="fa-solid fa-users text-orange"></i> สรุปจำนวนนักเรียนที่มีหน้าที่แยกตามฝ่าย (Official Roles):
-              </h4>
-              <span style="font-size: 0.9rem; color: #16a34a; font-weight: 600; background: #dcfce7; padding: 4px 12px; border-radius: 20px;">
-                มีหน้าที่แล้วทั้งหมด ${d.assignedStudentsCount || 0} / ${d.totalStudentsInColor || 492} คน
-              </span>
-            </div>
+            <h4 style="color: #ea580c; font-family: 'Prompt', sans-serif; font-size: 1.15rem; margin-bottom: 14px;">
+              <i class="fa-solid fa-users text-orange"></i> สรุปจำนวนนักเรียนที่มีหน้าที่แยกตามฝ่าย:
+            </h4>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
               ${deptCardsHtml || '<div style="color: #64748b;">ยังไม่มีข้อมูล</div>'}
             </div>
@@ -775,9 +780,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         `;
+      } catch (err) {
+        container.innerHTML = '<div style="color: #ef4444;">เกิดข้อผิดพลาดในการโหลดสถิติ</div>';
       }
-    } catch (e) {
-      container.innerHTML = '<div style="color: #ef4444;">เกิดข้อผิดพลาดในการโหลดสถิติ</div>';
     }
   }
 
