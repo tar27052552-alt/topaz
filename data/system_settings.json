@@ -1,0 +1,25 @@
+{
+  "isRegistrationOpen": true,
+  "adminPassword": "topaz69",
+  "closeMessage": "ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล",
+  "departmentsStatus": {
+    "sports": true,
+    "welfare": true,
+    "cheerleader": true,
+    "drum_major": true,
+    "colorguard": true,
+    "parade_props": true,
+    "stand_cheer": true,
+    "staff": true
+  },
+  "sportsStatus": {
+    "football": true,
+    "basketball": true,
+    "volleyball": true,
+    "takraw": true,
+    "petanque": true,
+    "athletics": true,
+    "running16": true
+  },
+  "updatedAt": "2026-08-22T22:34:00+07:00"
+}

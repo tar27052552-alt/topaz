@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบรับสมัครกิจกรรม คณะสีแสด (สีบุษราคัม) ปี 2569 | โรงเรียนสรรพวิทยาคม</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Ambient Background Glows -->
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-fire"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">คณะสีแสด (สีบุษราคัม)</span>
+          <span class="brand-sub">โรงเรียนสรรพวิทยาคม ตาก • ปีการศึกษา 2569</span>
+        </div>
+      </div>
+      <div class="nav-tag" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <a href="https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" rel="noopener noreferrer" class="btn btn-line btn-sm" style="font-size: 0.82rem; padding: 6px 14px; text-decoration: none;">
+          <i class="fa-brands fa-line"></i> เข้าโอเพนแชทคณะสีแสด
+        </a>
+        <a href="/admin.html" class="btn btn-secondary btn-sm" style="font-size: 0.82rem; padding: 6px 12px; text-decoration: none; border: 1px solid rgba(249, 115, 22, 0.3);">
+          <i class="fa-solid fa-lock"></i> แอดมิน
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content container">
+    <!-- System Closed Alert (Hidden by default) -->
+    <div id="systemClosedBanner" class="alert alert-danger hidden" style="background: rgba(220, 38, 38, 0.15); border: 2px solid #ef4444; color: #fecaca; padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; text-align: center; font-size: 1.05rem;">
+      <i class="fa-solid fa-triangle-exclamation fa-beat" style="font-size: 1.3rem; margin-right: 8px; color: #ef4444;"></i>
+      <strong id="systemClosedText">ระบบรับสมัครปิดให้บริการชั่วคราว</strong>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="hero-section text-center">
+      <div class="badge-pill">
+        <i class="fa-solid fa-trophy"></i> กีฬา-กรีฑาสีภายใน ประจำปีการศึกษา 2569
+      </div>
+      <h1 class="hero-title">ระบบรับสมัครกิจกรรม <span class="gradient-text">คณะสีแสด</span></h1>
+      <p class="hero-subtitle">เปิดรับสมัคร กีฬา • สวัสดิการ • เชียร์ลีดเดอร์ • ดรัมเมเยอร์ & คัลเลอร์การ์ด • ฝ่ายพร็อพ</p>
+    </section>
+
+    <!-- Registration Wizard Container -->
+    <div class="wizard-card glass-panel">
+      <!-- Multi-step Progress Bar -->
+      <div class="stepper-wrapper">
+        <div class="step-item active" id="step-node-1">
+          <div class="step-circle">
+            <i class="fa-solid fa-id-card"></i>
+            <span class="step-num">1</span>
+          </div>
+          <div class="step-label">ยืนยันตัวตน & เบอร์โทร</div>
+        </div>
+        <div class="step-line" id="step-line-1"></div>
+
+        <div class="step-item" id="step-node-2">
+          <div class="step-circle">
+            <i class="fa-solid fa-layer-group"></i>
+            <span class="step-num">2</span>
+          </div>
+          <div class="step-label">เลือกฝ่ายกิจกรรม</div>
+        </div>
+        <div class="step-line" id="step-line-2"></div>
+
+        <div class="step-item" id="step-node-3">
+          <div class="step-circle">
+            <i class="fa-solid fa-list-check"></i>
+            <span class="step-num">3</span>
+          </div>
+          <div class="step-label">เลือกรุ่น / ชนิดกีฬา</div>
+        </div>
+        <div class="step-line" id="step-line-3"></div>
+
+        <div class="step-item" id="step-node-4">
+          <div class="step-circle">
+            <i class="fa-solid fa-circle-check"></i>
+            <span class="step-num">4</span>
+          </div>
+          <div class="step-label">ตรวจสอบ & ยืนยัน</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Identification & Contact Phone -->
+      <section class="wizard-step active" id="step-1">
+        <div class="step-header">
+          <h2><i class="fa-solid fa-user-check text-orange"></i> ขั้นตอนที่ 1: ตรวจสอบข้อมูลนักเรียน & กรอกเบอร์โทรศัพท์</h2>
+          <p>กรอกรหัสประจำตัวนักเรียน 5 หลัก เพื่อดึงข้อมูลจากระบบคณะสีแสด และระบุเบอร์โทรศัพท์สำหรับติดต่อ</p>
+        </div>
+
+        <div class="form-group-wrapper">
+          <div class="input-row">
+            <div class="form-group flex-1">
+              <label for="studentIdInput"><i class="fa-solid fa-id-badge"></i> รหัสประจำตัวนักเรียน 5 หลัก <span class="required">*</span></label>
+              <div class="input-with-action">
+                <input type="text" id="studentIdInput" maxlength="5" placeholder="ตัวอย่าง: 34890" autocomplete="off" autofocus>
+                <button type="button" id="searchStudentBtn" class="btn btn-primary">
+                  <i class="fa-solid fa-magnifying-glass"></i> ค้นหา
+                </button>
+              </div>
+              <small class="form-hint">กรอกรหัส 5 หลักที่ปรากฏในใบรายชื่อโรงเรียนสรรพวิทยาคม</small>
+            </div>
+          </div>
+
+          <!-- Student Profile Card (Appears after search) -->
+          <div id="studentProfileCard" class="profile-card hidden">
+            <div class="profile-avatar">
+              <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div class="profile-details">
+              <div class="profile-name" id="studentNameDisplay">-</div>
+              <div class="profile-badges">
+                <span class="badge badge-orange" id="studentRoomDisplay">ม.-/-</span>
+                <span class="badge badge-dark" id="studentNoDisplay">เลขที่ -</span>
+                <span class="badge badge-gender" id="studentGenderDisplay">เพศ -</span>
+                <span class="badge badge-id" id="studentIdDisplay">รหัส: -</span>
+                <span id="studentDutyBadgesContainer" class="hidden"></span>
+              </div>
+            </div>
+            <div class="profile-status" id="profileStatusIcon">
+              <i class="fa-solid fa-circle-check text-success"></i>
+            </div>
+          </div>
+
+          <!-- Already Registered & Quota Reached Card (Shown when student cannot register again) -->
+          <div id="alreadyRegisteredCard" class="already-registered-card hidden">
+            <div class="locked-badge">
+              <i class="fa-solid fa-lock"></i> ท่านได้ลงทะเบียนครบสิทธิ์แล้ว (ไม่สามารถสมัครซ้ำได้)
+            </div>
+            <h3 class="locked-title">ประวัติการสมัครของคุณในระบบ</h3>
+            
+            <div class="locked-details-box" id="lockedRegList">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="locked-footer-info mt-3">
+              <i class="fa-solid fa-circle-info text-orange"></i> <strong>ข้อแนะนำ:</strong> หากต้องการแก้ไขข้อมูล เปลี่ยนชนิดกีฬา หรือยกเลิกการสมัคร กรุณาติดต่อพี่ๆ สตาฟคณะสีแสด
+            </div>
+
+            <div class="locked-actions">
+              <button type="button" id="lockedResetBtn" class="btn btn-orange">
+                <i class="fa-solid fa-magnifying-glass"></i> ค้นหารหัสนักเรียนคนอื่น
+              </button>
+            </div>
+          </div>
+
+          <!-- Partial Registration Alert (e.g. Registered staff or 1 sport) -->
+          <div id="partialRegAlert" class="alert alert-info hidden">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+              <strong>ข้อมูลการลงทะเบียนในระบบของคุณ:</strong>
+              <div id="partialRegList"></div>
+              <small class="text-secondary mt-1 d-block" id="partialRegHint">หากต้องการลงแข่งขันกีฬาหรือกิจกรรมเสริม สามารถกด "ถัดไป" เพื่อเลือกได้ตามความสมัครใจ</small>
+            </div>
+          </div>
+
+          <!-- Phone Number Input -->
+          <div class="form-group mt-4" id="phoneInputGroup">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <label for="phoneInput" style="margin-bottom: 0;"><i class="fa-solid fa-phone"></i> เบอร์โทรศัพท์สำหรับติดต่อ (10 หลัก) <span class="required">*</span></label>
+              <span id="phoneCounterBadge" class="badge badge-dark" style="font-size: 12px;">(0/10 หลัก)</span>
+            </div>
+            <input type="tel" id="phoneInput" maxlength="12" placeholder="08x-xxx-xxxx หรือ 09xxxxxxxx" autocomplete="tel">
+            <small class="form-hint" id="phoneHint">สำคัญมาก: สตาฟจะใช้เบอร์โทรนี้ในการติดต่อประสานงาน นัดหมายซ้อม หรือแจ้งข่าวสาร</small>
+          </div>
+        </div>
+
+        <div class="wizard-actions" id="step1Actions">
+          <div></div>
+          <button type="button" id="toStep2Btn" class="btn btn-orange btn-lg" disabled>
+            ถัดไป: เลือกฝ่ายกิจกรรม <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 2: Department Selection -->
+      <section class="wizard-step" id="step-2">
+        <div class="step-header">
+          <h2><i class="fa-solid fa-layer-group text-orange"></i> ขั้นตอนที่ 2: เลือกฝ่ายกิจกรรมที่สนใจ</h2>
+          <p>ระบบแสดงเฉพาะฝ่ายที่ระดับชั้นของคุณมีสิทธิ์เลือก (เลือกได้ 1 ฝ่าย)</p>
+        </div>
+
+        <div class="departments-grid" id="departmentsContainer">
+          <!-- Dynamic Department Cards will be rendered here -->
+          <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดข้อมูลฝ่าย...</div>
+        </div>
+
+        <div class="wizard-actions">
+          <button type="button" id="backToStep1Btn" class="btn btn-outline">
+            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
+          </button>
+          <button type="button" id="toStep3Btn" class="btn btn-orange btn-lg" disabled>
+            ถัดไป: เลือกรุ่น/กิจกรรม <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 3: Options / Sports Categories -->
+      <section class="wizard-step" id="step-3">
+        <div class="step-header">
+          <h2 id="step3Title"><i class="fa-solid fa-list-check text-orange"></i> ขั้นตอนที่ 3: เลือกชนิดกีฬา / รายละเอียดหน้าที่</h2>
+          <p id="step3Subtitle">เลือกชนิดกีฬาที่คุณต้องการสมัคร (สามารถเลือกได้สูงสุด 1 ชนิดกีฬา)</p>
+        </div>
+
+        <!-- Sport Selection Container -->
+        <div id="sportSelectionContainer" class="hidden">
+          <div class="selection-counter-bar">
+            <span class="counter-label"><i class="fa-solid fa-check-double"></i> จำนวนกีฬาที่เลือก:</span>
+            <span class="counter-badge" id="sportsCountBadge">0 / 2 กีฬา</span>
+          </div>
+
+          <div class="sports-accordion" id="sportsListAccordion">
+            <!-- Dynamic Sports list -->
+          </div>
+        </div>
+
+        <!-- Non-Sport Department Description Container -->
+        <div id="nonSportContainer" class="non-sport-card hidden">
+          <div class="dept-summary-card glass-panel-inner">
+            <div class="dept-summary-icon" id="summaryDeptIcon">🍵</div>
+            <div class="dept-summary-info">
+              <h3 id="summaryDeptName">ฝ่ายสวัสดิการ</h3>
+              <p id="summaryDeptDesc">หน้าที่หลัก: ดูแลจัดเตรียมนม น้ำดื่ม อาหาร ยา และปฐมพยาบาลดูแลเพื่อนๆ</p>
+              <div class="dept-meta-tags">
+                <span class="badge badge-orange" id="summaryDeptQuota">โควตา: 20 คน</span>
+                <span class="badge badge-dark" id="summaryDeptRole">หน้าที่: สวัสดิการ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-actions">
+          <button type="button" id="backToStep2Btn" class="btn btn-outline">
+            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
+          </button>
+          <button type="button" id="toStep4Btn" class="btn btn-orange btn-lg" disabled>
+            ถัดไป: ตรวจสอบและยืนยัน <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 4: Review & Confirmation -->
+      <section class="wizard-step" id="step-4">
+        <div class="step-header">
+          <h2><i class="fa-solid fa-clipboard-check text-orange"></i> ขั้นตอนที่ 4: ตรวจสอบข้อมูลและยืนยันการสมัคร</h2>
+          <p>กรุณาตรวจสอบความถูกต้องของข้อมูลทั้งหมดก่อนกดยืนยันการสมัคร</p>
+        </div>
+
+        <div class="review-card glass-panel-inner">
+          <div class="review-header">
+            <div class="review-avatar">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <h3 id="reviewStudentName">-</h3>
+              <div class="review-sub" id="reviewStudentMeta">ม.-/- | เลขที่ - | รหัสประจำตัว: -</div>
+            </div>
+          </div>
+
+          <div class="review-details-table">
+            <div class="review-row">
+              <span class="review-label"><i class="fa-solid fa-phone"></i> เบอร์โทรศัพท์ติดต่อ:</span>
+              <span class="review-val font-bold text-orange" id="reviewPhone">-</span>
+            </div>
+            <div class="review-row">
+              <span class="review-label"><i class="fa-solid fa-layer-group"></i> ฝ่ายที่สมัคร:</span>
+              <span class="review-val font-bold" id="reviewDepartment">-</span>
+            </div>
+            <div class="review-row align-start">
+              <span class="review-label"><i class="fa-solid fa-trophy"></i> กิจกรรม / ชนิดกีฬาที่เลือก:</span>
+              <div class="review-val" id="reviewActivitiesList">
+                <!-- Selected items will be inserted here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="terms-box">
+            <i class="fa-solid fa-handshake-angle text-orange"></i> ข้าพเจ้าขอรับรองว่าข้อมูลข้างต้นเป็นความจริง และพร้อมจะเข้าร่วมกิจกรรม ซ้อม และปฏิบัติตามกฎระเบียบของคณะสีแสดอย่างเต็มความสามารถ
+          </div>
+        </div>
+
+        <div class="wizard-actions">
+          <button type="button" id="backToStep3Btn" class="btn btn-outline">
+            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปแก้ไข
+          </button>
+          <button type="button" id="submitRegistrationBtn" class="btn btn-success btn-lg">
+            <i class="fa-solid fa-check"></i> ยืนยันการสมัคร
+          </button>
+        </div>
+      </section>
+
+      <!-- Step Success Screen -->
+      <section class="wizard-step" id="step-success">
+        <div class="success-box text-center">
+          <div class="success-icon-animated">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h2 class="success-title">สมัครเข้าร่วมกิจกรรมสำเร็จเรียบร้อย!</h2>
+          <p class="success-subtitle">ข้อมูลการสมัครของท่านถูกบันทึกเข้าสู่ระบบฐานข้อมูลคณะสีแสด (สีบุษราคัม) เรียบร้อยแล้ว</p>
+
+          <!-- Registration Summary Result Card -->
+          <div class="success-summary-card glass-panel-inner" id="successSummaryCard">
+            <!-- Will be populated dynamically -->
+          </div>
+
+          <!-- LINE Group QR Invitation Card -->
+          <div class="line-invite-card">
+            <div class="line-invite-header">
+              <div class="line-icon-badge">
+                <i class="fa-brands fa-line"></i>
+              </div>
+              <div class="text-left">
+                <h3 class="line-invite-title">เข้าร่วมกลุ่ม LINE คณะสีแสด ปี 2569</h3>
+                <p class="line-invite-sub">สแกน QR Code หรือคลิกปุ่มเพื่อเข้ากลุ่ม รับข่าวสาร นัดหมาย และติดต่อสตาฟ</p>
+              </div>
+            </div>
+
+            <div class="line-qr-wrapper">
+              <div class="qr-frame">
+                <img src="images/line_qr.svg" alt="LINE Group QR Code" class="line-qr-img">
+              </div>
+              <span class="qr-scan-hint"><i class="fa-solid fa-camera"></i> สแกนด้วยแอป LINE</span>
+            </div>
+
+            <div class="line-invite-btn-wrap">
+              <a href="https://line.me" target="_blank" rel="noopener noreferrer" class="btn btn-line btn-lg">
+                <i class="fa-brands fa-line"></i> กดเพื่อเข้ากลุ่ม LINE ทันที
+              </a>
+            </div>
+          </div>
+
+          <div class="success-actions mt-4">
+            <button type="button" id="newRegistrationBtn" class="btn btn-orange btn-lg">
+              <i class="fa-solid fa-rotate-right"></i> สมัครรายการอื่น หรือ สมัครให้เพื่อน
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container text-center">
+      <p>© 2569 คณะสีแสด (สีบุษราคัม) • โรงเรียนสรรพวิทยาคม อำเภอแม่สอด จังหวัดตาก</p>
+      <p class="footer-sub">ระบบจัดการข้อมูลและรับสมัครกิจกรรมภายในคณะสีแสด</p>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>

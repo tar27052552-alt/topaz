@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ฐานข้อมูลนักเรียน 492 คน: ให้อ่านได้ทุกคน เพื่อใช้ในการ Auto-fill ข้อมูล
+    match /students/{studentId} {
+      allow read: if true;
+      allow write: if false; // แก้ไขได้เฉพาะแอดมินผ่าน backend
+    }
+    
+    // การตั้งค่าโควตากีฬา: ให้อ่านได้ทุกคน เพื่อดูจำนวนที่ว่าง
+    match /sports_config/{sportId} {
+      allow read: if true;
+      allow write: if true; // สำหรับแอดมินปรับโควตา
+    }
+    
+    // รายการลงทะเบียน: ให้อ่านและเพิ่มรายการได้
+    match /registrations/{regId} {
+      allow read, create, update, delete: if true;
+    }
+  }
+}

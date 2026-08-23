@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจัดการแอดมิน (Admin Control Panel) — คณะสีแสด 2569</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body.admin-body {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(255, 109, 0, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(255, 179, 0, 0.08) 0px, transparent 50%);
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .admin-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* Auth Screen */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(10px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-card {
+      background: #ffffff;
+      border: 1px solid rgba(230, 81, 0, 0.25);
+      border-radius: 24px;
+      padding: 40px 34px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 40px -15px rgba(230, 81, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.8);
+    }
+
+    .auth-logo {
+      font-size: 3.2rem;
+      margin-bottom: 12px;
+    }
+
+    .auth-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #ea580c;
+      margin-bottom: 6px;
+    }
+
+    .auth-sub {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+
+    .auth-input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .auth-input-group label {
+      display: block;
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .input-password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-password-wrapper input {
+      width: 100%;
+      padding: 14px 44px 14px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      font-size: 1.15rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-password-wrapper input:focus {
+      border-color: #ea580c;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+    }
+
+    .toggle-pwd-btn {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.15rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .toggle-pwd-btn:hover {
+      color: #ea580c;
+    }
+
+    /* Admin Navbar */
+    .admin-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid rgba(230, 81, 0, 0.15);
+      border-radius: 20px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ea580c;
+    }
+
+    .admin-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Stat Grid */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid rgba(230, 81, 0, 0.12);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -4px rgba(230, 81, 0, 0.1);
+    }
+
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: #fff7ed;
+      color: #ea580c;
+      border: 1px solid rgba(230, 81, 0, 0.15);
+    }
+
+    .stat-val {
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .stat-lbl {
+      color: #64748b;
+      font-size: 0.88rem;
+    }
+
+    /* Tabs */
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .admin-tab-btn {
+      padding: 10px 18px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-family: 'Prompt', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .admin-tab-btn:hover {
+      background: #fff7ed;
+      color: #ea580c;
+      border-color: rgba(230, 81, 0, 0.3);
+    }
+
+    .admin-tab-btn.active {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+      color: #ffffff;
+      border-color: #ea580c;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+    }
+
+    /* Card Panels */
+    .admin-panel {
+      background: #ffffff;
+      border: 1px solid rgba(230, 81, 0, 0.15);
+      border-radius: 20px;
+      padding: 26px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 25px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .panel-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Table styling */
+    .admin-table-wrapper {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+
+    .admin-table th {
+      background: #fff7ed;
+      padding: 14px 16px;
+      color: #ea580c;
+      font-weight: 700;
+      border-bottom: 1.5px solid #fed7aa;
+      white-space: nowrap;
+    }
+
+    .admin-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    .admin-table tr:hover {
+      background: #fffaf5;
+    }
+
+    /* Toggle Switch */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+
+    .switch-container:hover {
+      border-color: rgba(230, 81, 0, 0.3);
+      background: #fffaf5;
+    }
+
+    .switch-label {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .switch-sub {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 28px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e1;
+      transition: 0.3s;
+      border-radius: 28px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: #16a34a;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Filter pills */
+    .grade-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .grade-pill {
+      padding: 6px 14px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      transition: all 0.15s;
+    }
+
+    .grade-pill:hover {
+      background: #fff7ed;
+      color: #ea580c;
+    }
+
+    .grade-pill.active {
+      background: #fff7ed;
+      color: #ea580c;
+      border-color: #ea580c;
+      font-weight: 700;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border: 1px solid rgba(230, 81, 0, 0.25);
+      border-radius: 22px;
+      padding: 30px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-modal-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .close-modal-btn:hover {
+      color: #ef4444;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #334155;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #ea580c;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+    }
+
+    .duty-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .duty-tag {
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 0.82rem;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      transition: all 0.15s;
+    }
+
+    .duty-tag:hover {
+      background: #ea580c;
+      color: #ffffff;
+      border-color: #ea580c;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- 🔐 1. Login Overlay -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">🧡</div>
+      <h1 class="auth-title">ระบบจัดการแอดมิน</h1>
+      <p class="auth-sub">คณะสีแสด (สีบุษราคัม) ปี 2569</p>
+
+      <form id="adminLoginForm">
+        <div class="auth-input-group">
+          <label for="adminPasswordInput"><i class="fa-solid fa-lock text-orange"></i> รหัสผ่านผู้ดูแลระบบ (Admin Password):</label>
+          <input type="password" id="adminPasswordInput" placeholder="กรอกรหัสผ่านผู้ดูแลระบบ" autocomplete="current-password" autofocus required style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 1.1rem; outline: none; transition: all 0.2s;">
+        </div>
+        <button type="submit" id="adminLoginBtn" class="btn btn-orange w-full" style="padding: 14px; font-size: 1.05rem; margin-top: 10px;">
+          <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบแอดมิน
+        </button>
+      </form>
+      <div style="margin-top: 18px;">
+        <a href="/" style="color: #64748b; font-size: 0.88rem; text-decoration: none;">
+          <i class="fa-solid fa-arrow-left"></i> กลับสู่หน้ารับสมัครนักเรียน
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🚀 2. Main Admin Dashboard -->
+  <div class="admin-container">
+    
+    <!-- Navbar -->
+    <header class="admin-nav">
+      <div class="admin-brand">
+        <div class="brand-logo" style="width: 38px; height: 38px; background: linear-gradient(135deg, #ea580c, #c2410c); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+          <i class="fa-solid fa-fire"></i>
+        </div>
+        <div>
+          <div style="font-size: 1.15rem; line-height: 1.2;">คณะสีแสด 69 • Admin Control Panel</div>
+          <div style="font-size: 0.8rem; font-weight: normal; color: #64748b;">โรงเรียนสรรพวิทยาคม อำเภอแม่สอด จังหวัดตาก</div>
+        </div>
+      </div>
+      <div class="admin-nav-actions">
+        <button type="button" id="btnSyncDocs" class="btn btn-orange btn-sm">
+          <i class="fa-solid fa-arrows-rotate"></i> ซิงค์ & Rebuild เอกสารทางการ
+        </button>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm">
+          <i class="fa-solid fa-globe"></i> ดูหน้าเว็บรับสมัคร
+        </a>
+        <button type="button" id="btnLogout" class="btn btn-secondary btn-sm">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ
+        </button>
+      </div>
+    </header>
+
+    <!-- Top Statistics Cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-power-off"></i></div>
+        <div>
+          <div class="stat-val" id="statSystemStatus">กำลังโหลด...</div>
+          <div class="stat-lbl">สถานะระบบรับสมัคร</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div>
+          <div class="stat-val" id="statTotalStudents">492</div>
+          <div class="stat-lbl">จำนวนนักเรียนคณะสีแสดทั้งหมด</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+        <div>
+          <div class="stat-val" id="statOnlineRegs">0</div>
+          <div class="stat-lbl">รายการสมัครผ่านเว็บ</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+        <div>
+          <div class="stat-val" id="statUniqueRegs">0</div>
+          <div class="stat-lbl">นักเรียนที่ลงทะเบียนออนไลน์</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="admin-tabs">
+      <button type="button" class="admin-tab-btn active" data-tab="students">
+        <i class="fa-solid fa-users-gear"></i> จัดการนักเรียน & หน้าที่ (ม.1 - ม.6)
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="control">
+        <i class="fa-solid fa-sliders"></i> เปิด/ปิดรับสมัคร & ตั้งค่าระบบ
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="registrations">
+        <i class="fa-solid fa-list-ol"></i> รายการผู้สมัครผ่านเว็บ
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="analytics">
+        <i class="fa-solid fa-chart-pie"></i> สถิติการสมัคร
+      </button>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: นักเรียน & หน้าที่ -->
+    <!-- ========================================================= -->
+    <div id="tab-students" class="admin-tab-content">
+      <div class="admin-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-user-pen text-orange"></i> รายชื่อนักเรียน & หน้าที่ (ค้นหาและแก้ไขได้ทันที)
+          </div>
+          <div class="grade-pills" id="gradeFilterContainer">
+            <span class="grade-pill active" data-grade="">ทั้งหมด</span>
+            <span class="grade-pill" data-grade="1">ม.1</span>
+            <span class="grade-pill" data-grade="2">ม.2</span>
+            <span class="grade-pill" data-grade="3">ม.3</span>
+            <span class="grade-pill" data-grade="4">ม.4</span>
+            <span class="grade-pill" data-grade="5">ม.5 (สตาฟ)</span>
+            <span class="grade-pill" data-grade="6">ม.6</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 260px; position: relative;">
+            <input type="text" id="studentSearchQuery" placeholder="🔍 พิมพ์รหัสนักเรียน 5 หลัก, ชื่อ-นามสกุล, หรือหน้าที่..." style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 0.95rem; outline: none;">
+          </div>
+          <button type="button" id="btnRefreshStudents" class="btn btn-secondary">
+            <i class="fa-solid fa-rotate"></i> รีเฟรช
+          </button>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>รหัส</th>
+                <th>ชั้น/ห้อง</th>
+                <th>เลขที่</th>
+                <th>ชื่อ - นามสกุล</th>
+                <th>เพศ</th>
+                <th>หน้าที่ (Duty)</th>
+                <th>เบอร์โทร</th>
+                <th>การสมัครเว็บ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <tr>
+                <td colspan="9" style="text-align: center; padding: 30px; color: #64748b;">
+                  <i class="fa-solid fa-spinner fa-spin text-orange"></i> กำลังโหลดรายชื่อนักเรียน...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: เปิด/ปิดระบบ & ตั้งค่า -->
+    <!-- ========================================================= -->
+    <div id="tab-control" class="admin-tab-content hidden">
+      <div class="admin-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-toggle-on text-orange"></i> ควบคุมสถานะการเปิด/ปิดรับสมัคร
+          </div>
+          <button type="button" id="btnSaveSettings" class="btn btn-orange">
+            <i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่า
+          </button>
+        </div>
+
+        <!-- Master Switch -->
+        <div class="switch-container" style="background: #fff7ed; border: 1.5px solid #fed7aa;">
+          <div>
+            <div class="switch-label" style="font-size: 1.1rem; color: #ea580c;">สวิตช์หลัก: เปิด/ปิด การรับสมัครทั้งระบบ</div>
+            <div class="switch-sub">หากปิด สวิตช์นี้นักเรียนจะไม่สามารถส่งใบสมัครได้ทุกฝ่าย</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="toggleMasterSystem" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="inputCloseMessage">ข้อความแจ้งเตือนเมื่อปิดรับสมัคร:</label>
+          <input type="text" id="inputCloseMessage" value="ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล">
+        </div>
+
+        <h3 style="font-family: 'Prompt', sans-serif; margin: 24px 0 12px; color: #0f172a; font-size: 1.1rem;">
+          <i class="fa-solid fa-layer-group text-orange"></i> เปิด/ปิด แยกตามรายฝ่าย:
+        </h3>
+        <div id="deptTogglesContainer">
+          <!-- Populated by JS -->
+        </div>
+
+        <h3 style="font-family: 'Prompt', sans-serif; margin: 24px 0 12px; color: #0f172a; font-size: 1.1rem;">
+          <i class="fa-solid fa-volleyball text-orange"></i> เปิด/ปิด แยกตามรายชนิดกีฬา:
+        </h3>
+        <div id="sportTogglesContainer">
+          <!-- Populated by JS -->
+        </div>
+
+        <h3 style="font-family: 'Prompt', sans-serif; margin: 28px 0 12px; color: #0f172a; font-size: 1.1rem;">
+          <i class="fa-solid fa-key text-orange"></i> เปลี่ยนรหัสผ่านแอดมิน:
+        </h3>
+        <div style="display: flex; gap: 12px; max-width: 400px;">
+          <input type="password" id="inputNewAdminPassword" placeholder="รหัสผ่านใหม่ (อย่างน้อย 4 ตัวอักษร)" style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a;">
+          <button type="button" id="btnChangePassword" class="btn btn-secondary">
+            เปลี่ยนรหัส
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: รายการผู้สมัครผ่านเว็บ -->
+    <!-- ========================================================= -->
+    <div id="tab-registrations" class="admin-tab-content hidden">
+      <div class="admin-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-list-check text-orange"></i> รายการผู้สมัครผ่านเว็บออนไลน์
+          </div>
+          <button type="button" id="btnRefreshRegs" class="btn btn-secondary">
+            <i class="fa-solid fa-rotate"></i> รีเฟรช
+          </button>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>เวลาสมัคร</th>
+                <th>รหัส</th>
+                <th>ชื่อ - นามสกุล</th>
+                <th>ชั้น</th>
+                <th>ฝ่าย</th>
+                <th>รายการ/กีฬา</th>
+                <th>เบอร์โทร</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="registrationsTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: สถิติการสมัคร -->
+    <!-- ========================================================= -->
+    <div id="tab-analytics" class="admin-tab-content hidden">
+      <div class="admin-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-chart-column text-orange"></i> สรุปจำนวนผู้สมัครแยกตามฝ่าย & ระดับชั้น
+          </div>
+        </div>
+        <div id="analyticsSummaryContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ✏️ Modal: Edit Student Duty & Registration -->
+  <div id="editStudentModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span><i class="fa-solid fa-user-pen text-orange"></i> แก้ไขข้อมูล & หน้าที่นักเรียน</span>
+        <button type="button" class="close-modal-btn" id="closeEditModalBtn">&times;</button>
+      </div>
+
+      <form id="editStudentForm">
+        <input type="hidden" id="editStudentId">
+        
+        <div style="background: #fff7ed; border: 1px solid #fed7aa; padding: 14px 18px; border-radius: 12px; margin-bottom: 18px;">
+          <div style="font-weight: 700; font-size: 1.15rem; color: #ea580c;" id="editModalStudentName">-</div>
+          <div style="color: #64748b; font-size: 0.88rem; margin-top: 2px;" id="editModalStudentMeta">-</div>
+        </div>
+
+        <div class="form-group">
+          <label for="editDutyInput"><i class="fa-solid fa-award text-orange"></i> หน้าที่ (Duty):</label>
+          <input type="text" id="editDutyInput" placeholder="เช่น ฟุตบอล, วอลเลย์บอล, สตาฟพร็อพ, สแตนเชียร์">
+          <div class="duty-quick-tags">
+            <span class="duty-tag" data-duty="ฟุตบอล">⚽ ฟุตบอล</span>
+            <span class="duty-tag" data-duty="บาสเกตบอล">🏀 บาส</span>
+            <span class="duty-tag" data-duty="วอลเลย์บอล">🏐 วอลเลย์</span>
+            <span class="duty-tag" data-duty="ตะกร้อ">🏸 ตะกร้อ</span>
+            <span class="duty-tag" data-duty="เปตอง">⚪ เปตอง</span>
+            <span class="duty-tag" data-duty="กรีฑา">🏃 กรีฑา</span>
+            <span class="duty-tag" data-duty="วิ่ง 16 ขา">🏃‍♂️ 16 ขา</span>
+            <span class="duty-tag" data-duty="สแตนเชียร์">🎪 สแตน</span>
+            <span class="duty-tag" data-duty="เชียร์ลีดเดอร์">📣 หลีด</span>
+            <span class="duty-tag" data-duty="ดรัมเมเยอร์">🥁 ดรัม</span>
+            <span class="duty-tag" data-duty="สตาฟพร็อพ">🎨 พร็อพ</span>
+            <span class="duty-tag" data-duty="สวัสดิการ">🍵 สวัสดิการ</span>
+            <span class="duty-tag" data-duty="สตาฟ">🧡 สตาฟ</span>
+          </div>
+          <small style="color: #64748b; display: block; margin-top: 6px;">*ถ้ามีหลายหน้าที่ ให้คั่นด้วยเครื่องหมายจุลภาค (,) เช่น "สแตนเชียร์, ฟุตบอล"</small>
+        </div>
+
+        <div class="form-group">
+          <label for="editPhoneInput"><i class="fa-solid fa-phone text-orange"></i> เบอร์โทรศัพท์ (10 หลัก):</label>
+          <input type="tel" id="editPhoneInput" maxlength="12" placeholder="08x-xxx-xxxx">
+        </div>
+
+        <div class="form-group">
+          <label for="editNoteInput"><i class="fa-solid fa-note-sticky text-orange"></i> หมายเหตุ:</label>
+          <input type="text" id="editNoteInput" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)">
+        </div>
+
+        <div style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #dc2626; font-size: 0.92rem;">
+            <input type="checkbox" id="editResetRegCheckbox" style="width: 18px; height: 18px; accent-color: #dc2626;">
+            <span><strong>ปลดล็อคการสมัคร (Reset Registration)</strong>: ลบประวัติการสมัครในเว็บ เพื่อให้นักเรียนสามารถเลือกฝ่ายใหม่ได้</span>
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelEdit">ยกเลิก</button>
+          <button type="submit" id="btnSaveStudentEdit" class="btn btn-orange">
+            <i class="fa-solid fa-floppy-disk"></i> บันทึก & ซิงค์ Google Sheet
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

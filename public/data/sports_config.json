@@ -1,0 +1,268 @@
+[
+  {
+    "id": "football",
+    "name": "ฟุตบอล",
+    "icon": "⚽",
+    "categories": [
+      {
+        "id": "football_m_junior",
+        "name": "ทีมชาย ม.ต้น",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนต้น",
+          "ทีมชาย ม.ต้น"
+        ],
+        "level": "junior",
+        "gender": "ชาย",
+        "maxQuota": 15,
+        "isOpen": true
+      },
+      {
+        "id": "football_m_senior",
+        "name": "ทีมชาย ม.ปลาย",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนปลาย",
+          "ทีมชาย ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "ชาย",
+        "maxQuota": 12,
+        "isOpen": true
+      },
+      {
+        "id": "football_f_junior",
+        "name": "ทีมหญิง ม.ต้น",
+        "altTitles": [
+          "ทีมหญิง มัธยมศึกษาตอนต้น",
+          "ทีมหญิง ม.ต้น"
+        ],
+        "level": "junior",
+        "gender": "หญิง",
+        "maxQuota": 12,
+        "isOpen": true
+      },
+      {
+        "id": "football_f_senior",
+        "name": "ทีมหญิง ม.ปลาย",
+        "altTitles": [
+          "ทีมหญิง มัธยมศึกษาตอนปลาย",
+          "ทีมหญิง ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "หญิง",
+        "maxQuota": 10,
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "id": "basketball",
+    "name": "บาสเกตบอล",
+    "icon": "🏀",
+    "categories": [
+      {
+        "id": "basketball_m_junior",
+        "name": "ทีมชาย ม.ต้น",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนต้น",
+          "ทีมชาย ม.ต้น"
+        ],
+        "level": "junior",
+        "gender": "ชาย",
+        "maxQuota": 10,
+        "isOpen": true
+      },
+      {
+        "id": "basketball_m_senior",
+        "name": "ทีมชาย ม.ปลาย",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนปลาย",
+          "ทีมชาย ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "ชาย",
+        "maxQuota": 10,
+        "isOpen": true
+      },
+      {
+        "id": "basketball_f_junior",
+        "name": "ทีมหญิง (รวม ม.ต้น)",
+        "altTitles": [
+          "ทีมหญิง (ม.ต้น)",
+          "ทีมหญิง (รวม ม.ต้น)"
+        ],
+        "level": "junior",
+        "gender": "หญิง",
+        "maxQuota": 8,
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "id": "volleyball",
+    "name": "วอลเลย์บอล",
+    "icon": "🏐",
+    "categories": [
+      {
+        "id": "volleyball_m_junior",
+        "name": "ทีมชาย ม.ต้น",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนต้น",
+          "ทีมชาย ม.ต้น"
+        ],
+        "level": "junior",
+        "gender": "ชาย",
+        "maxQuota": 8,
+        "isOpen": true
+      },
+      {
+        "id": "volleyball_f_junior",
+        "name": "ทีมหญิง ม.ต้น",
+        "altTitles": [
+          "ทีมหญิง มัธยมศึกษาตอนต้น",
+          "ทีมหญิง ม.ต้น"
+        ],
+        "level": "junior",
+        "gender": "หญิง",
+        "maxQuota": 10,
+        "isOpen": true
+      },
+      {
+        "id": "volleyball_m_senior",
+        "name": "ทีมชาย ม.ปลาย",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนปลาย",
+          "ทีมชาย ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "ชาย",
+        "maxQuota": 8,
+        "isOpen": true
+      },
+      {
+        "id": "volleyball_f_senior",
+        "name": "ทีมหญิง ม.ปลาย",
+        "altTitles": [
+          "ทีมหญิง มัธยมศึกษาตอนปลาย",
+          "ทีมหญิง ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "หญิง",
+        "maxQuota": 8,
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "id": "takraw",
+    "name": "ตะกร้อ",
+    "icon": "🏸",
+    "categories": [
+      {
+        "id": "takraw_m_junior",
+        "name": "ทีมชาย ม.ต้น",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนต้น",
+          "ทีมชาย ม.ต้น"
+        ],
+        "level": "junior",
+        "gender": "ชาย",
+        "maxQuota": 5,
+        "isOpen": true
+      },
+      {
+        "id": "takraw_m_senior",
+        "name": "ทีมชาย ม.ปลาย",
+        "altTitles": [
+          "ทีมชาย มัธยมศึกษาตอนปลาย",
+          "ทีมชาย ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "ชาย",
+        "maxQuota": 5,
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "id": "petanque",
+    "name": "เปตอง",
+    "icon": "⚪",
+    "categories": [
+      {
+        "id": "petanque_mixed_junior",
+        "name": "ทีม ม.ต้น (ชาย/หญิง)",
+        "altTitles": [
+          "ทีม มัธยมศึกษาตอนต้น (ชาย/หญิง)",
+          "ทีม ม.ต้น (ชาย/หญิง)"
+        ],
+        "level": "junior",
+        "gender": "all",
+        "maxQuota": 12,
+        "isOpen": true
+      },
+      {
+        "id": "petanque_mixed_senior",
+        "name": "ทีม ม.ปลาย",
+        "altTitles": [
+          "ทีม มัธยมศึกษาตอนปลาย",
+          "ทีม ม.ปลาย",
+          "ทีม มัธยมศึกษาตอนปลาย (ชาย/หญิง)"
+        ],
+        "level": "senior",
+        "gender": "all",
+        "maxQuota": 6,
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "id": "athletics",
+    "name": "กรีฑา",
+    "icon": "🏃",
+    "categories": [
+      {
+        "id": "athletics_mixed_junior",
+        "name": "ทีม ม.ต้น (ชาย/หญิง)",
+        "altTitles": [
+          "ทีม มัธยมศึกษาตอนต้น (ชาย/หญิง)",
+          "ทีม ม.ต้น (ชาย/หญิง)"
+        ],
+        "level": "junior",
+        "gender": "all",
+        "maxQuota": 12,
+        "isOpen": true
+      },
+      {
+        "id": "athletics_mixed_senior",
+        "name": "ทีม ม.ปลาย (ชาย/หญิง)",
+        "altTitles": [
+          "ทีม มัธยมศึกษาตอนปลาย (ชาย/หญิง)",
+          "ทีม ม.ปลาย (ชาย/หญิง)"
+        ],
+        "level": "senior",
+        "gender": "all",
+        "maxQuota": 10,
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "id": "running16",
+    "name": "วิ่ง 16 ขา",
+    "icon": "🏃‍♂️🏃‍♀️",
+    "categories": [
+      {
+        "id": "running16_mixed_senior",
+        "name": "ทีมผสม ม.ปลาย",
+        "altTitles": [
+          "ทีมผสม มัธยมศึกษาตอนปลาย",
+          "ทีมผสม ม.ปลาย"
+        ],
+        "level": "senior",
+        "gender": "all",
+        "maxQuota": 12,
+        "isOpen": true
+      }
+    ]
+  }
+]

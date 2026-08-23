@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" width="250" height="250">
+  <defs>
+    <linearGradient id="gradParade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="sh5" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="250" height="250" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="25" y="25" width="50" height="50" rx="8" fill="none" stroke="#ea580c" stroke-width="8"/>
+  <rect x="37" y="37" width="26" height="26" rx="4" fill="#ea580c"/>
+  <rect x="175" y="25" width="50" height="50" rx="8" fill="none" stroke="#ea580c" stroke-width="8"/>
+  <rect x="187" y="37" width="26" height="26" rx="4" fill="#ea580c"/>
+  <rect x="25" y="175" width="50" height="50" rx="8" fill="none" stroke="#ea580c" stroke-width="8"/>
+  <rect x="37" y="187" width="26" height="26" rx="4" fill="#ea580c"/>
+  <g fill="#0f172a">
+    <rect x="90" y="25" width="10" height="10" rx="2"/>
+    <rect x="110" y="25" width="10" height="20" rx="2"/>
+    <rect x="130" y="25" width="10" height="10" rx="2"/>
+    <rect x="150" y="25" width="10" height="10" rx="2"/>
+    <rect x="90" y="45" width="10" height="10" rx="2"/>
+    <rect x="130" y="45" width="20" height="10" rx="2"/>
+    <rect x="90" y="65" width="20" height="10" rx="2"/>
+    <rect x="120" y="65" width="10" height="10" rx="2"/>
+    <rect x="140" y="65" width="20" height="10" rx="2"/>
+    <rect x="25" y="90" width="10" height="20" rx="2"/>
+    <rect x="45" y="90" width="20" height="10" rx="2"/>
+    <rect x="75" y="90" width="10" height="10" rx="2"/>
+    <rect x="165" y="90" width="20" height="10" rx="2"/>
+    <rect x="195" y="90" width="10" height="20" rx="2"/>
+    <rect x="215" y="90" width="10" height="10" rx="2"/>
+    <rect x="25" y="120" width="20" height="10" rx="2"/>
+    <rect x="55" y="120" width="10" height="20" rx="2"/>
+    <rect x="185" y="120" width="10" height="10" rx="2"/>
+    <rect x="205" y="120" width="20" height="10" rx="2"/>
+    <rect x="25" y="150" width="10" height="10" rx="2"/>
+    <rect x="45" y="150" width="20" height="10" rx="2"/>
+    <rect x="75" y="150" width="10" height="10" rx="2"/>
+    <rect x="165" y="150" width="10" height="10" rx="2"/>
+    <rect x="185" y="150" width="20" height="10" rx="2"/>
+    <rect x="215" y="150" width="10" height="10" rx="2"/>
+    <rect x="90" y="175" width="20" height="10" rx="2"/>
+    <rect x="120" y="175" width="10" height="20" rx="2"/>
+    <rect x="140" y="175" width="20" height="10" rx="2"/>
+    <rect x="175" y="175" width="10" height="10" rx="2"/>
+    <rect x="195" y="175" width="20" height="10" rx="2"/>
+    <rect x="90" y="205" width="10" height="20" rx="2"/>
+    <rect x="110" y="195" width="20" height="10" rx="2"/>
+    <rect x="140" y="205" width="10" height="10" rx="2"/>
+    <rect x="165" y="205" width="20" height="10" rx="2"/>
+    <rect x="205" y="205" width="20" height="20" rx="2"/>
+  </g>
+  <g filter="url(#sh5)">
+    <circle cx="125" cy="125" r="28" fill="#ffffff"/>
+    <circle cx="125" cy="125" r="24" fill="url(#gradParade)"/>
+    <text x="125" y="132" font-size="20" text-anchor="middle" fill="#ffffff">🎨</text>
+  </g>
+</svg>
