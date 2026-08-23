@@ -1497,26 +1497,61 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 8. Initial System Status Check
+  // 8. Initial System Status Check (Cloud Firestore + Fallback)
   // =========================================================================
   async function checkSystemStatus() {
-    try {
-      const res = await fetch('/api/system/status');
-      const data = await res.json();
-      if (data.success) {
-        state.systemStatus = data;
-        if (!data.isOpen) {
+    // 1. Try Firebase Firestore
+    if (db) {
+      try {
+        db.collection('settings').doc('system').onSnapshot(docSnap => {
+          if (docSnap.exists) {
+            const data = docSnap.data();
+            state.systemStatus = {
+              isOpen: data.isRegistrationOpen !== false,
+              closeMessage: data.closeMessage || 'ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล',
+              departmentsStatus: data.departmentsStatus || {},
+              sportsStatus: data.sportsStatus || {}
+            };
+
+            if (!state.systemStatus.isOpen) {
+              if (systemClosedBanner && systemClosedText) {
+                systemClosedText.textContent = state.systemStatus.closeMessage;
+                systemClosedBanner.classList.remove('hidden');
+              }
+              if (toStep2Btn) toStep2Btn.disabled = true;
+            } else {
+              if (systemClosedBanner) systemClosedBanner.classList.add('hidden');
+              if (toStep2Btn && state.student) toStep2Btn.disabled = false;
+            }
+          }
+        }, fErr => {
+          console.warn('Firestore settings realtime listener error:', fErr);
+        });
+        return;
+      } catch (e) {
+        console.warn('Could not attach Firestore settings listener:', e);
+      }
+    }
+
+    // 2. Fallback to localStorage or default
+    const saved = localStorage.getItem('topaz_system_settings');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        state.systemStatus = {
+          isOpen: data.isRegistrationOpen !== false,
+          closeMessage: data.closeMessage || 'ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล',
+          departmentsStatus: data.departmentsStatus || {},
+          sportsStatus: data.sportsStatus || {}
+        };
+        if (!state.systemStatus.isOpen) {
           if (systemClosedBanner && systemClosedText) {
-            systemClosedText.textContent = data.closeMessage || 'ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล';
+            systemClosedText.textContent = state.systemStatus.closeMessage;
             systemClosedBanner.classList.remove('hidden');
           }
           if (toStep2Btn) toStep2Btn.disabled = true;
-        } else {
-          if (systemClosedBanner) systemClosedBanner.classList.add('hidden');
         }
-      }
-    } catch (e) {
-      console.warn('Could not fetch system status:', e);
+      } catch (e) {}
     }
   }
 

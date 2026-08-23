@@ -647,16 +647,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 6. Settings & Control Tab
+  // 6. Settings & Control Tab (Cloud Firestore Sync)
   // =========================================================================
   const DEPARTMENTS = [
     { id: 'sports', name: 'ฝ่ายกีฬา' },
-    { id: 'welfare', name: 'ฝ่ายสวัสดิการ' },
-    { id: 'cheerleader', name: 'ฝ่ายเชียร์ลีดเดอร์' },
-    { id: 'drum_major', name: 'ฝ่ายดรัมเมเยอร์' },
-    { id: 'colorguard', name: 'ฝ่ายคัลเลอร์การ์ด' },
-    { id: 'parade_props', name: 'ฝ่ายพร็อพ' },
     { id: 'stand_cheer', name: 'ฝ่ายสแตนเชียร์' },
+    { id: 'cheerleader', name: 'ฝ่ายเชียร์ลีดเดอร์' },
+    { id: 'drum_major', name: 'ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด' },
+    { id: 'parade_props', name: 'ฝ่ายขบวนพาเหรด' },
+    { id: 'welfare', name: 'ฝ่ายสวัสดิการ' },
     { id: 'staff', name: 'ฝ่ายสตาฟคณะสี (ม.5)' }
   ];
 
@@ -664,157 +663,163 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'football', name: 'ฟุตบอล' },
     { id: 'basketball', name: 'บาสเกตบอล' },
     { id: 'volleyball', name: 'วอลเลย์บอล' },
-    { id: 'takraw', name: 'ตะกร้อ' },
+    { id: 'takraw', name: 'เซปักตะกร้อ' },
     { id: 'petanque', name: 'เปตอง' },
     { id: 'athletics', name: 'กรีฑา' },
     { id: 'running16', name: 'วิ่ง 16 ขา' }
   ];
 
   async function loadSettings() {
-    try {
-      const res = await fetch('/api/admin/settings');
-      const json = await res.json();
-      if (json.success) {
-        currentSettings = json.data;
-        renderSettings();
+    // 1. Try Firebase Firestore
+    if (db) {
+      try {
+        const docSnap = await db.collection('settings').doc('system').get();
+        if (docSnap.exists) {
+          currentSettings = docSnap.data();
+          renderSettings();
+          return;
+        }
+      } catch (e) {
+        console.warn('Firestore settings load error:', e);
       }
-    } catch (e) {
-      console.error(e);
     }
+
+    // 2. Fallback to localStorage or default
+    const saved = localStorage.getItem('topaz_system_settings');
+    if (saved) {
+      try {
+        currentSettings = JSON.parse(saved);
+        renderSettings();
+        return;
+      } catch (e) {}
+    }
+
+    currentSettings = {
+      isRegistrationOpen: true,
+      closeMessage: 'ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล',
+      departmentsStatus: {
+        sports: true, welfare: true, cheerleader: true, drum_major: true,
+        parade_props: true, stand_cheer: true, staff: true
+      },
+      sportsStatus: {
+        football: true, basketball: true, volleyball: true, takraw: true,
+        petanque: true, athletics: true, running16: true
+      }
+    };
+    renderSettings();
   }
 
   function renderSettings() {
     if (!currentSettings) return;
 
-    toggleMasterSystem.checked = currentSettings.isRegistrationOpen !== false;
-    inputCloseMessage.value = currentSettings.closeMessage || 'ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล';
+    if (toggleMasterSystem) toggleMasterSystem.checked = currentSettings.isRegistrationOpen !== false;
+    if (inputCloseMessage) inputCloseMessage.value = currentSettings.closeMessage || 'ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล';
 
     const deptStatus = currentSettings.departmentsStatus || {};
-    deptTogglesContainer.innerHTML = DEPARTMENTS.map(d => {
-      const isOpen = deptStatus[d.id] !== false;
-      return `
-        <div class="switch-container">
-          <div>
+    if (deptTogglesContainer) {
+      deptTogglesContainer.innerHTML = DEPARTMENTS.map(d => {
+        const isOpen = deptStatus[d.id] !== false;
+        return `
+          <div class="switch-container">
             <div class="switch-label">${d.name}</div>
+            <label class="switch">
+              <input type="checkbox" class="dept-toggle" data-id="${d.id}" ${isOpen ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
           </div>
-          <label class="switch">
-            <input type="checkbox" class="dept-toggle" data-id="${d.id}" ${isOpen ? 'checked' : ''}>
-            <span class="slider"></span>
-          </label>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    }
 
     const sportStatus = currentSettings.sportsStatus || {};
-    sportTogglesContainer.innerHTML = SPORTS.map(s => {
-      const isOpen = sportStatus[s.id] !== false;
-      return `
-        <div class="switch-container">
-          <div>
+    if (sportTogglesContainer) {
+      sportTogglesContainer.innerHTML = SPORTS.map(s => {
+        const isOpen = sportStatus[s.id] !== false;
+        return `
+          <div class="switch-container">
             <div class="switch-label">กีฬา${s.name}</div>
+            <label class="switch">
+              <input type="checkbox" class="sport-toggle" data-id="${s.id}" ${isOpen ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
           </div>
-          <label class="switch">
-            <input type="checkbox" class="sport-toggle" data-id="${s.id}" ${isOpen ? 'checked' : ''}>
-            <span class="slider"></span>
-          </label>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    }
   }
 
-  btnSaveSettings.addEventListener('click', async () => {
-    const isRegistrationOpen = toggleMasterSystem.checked;
-    const closeMessage = inputCloseMessage.value.trim();
+  if (btnSaveSettings) {
+    btnSaveSettings.addEventListener('click', async () => {
+      const isRegistrationOpen = toggleMasterSystem ? toggleMasterSystem.checked : true;
+      const closeMessage = inputCloseMessage ? inputCloseMessage.value.trim() : '';
 
-    const departmentsStatus = {};
-    document.querySelectorAll('.dept-toggle').forEach(t => {
-      departmentsStatus[t.getAttribute('data-id')] = t.checked;
-    });
-
-    const sportsStatus = {};
-    document.querySelectorAll('.sport-toggle').forEach(t => {
-      sportsStatus[t.getAttribute('data-id')] = t.checked;
-    });
-
-    btnSaveSettings.disabled = true;
-    btnSaveSettings.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
-
-    try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          isRegistrationOpen,
-          closeMessage,
-          departmentsStatus,
-          sportsStatus
-        })
+      const departmentsStatus = {};
+      document.querySelectorAll('.dept-toggle').forEach(t => {
+        departmentsStatus[t.getAttribute('data-id')] = t.checked;
       });
-      const data = await res.json();
-      if (data.success) {
-        showToast('บันทึกการตั้งค่าระบบเรียบร้อยแล้ว!', 'success');
-        loadStats();
-      } else {
-        showToast('บันทึกไม่สำเร็จ', 'error');
+
+      const sportsStatus = {};
+      document.querySelectorAll('.sport-toggle').forEach(t => {
+        sportsStatus[t.getAttribute('data-id')] = t.checked;
+      });
+
+      const settingsData = {
+        isRegistrationOpen,
+        closeMessage,
+        departmentsStatus,
+        sportsStatus,
+        updatedAt: new Date().toISOString()
+      };
+
+      btnSaveSettings.disabled = true;
+      btnSaveSettings.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+
+      // 1. Save to Cloud Firestore
+      if (db) {
+        try {
+          await db.collection('settings').doc('system').set(settingsData, { merge: true });
+        } catch (fErr) {
+          console.warn('Firestore save settings warning:', fErr);
+        }
       }
-    } catch (err) {
-      showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', 'error');
-    } finally {
+
+      // 2. Save to localStorage
+      localStorage.setItem('topaz_system_settings', JSON.stringify(settingsData));
+      currentSettings = settingsData;
+
+      showToast('บันทึกการตั้งค่าระบบเปิด/ปิดรับสมัครเรียบร้อยแล้ว! ⚙️✅', 'success');
+      loadStats();
+
       btnSaveSettings.disabled = false;
       btnSaveSettings.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่า';
-    }
-  });
+    });
+  }
 
-  btnChangePassword.addEventListener('click', async () => {
-    const newPassword = inputNewAdminPassword.value.trim();
-    if (newPassword.length < 4) {
-      showToast('รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร', 'error');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newPassword })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast('เปลี่ยนรหัสผ่านแอดมินสำเร็จ!', 'success');
-        inputNewAdminPassword.value = '';
+  if (btnChangePassword) {
+    btnChangePassword.addEventListener('click', async () => {
+      const newPassword = inputNewAdminPassword ? inputNewAdminPassword.value.trim() : '';
+      if (newPassword.length < 4) {
+        showToast('รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร', 'error');
+        return;
       }
-    } catch (e) {
+
+      // Save admin password to Firestore & localStorage
+      if (db) {
+        try {
+          await db.collection('settings').doc('auth').set({
+            adminPassword: newPassword,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        } catch (e) {}
+      }
+      localStorage.setItem('topaz_admin_pwd', newPassword);
+
       showToast('เปลี่ยนรหัสผ่านแอดมินสำเร็จ!', 'success');
-      inputNewAdminPassword.value = '';
-    }
-  });
+      if (inputNewAdminPassword) inputNewAdminPassword.value = '';
+    });
+  }
 
-  // Rebuild & Sync Docs Button
-  btnSyncDocs.addEventListener('click', async () => {
-    if (!confirm('ต้องการดึงข้อมูลล่าสุดจาก Google Sheets และ Rebuild ไฟล์ Excel/PDF ในเครื่องทั้งหมดใช่หรือไม่?')) {
-      return;
-    }
 
-    btnSyncDocs.disabled = true;
-    btnSyncDocs.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังซิงค์ & Rebuild...';
-
-    try {
-      const res = await fetch('/api/admin/sync-build', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        showToast('ซิงค์และสร้างเอกสารทางการสำเร็จ 100%! 📁✨', 'success');
-        loadStudents();
-        loadStats();
-      } else {
-        showToast('เกิดข้อผิดพลาด: ' + data.message, 'error');
-      }
-    } catch (err) {
-      showToast('ฟังก์ชันนี้ทำงานบนเซิร์ฟเวอร์ Localhost เท่านั้น', 'info');
-    } finally {
-      btnSyncDocs.disabled = false;
-      btnSyncDocs.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> ซิงค์ & Rebuild เอกสารทางการ';
-    }
-  });
 
   // =========================================================================
   // 7. Registrations Explorer Tab
