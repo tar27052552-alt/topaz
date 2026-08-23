@@ -601,6 +601,9 @@
       <button type="button" class="admin-tab-btn active" data-tab="students">
         <i class="fa-solid fa-users-gear"></i> จัดการนักเรียน & หน้าที่ (ม.1 - ม.6)
       </button>
+      <button type="button" class="admin-tab-btn" data-tab="pdf">
+        <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> ส่งออกเอกสาร PDF ทางการ (Export PDF)
+      </button>
       <button type="button" class="admin-tab-btn" data-tab="control">
         <i class="fa-solid fa-sliders"></i> เปิด/ปิดรับสมัคร & ตั้งค่าระบบ
       </button>
@@ -817,11 +820,168 @@
             <i class="fa-solid fa-chart-column text-orange"></i> สรุปจำนวนผู้สมัครแยกตามฝ่าย & ระดับชั้น
           </div>
         </div>
-        <div id="analyticsSummaryContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-          <!-- Populated by JS -->
+    <!-- ========================================================= -->
+    <!-- TAB 5: ส่งออกเอกสาร PDF ทางการ (Export PDF) -->
+    <!-- ========================================================= -->
+    <div id="tab-pdf" class="admin-tab-content hidden">
+      <div class="admin-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> ระบบจัดทำและพิมพ์เอกสาร PDF ทางการ คณะสีแสด 2569
+          </div>
+          <span style="font-size: 0.88rem; color: #16a34a; background: #dcfce7; padding: 4px 12px; border-radius: 20px; font-weight: 600;">
+            <i class="fa-solid fa-bolt"></i> สร้าง PDF ในเครื่องทันที (Client-side Generator)
+          </span>
+        </div>
+
+        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px;">
+          เลือกรุปแบบเอกสารทางการที่ต้องการพิมพ์ หรือบันทึกเป็นไฟล์ PDF เพื่อส่งครูที่ปรึกษา คณะกรรมการ หรือฝ่ายประสานงาน:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          
+          <!-- Card 1: Master Summary -->
+          <div style="background: #fff; border: 1.5px solid #fed7aa; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: #fff7ed; color: #ea580c; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                  <i class="fa-solid fa-book"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">1. เล่มเอกสารทางการฉบับรวมสมบูรณ์</strong>
+                  <div style="font-size: 0.8rem; color: #64748b;">Master Official Report (492 คน)</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+                รวมรายชื่อนักเรียนคณะสีแสดทั้งหมด 492 คน แยกตามระดับชั้น ม.1–ม.6 แสดงหน้าที่และเบอร์โทรศัพท์ครบถ้วน
+              </p>
+            </div>
+            <button type="button" class="btn btn-orange w-full btn-generate-pdf" data-type="master">
+              <i class="fa-solid fa-print"></i> พิมพ์ / ดาวน์โหลด PDF ฉบับรวม
+            </button>
+          </div>
+
+          <!-- Card 2: By Department -->
+          <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: #fdf2f8; color: #db2777; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                  <i class="fa-solid fa-palette"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">2. เอกสารรายชื่อแยกตามฝ่ายกิจกรรม</strong>
+                  <div style="font-size: 0.8rem; color: #64748b;">Department Roster Report</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
+                เลือกพิมพ์รายชื่อเฉพาะฝ่าย เช่น ขบวนพาเหรด, สแตนเชียร์, เชียร์ลีดเดอร์, สตาฟ, สวัสดิการ
+              </p>
+              <div style="margin-bottom: 16px;">
+                <select id="pdfSelectDept" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
+                  <option value="ขบวนพาเหรด">🎨 ฝ่ายขบวนพาเหรด</option>
+                  <option value="สแตนเชียร์">🎪 ฝ่ายสแตนเชียร์ (ม.1 ทุกห้อง)</option>
+                  <option value="เชียร์ลีดเดอร์">📣 ฝ่ายเชียร์ลีดเดอร์</option>
+                  <option value="ดรัมเมเยอร์">🥁 ฝ่ายดรัมเมเยอร์ & คัลเลอร์การ์ด</option>
+                  <option value="สวัสดิการ">🍵 ฝ่ายสวัสดิการ</option>
+                  <option value="สตาฟ">🧡 ฝ่ายสตาฟคณะสี (ม.5)</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="dept" style="color: #db2777; border-color: #fbcfe8;">
+              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF รายฝ่าย
+            </button>
+          </div>
+
+          <!-- Card 3: By Sport -->
+          <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                  <i class="fa-solid fa-volleyball"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">3. เอกสารรายชื่อนักกีฬาแยกตามชนิดกีฬา</strong>
+                  <div style="font-size: 0.8rem; color: #64748b;">Sports Roster Report</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
+                เลือกพิมพ์รายชื่อนักกีฬาแต่ละประเภทสำหรับส่งฝ่ายจัดการแข่งขัน
+              </p>
+              <div style="margin-bottom: 16px;">
+                <select id="pdfSelectSport" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
+                  <option value="ฟุตบอล">⚽ กีฬาฟุตบอล</option>
+                  <option value="บาสเกตบอล">🏀 กีฬาบาสเกตบอล</option>
+                  <option value="วอลเลย์บอล">🏐 กีฬาวอลเลย์บอล</option>
+                  <option value="ตะกร้อ">🏸 กีฬาเซปักตะกร้อ</option>
+                  <option value="เปตอง">⚪ กีฬาเปตอง</option>
+                  <option value="กรีฑา">🏃 กรีฑา (ลู่/ลาน)</option>
+                  <option value="16 ขา">🏃‍♂️ กีฬาวิ่ง 16 ขา</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="sport" style="color: #2563eb; border-color: #bfdbfe;">
+              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF รายกีฬา
+            </button>
+          </div>
+
+          <!-- Card 4: By Classroom -->
+          <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                  <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">4. เอกสารแยกตามระดับชั้น / ห้องเรียน</strong>
+                  <div style="font-size: 0.8rem; color: #64748b;">Classroom / Grade Report</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
+                เลือกพิมพ์รายชื่อนักเรียนเพื่อส่งคุณครูที่ปรึกษาประจำห้อง หรือดูรายระดับชั้น
+              </p>
+              <div style="margin-bottom: 16px;">
+                <select id="pdfSelectGrade" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
+                  <option value="1">มัธยมศึกษาปีที่ 1 (ทุกห้อง)</option>
+                  <option value="2">มัธยมศึกษาปีที่ 2 (ทุกห้อง)</option>
+                  <option value="3">มัธยมศึกษาปีที่ 3 (ทุกห้อง)</option>
+                  <option value="4">มัธยมศึกษาปีที่ 4 (ทุกห้อง)</option>
+                  <option value="5">มัธยมศึกษาปีที่ 5 (ทุกห้อง - สตาฟ)</option>
+                  <option value="6">มัธยมศึกษาปีที่ 6 (ทุกห้อง)</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="grade" style="color: #16a34a; border-color: #bbf7d0;">
+              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF รายชั้น
+            </button>
+          </div>
+
+          <!-- Card 5: Unassigned Students -->
+          <div style="background: #fff; border: 1.5px solid #fecaca; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: #fef2f2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                  <i class="fa-solid fa-user-xmark"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #dc2626;">5. เอกสารนักเรียนที่ "ยังไม่มีหน้าที่"</strong>
+                  <div style="font-size: 0.8rem; color: #64748b;">Unassigned Students Follow-up</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+                พิมพ์ใบรายชื่อนักเรียนที่ยังไม่ได้รับมอบหมายหน้าที่ สำหรับคณะกรรมการใช้ติดตามตัวมาจัดสรรหน้าที่
+              </p>
+            </div>
+            <button type="button" class="btn btn-danger w-full btn-generate-pdf" data-type="unassigned">
+              <i class="fa-solid fa-file-pdf"></i> พิมพ์ / ดาวน์โหลด PDF คนที่ยังว่าง
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
+
+    <!-- Hidden Print Container for Clean PDF rendering -->
+    <div id="pdfPrintArea" style="display: none;"></div>
 
   </div>
 
@@ -855,7 +1015,7 @@
             <span class="duty-tag" data-duty="สแตนเชียร์">🎪 สแตน</span>
             <span class="duty-tag" data-duty="เชียร์ลีดเดอร์">📣 หลีด</span>
             <span class="duty-tag" data-duty="ดรัมเมเยอร์">🥁 ดรัม</span>
-            <span class="duty-tag" data-duty="สตาฟพร็อพ">🎨 พร็อพ</span>
+            <span class="duty-tag" data-duty="ขบวนพาเหรด">🎨 ขบวนพาเหรด</span>
             <span class="duty-tag" data-duty="สวัสดิการ">🍵 สวัสดิการ</span>
             <span class="duty-tag" data-duty="สตาฟ">🧡 สตาฟ</span>
           </div>
@@ -892,7 +1052,7 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
-  <!-- Scripts: Firebase & Admin Logic -->
+  <!-- Scripts: Firebase & PDF Engine & Admin Logic -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>

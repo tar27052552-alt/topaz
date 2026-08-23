@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabButtons = document.querySelectorAll('.admin-tab-btn');
   const tabContents = {
     students: document.getElementById('tab-students'),
+    pdf: document.getElementById('tab-pdf'),
     control: document.getElementById('tab-control'),
     registrations: document.getElementById('tab-registrations'),
     analytics: document.getElementById('tab-analytics')
@@ -994,6 +995,254 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '<div style="color: #ef4444;">เกิดข้อผิดพลาดในการโหลดสถิติ</div>';
       }
     }
+  }
+
+  // =========================================================================
+  // 9. PDF Generation & Print Engine (Client-Side)
+  // =========================================================================
+  const pdfSelectDept = document.getElementById('pdfSelectDept');
+  const pdfSelectSport = document.getElementById('pdfSelectSport');
+  const pdfSelectGrade = document.getElementById('pdfSelectGrade');
+
+  document.querySelectorAll('.btn-generate-pdf').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.getAttribute('data-type');
+      generateOfficialPDF(type);
+    });
+  });
+
+  function generateOfficialPDF(type) {
+    if (!cachedAllStudents || cachedAllStudents.length === 0) {
+      showToast('กำลังเตรียมข้อมูลนักเรียน กรุณารอสักครู่...', 'info');
+      return;
+    }
+
+    let title = '';
+    let subtitle = '';
+    let studentsToPrint = [];
+
+    if (type === 'master') {
+      title = 'บัญชีรายชื่อนักเรียนและหน้าที่ทั้งหมด (Master Roster)';
+      subtitle = 'คณะสีแสด (สีบุษราคัม) กีฬาสีสรรพวิทยาคม ประจำปีการศึกษา 2569 (รวม 492 คน)';
+      studentsToPrint = [...cachedAllStudents];
+    } else if (type === 'dept') {
+      const dept = pdfSelectDept.value;
+      title = `บัญชีรายชื่อนักเรียน ${dept}`;
+      subtitle = `คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569`;
+      studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(dept));
+    } else if (type === 'sport') {
+      const sport = pdfSelectSport.value;
+      title = `บัญชีรายชื่อนักกีฬา ฝ่าย${sport}`;
+      subtitle = `คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569`;
+      studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(sport));
+    } else if (type === 'grade') {
+      const g = pdfSelectGrade.value;
+      title = `บัญชีรายชื่อนักเรียน ชั้นมัธยมศึกษาปีที่ ${g}`;
+      subtitle = `คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569`;
+      studentsToPrint = cachedAllStudents.filter(s => String(s.grade) === String(g));
+    } else if (type === 'unassigned') {
+      title = 'บัญชีรายชื่อนักเรียนที่ "ยังไม่มีหน้าที่" (สำหรับติดตามตัว)';
+      subtitle = 'คณะสีแสด (สีบุษราคัม) โรงเรียนสรรพวิทยาคม ประจำปีการศึกษา 2569';
+      studentsToPrint = cachedAllStudents.filter(s => !s.duty || s.duty.trim() === '-' || s.duty.trim() === '');
+    }
+
+    // Sort by grade, room, classNo
+    studentsToPrint.sort((a, b) => {
+      if (a.grade !== b.grade) return (a.grade || 0) - (b.grade || 0);
+      if (a.room !== b.room) return (a.room || 0) - (b.room || 0);
+      return (parseInt(a.classNo) || 0) - (parseInt(b.classNo) || 0);
+    });
+
+    const nowTh = new Date().toLocaleDateString('th-TH', {
+      year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+
+    // Create a printable HTML document inside an iframe or popup window
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      showToast('เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาตป๊อปอัปเพื่อเปิด PDF', 'error');
+      return;
+    }
+
+    const rowsHtml = studentsToPrint.map((s, idx) => `
+      <tr>
+        <td style="text-align: center; width: 45px;">${idx + 1}</td>
+        <td style="text-align: center; font-weight: bold; width: 70px;">${s.id}</td>
+        <td style="text-align: center; width: 75px;">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
+        <td style="text-align: center; width: 50px;">${s.classNo || '-'}</td>
+        <td style="text-align: left; padding-left: 10px; font-weight: 500;">${s.name}</td>
+        <td style="text-align: center; width: 50px;">${s.gender || '-'}</td>
+        <td style="text-align: left; padding-left: 10px; font-weight: 600; color: #c2410c;">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#94a3b8; font-weight:normal;">-</span>'}</td>
+        <td style="text-align: center; width: 110px; font-family: monospace;">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
+        <td style="width: 80px;"></td>
+      </tr>
+    `).join('');
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="th">
+      <head>
+        <meta charset="UTF-8">
+        <title>${title} — คณะสีแสด 2569</title>
+        <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@600;700&display=swap" rel="stylesheet">
+        <style>
+          @page {
+            size: A4 portrait;
+            margin: 12mm 12mm 15mm 12mm;
+          }
+          * {
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+          }
+          body {
+            background: #fff;
+            color: #0f172a;
+            font-size: 13px;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #ea580c;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+          }
+          .title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #c2410c;
+            margin: 0 0 4px 0;
+          }
+          .subtitle {
+            font-size: 13px;
+            color: #475569;
+            margin: 0 0 4px 0;
+          }
+          .meta-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11.5px;
+            color: #64748b;
+            margin-top: 6px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+          }
+          th {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            padding: 6px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+          }
+          td {
+            border: 1px solid #e2e8f0;
+            padding: 5.5px 4px;
+            font-size: 12px;
+            vertical-align: middle;
+          }
+          tr:nth-child(even) td {
+            background-color: #fafafa;
+          }
+          .footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+          }
+          .sign-box {
+            text-align: center;
+            width: 200px;
+          }
+          .sign-line {
+            margin-top: 36px;
+            border-bottom: 1px dotted #94a3b8;
+            margin-bottom: 6px;
+          }
+          @media print {
+            .no-print { display: none !important; }
+            th { background-color: #ffedd5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="background: #ea580c; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-radius: 8px;">
+          <div>
+            <strong>📄 เอกสารพร้อมพิมพ์ / บันทึก PDF</strong> (${studentsToPrint.length} รายการ)
+          </div>
+          <div>
+            <button onclick="window.print()" style="background: white; color: #ea580c; font-weight: bold; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+              🖨️ พิมพ์เอกสาร / Save PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="header">
+          <h1 class="title">${title}</h1>
+          <div class="subtitle">${subtitle}</div>
+          <div class="meta-bar">
+            <span>จำนวนผู้มีรายชื่อ: <strong>${studentsToPrint.length}</strong> คน</span>
+            <span>ข้อมูล ณ วันที่: ${nowTh} น.</span>
+            <span>โรงเรียนสรรพวิทยาคม อ.แม่สอด จ.ตาก</span>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>รหัสนักเรียน</th>
+              <th>ชั้น/ห้อง</th>
+              <th>เลขที่</th>
+              <th>ชื่อ - นามสกุล</th>
+              <th>เพศ</th>
+              <th>หน้าที่ที่ได้รับมอบหมาย</th>
+              <th>เบอร์โทรศัพท์</th>
+              <th>ลายมือชื่อ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml || '<tr><td colspan="9" style="text-align:center; padding:20px;">ไม่มีข้อมูล</td></tr>'}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <div class="sign-box">
+            <div>ผู้จัดทำเอกสาร / ตัวแทนฝ่าย</div>
+            <div class="sign-line"></div>
+            <div>(......................................................)</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">กรรมการสตาฟ คณะสีแสด 69</div>
+          </div>
+          <div class="sign-box">
+            <div>ผู้ตรวจรับรอง / ครูที่ปรึกษา</div>
+            <div class="sign-line"></div>
+            <div>(......................................................)</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">ครูที่ปรึกษา คณะสีแสด</div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            // Auto open print dialog
+            setTimeout(function() {
+              window.print();
+            }, 500);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
   }
 
   // Initial check
