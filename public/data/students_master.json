@@ -977,7 +977,9 @@
     "roomFull": "ม.2/1",
     "classNo": 24,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "092-376-2675"
   },
   {
     "id": "34295",
@@ -987,7 +989,9 @@
     "roomFull": "ม.2/1",
     "classNo": 30,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "095-191-5990"
   },
   {
     "id": "34301",
@@ -1007,7 +1011,9 @@
     "roomFull": "ม.2/1",
     "classNo": 42,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "095-135-9335"
   },
   {
     "id": "34307",
@@ -1291,7 +1297,9 @@
     "roomFull": "ม.2/5",
     "classNo": 32,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "096-104-0004"
   },
   {
     "id": "34463",
@@ -1506,7 +1514,9 @@
     "roomFull": "ม.2/8",
     "classNo": 22,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "082-119-4569"
   },
   {
     "id": "34571",
@@ -1526,7 +1536,9 @@
     "roomFull": "ม.2/8",
     "classNo": 34,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "095-796-7899"
   },
   {
     "id": "34583",
@@ -1536,7 +1548,9 @@
     "roomFull": "ม.2/8",
     "classNo": 40,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "097-145-3589"
   },
   {
     "id": "34589",
@@ -1556,7 +1570,9 @@
     "roomFull": "ม.2/9",
     "classNo": 9,
     "gender": "ชาย",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "095-357-2991"
   },
   {
     "id": "34601",
@@ -1578,7 +1594,8 @@
     "classNo": 21,
     "gender": "หญิง",
     "level": "junior",
-    "duty": "ฟุตบอล"
+    "duty": "ฟุตบอล, ขบวนพาเหรด",
+    "phone": "091-030-4248"
   },
   {
     "id": "34613",
@@ -1588,7 +1605,9 @@
     "roomFull": "ม.2/9",
     "classNo": 27,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "094-006-5719"
   },
   {
     "id": "34619",
@@ -1654,7 +1673,9 @@
     "roomFull": "ม.2/11",
     "classNo": 2,
     "gender": "ชาย",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "096-962-5615"
   },
   {
     "id": "34655",
@@ -1664,7 +1685,9 @@
     "roomFull": "ม.2/11",
     "classNo": 8,
     "gender": "ชาย",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "084-967-9146"
   },
   {
     "id": "34661",
@@ -1674,7 +1697,9 @@
     "roomFull": "ม.2/11",
     "classNo": 14,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "098-819-6918"
   },
   {
     "id": "34667",
@@ -1684,7 +1709,9 @@
     "roomFull": "ม.2/11",
     "classNo": 20,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "082-591-2812"
   },
   {
     "id": "34673",
@@ -1706,7 +1733,9 @@
     "roomFull": "ม.2/12",
     "classNo": 3,
     "gender": "ชาย",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "096-765-6020"
   },
   {
     "id": "34685",
@@ -1726,7 +1755,8 @@
     "roomFull": "ม.2/12",
     "classNo": 15,
     "gender": "ชาย",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด"
   },
   {
     "id": "34697",
@@ -1736,7 +1766,9 @@
     "roomFull": "ม.2/12",
     "classNo": 21,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "098-384-5253"
   },
   {
     "id": "34703",
@@ -1746,7 +1778,9 @@
     "roomFull": "ม.2/12",
     "classNo": 27,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "064-326-1595"
   },
   {
     "id": "34709",
@@ -2281,7 +2315,9 @@
     "roomFull": "ม.3/6",
     "classNo": 36,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "062-226-3633"
   },
   {
     "id": "33857",
@@ -2536,7 +2572,9 @@
     "roomFull": "ม.3/10",
     "classNo": 24,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "096-084-2669"
   },
   {
     "id": "33995",
@@ -2631,7 +2669,9 @@
     "roomFull": "ม.3/12",
     "classNo": 18,
     "gender": "หญิง",
-    "level": "junior"
+    "level": "junior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "092-825-3690"
   },
   {
     "id": "34049",
@@ -2739,7 +2779,9 @@
     "roomFull": "ม.4/1",
     "classNo": 23,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "090-494-0960"
   },
   {
     "id": "33288",
@@ -2801,7 +2843,9 @@
     "roomFull": "ม.4/2",
     "classNo": 19,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "083-337-9454"
   },
   {
     "id": "33245",
@@ -2823,7 +2867,9 @@
     "roomFull": "ม.4/2",
     "classNo": 31,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "061-230-7804"
   },
   {
     "id": "35418",
@@ -2959,7 +3005,7 @@
     "classNo": 29,
     "gender": "หญิง",
     "level": "senior",
-    "duty": "ฝ่ายเชียร์ลีดเดอร์",
+    "duty": "ฝ่ายเชียร์ลีดเดอร์, ขบวนพาเหรด",
     "phone": "062-514-6471"
   },
   {
@@ -3023,7 +3069,9 @@
     "roomFull": "ม.4/5",
     "classNo": 24,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "092-445-8482"
   },
   {
     "id": "33261",
@@ -3093,7 +3141,9 @@
     "roomFull": "ม.4/6",
     "classNo": 21,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "098-269-0466"
   },
   {
     "id": "33301",
@@ -3125,7 +3175,9 @@
     "roomFull": "ม.4/6",
     "classNo": 39,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "099-172-8992"
   },
   {
     "id": "33204",
@@ -3266,7 +3318,9 @@
     "roomFull": "ม.4/8",
     "classNo": 37,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "083-852-0626"
   },
   {
     "id": "32996",
@@ -3308,7 +3362,9 @@
     "roomFull": "ม.4/9",
     "classNo": 26,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "061-160-2991"
   },
   {
     "id": "35521",
@@ -3458,7 +3514,7 @@
     "classNo": 5,
     "gender": "ชาย",
     "level": "senior",
-    "duty": "วิ่ง 16 ขา",
+    "duty": "วิ่ง 16 ขา, ขบวนพาเหรด",
     "phone": "096-663-3965"
   },
   {
@@ -3469,7 +3525,9 @@
     "roomFull": "ม.4/12",
     "classNo": 11,
     "gender": "ชาย",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "096-664-4036"
   },
   {
     "id": "35537",
@@ -3480,7 +3538,7 @@
     "classNo": 17,
     "gender": "ชาย",
     "level": "senior",
-    "duty": "วิ่ง 16 ขา",
+    "duty": "วิ่ง 16 ขา, ขบวนพาเหรด",
     "phone": "093-952-7843"
   },
   {
@@ -3491,7 +3549,9 @@
     "roomFull": "ม.4/12",
     "classNo": 23,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "092-506-8497"
   },
   {
     "id": "35540",
@@ -3501,7 +3561,9 @@
     "roomFull": "ม.4/12",
     "classNo": 29,
     "gender": "หญิง",
-    "level": "senior"
+    "level": "senior",
+    "duty": "ฝ่ายพร็อพ & ขบวนพาเหรด",
+    "phone": "084-167-2074"
   },
   {
     "id": "33429",
