@@ -1329,3 +1329,71 @@ input[type="tel"]:focus {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   Duty Checkbox Cards & Active Tags
+   ========================================================================== */
+.duty-checkbox-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1.5px solid #e7e5e4;
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #44403c;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.duty-checkbox-card:hover {
+  border-color: #f97316;
+  background: #fffaf5;
+}
+
+.duty-checkbox-card input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #ea580c;
+  cursor: pointer;
+}
+
+.duty-checkbox-card.checked {
+  background: #fff7ed;
+  border-color: #ea580c;
+  color: #c2410c;
+  font-weight: 700;
+}
+
+.active-duty-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ea580c;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  animation: fadeIn 0.15s ease;
+}
+
+.active-duty-pill button {
+  background: none;
+  border: none;
+  color: #fed7aa;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.active-duty-pill button:hover {
+  color: #ffffff;
+}
+

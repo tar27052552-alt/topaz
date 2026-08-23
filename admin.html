@@ -1010,24 +1010,96 @@
         </div>
 
         <div class="form-group">
-          <label for="editDutyInput"><i class="fa-solid fa-award text-orange"></i> หน้าที่ (Duty):</label>
-          <input type="text" id="editDutyInput" placeholder="เช่น ฟุตบอล, วอลเลย์บอล, สตาฟพร็อพ, สแตนเชียร์">
-          <div class="duty-quick-tags">
-            <span class="duty-tag" data-duty="ฟุตบอล">⚽ ฟุตบอล</span>
-            <span class="duty-tag" data-duty="บาสเกตบอล">🏀 บาส</span>
-            <span class="duty-tag" data-duty="วอลเลย์บอล">🏐 วอลเลย์</span>
-            <span class="duty-tag" data-duty="ตะกร้อ">🏸 ตะกร้อ</span>
-            <span class="duty-tag" data-duty="เปตอง">⚪ เปตอง</span>
-            <span class="duty-tag" data-duty="กรีฑา">🏃 กรีฑา</span>
-            <span class="duty-tag" data-duty="วิ่ง 16 ขา">🏃‍♂️ 16 ขา</span>
-            <span class="duty-tag" data-duty="สแตนเชียร์">🎪 สแตน</span>
-            <span class="duty-tag" data-duty="เชียร์ลีดเดอร์">📣 หลีด</span>
-            <span class="duty-tag" data-duty="ดรัมเมเยอร์">🥁 ดรัม</span>
-            <span class="duty-tag" data-duty="ขบวนพาเหรด">🎨 ขบวนพาเหรด</span>
-            <span class="duty-tag" data-duty="สวัสดิการ">🍵 สวัสดิการ</span>
-            <span class="duty-tag" data-duty="สตาฟ">🧡 สตาฟ</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label style="margin-bottom: 0; font-weight: 700;"><i class="fa-solid fa-award text-orange"></i> หน้าที่ที่มอบหมาย (Duty Assignment):</label>
+            <button type="button" id="btnClearAllDuties" style="background: none; border: none; color: #ef4444; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <i class="fa-solid fa-trash-can"></i> ล้างหน้าที่ทั้งหมด
+            </button>
           </div>
-          <small style="color: #64748b; display: block; margin-top: 6px;">*ถ้ามีหลายหน้าที่ ให้คั่นด้วยเครื่องหมายจุลภาค (,) เช่น "สแตนเชียร์, ฟุตบอล"</small>
+
+          <!-- Active Duty Tags Display -->
+          <div id="activeDutiesContainer" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 38px; padding: 8px 12px; background: #fff; border: 1.5px solid #fed7aa; border-radius: 12px; margin-bottom: 12px;">
+            <!-- Populated by JS -->
+          </div>
+
+          <input type="hidden" id="editDutyInput">
+
+          <!-- Multi-Select Checkboxes Grid (8 ฝ่าย & กีฬา 7 ชนิด) -->
+          <div style="background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 14px; padding: 14px;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #78716c; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-solid fa-check-double text-orange"></i> ติ๊กเลือกหน้าที่ (เลือกได้หลายอย่าง):
+            </div>
+            
+            <!-- Category: ฝ่ายกิจกรรมหลัก -->
+            <div style="font-size: 0.8rem; font-weight: 700; color: #ea580c; margin-bottom: 6px;">🎨 ฝ่ายกิจกรรม & เชียร์:</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px; margin-bottom: 12px;">
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="สแตนเชียร์">
+                <span>🎪 สแตนเชียร์</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="ขบวนพาเหรด">
+                <span>🚩 ขบวนพาเหรด</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="พร็อพ">
+                <span>🎨 ฝ่ายพร็อพ</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="เชียร์ลีดเดอร์">
+                <span>📣 เชียร์ลีดเดอร์</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="ดรัมเมเยอร์">
+                <span>🥁 ดรัมเมเยอร์</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="คัลเลอร์การ์ด">
+                <span>🚩 คัลเลอร์การ์ด</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="สวัสดิการ">
+                <span>🍵 สวัสดิการ</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="สตาฟ">
+                <span>👑 สตาฟ (ม.5)</span>
+              </label>
+            </div>
+
+            <!-- Category: ฝ่ายกีฬา -->
+            <div style="font-size: 0.8rem; font-weight: 700; color: #2563eb; margin-bottom: 6px;">⚽ ฝ่ายกีฬา (7 ชนิด):</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 8px;">
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="ฟุตบอล">
+                <span>⚽ ฟุตบอล</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="บาสเกตบอล">
+                <span>🏀 บาสเกตบอล</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="วอลเลย์บอล">
+                <span>🏐 วอลเลย์บอล</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="ตะกร้อ">
+                <span>🏸 เซปักตะกร้อ</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="เปตอง">
+                <span>⚪ เปตอง</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="กรีฑา">
+                <span>🏃 กรีฑา</span>
+              </label>
+              <label class="duty-checkbox-card">
+                <input type="checkbox" class="duty-checkbox" value="วิ่ง 16 ขา">
+                <span>🏃‍♂️ วิ่ง 16 ขา</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">

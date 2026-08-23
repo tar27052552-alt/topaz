@@ -527,19 +527,99 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 5. Edit Student Modal & Duty Assignment
+  // 5. Edit Student Modal & Duty Assignment (Multi-Select Checkboxes)
   // =========================================================================
+  const activeDutiesContainer = document.getElementById('activeDutiesContainer');
+  const btnClearAllDuties = document.getElementById('btnClearAllDuties');
+  const dutyCheckboxes = document.querySelectorAll('.duty-checkbox');
+
+  function renderActiveDuties(duties) {
+    if (!activeDutiesContainer) return;
+    if (duties.length === 0) {
+      activeDutiesContainer.innerHTML = '<span style="color: #a8a29e; font-size: 0.85rem; font-style: italic;">ยังไม่มีหน้าที่ (เลือกติ๊กจากรายการด้านล่าง)</span>';
+      editDutyInput.value = '';
+      return;
+    }
+
+    activeDutiesContainer.innerHTML = duties.map(d => `
+      <span class="active-duty-pill">
+        <span>${d}</span>
+        <button type="button" class="btn-remove-duty" data-duty="${d}" title="ลบหน้าที่นี้">&times;</button>
+      </span>
+    `).join('');
+
+    editDutyInput.value = duties.join(', ');
+
+    // Attach remove listeners
+    document.querySelectorAll('.btn-remove-duty').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const toRemove = btn.getAttribute('data-duty');
+        const current = getSelectedDuties();
+        const updated = current.filter(item => item !== toRemove);
+        syncCheckboxesFromDuties(updated);
+        renderActiveDuties(updated);
+      });
+    });
+  }
+
+  function getSelectedDuties() {
+    const raw = editDutyInput.value.trim();
+    if (!raw || raw === '-') return [];
+    return raw.split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  function syncCheckboxesFromDuties(duties) {
+    dutyCheckboxes.forEach(cb => {
+      const val = cb.value;
+      const isChecked = duties.some(d => d.includes(val) || val.includes(d));
+      cb.checked = isChecked;
+      if (isChecked) {
+        cb.closest('.duty-checkbox-card').classList.add('checked');
+      } else {
+        cb.closest('.duty-checkbox-card').classList.remove('checked');
+      }
+    });
+  }
+
+  // Checkbox change listener
+  dutyCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const val = cb.value;
+      let current = getSelectedDuties();
+      if (cb.checked) {
+        if (!current.includes(val)) current.push(val);
+      } else {
+        current = current.filter(item => item !== val);
+      }
+      syncCheckboxesFromDuties(current);
+      renderActiveDuties(current);
+    });
+  });
+
+  // Clear all button
+  if (btnClearAllDuties) {
+    btnClearAllDuties.addEventListener('click', () => {
+      syncCheckboxesFromDuties([]);
+      renderActiveDuties([]);
+      showToast('ล้างหน้าที่ทั้งหมดแล้ว', 'info');
+    });
+  }
+
   function openEditModal(data) {
     editStudentId.value = data.id;
     editModalStudentName.textContent = `${data.name} (รหัส ${data.id})`;
     editModalStudentMeta.textContent = data.meta;
-    editDutyInput.value = data.duty;
-    editPhoneInput.value = data.phone;
+    editDutyInput.value = data.duty && data.duty !== '-' ? data.duty : '';
+    editPhoneInput.value = data.phone && data.phone !== '-' ? data.phone : '';
     editNoteInput.value = data.note;
     editResetRegCheckbox.checked = false;
 
+    const initialDuties = getSelectedDuties();
+    syncCheckboxesFromDuties(initialDuties);
+    renderActiveDuties(initialDuties);
+
     editStudentModal.classList.remove('hidden');
-    editDutyInput.focus();
   }
 
   function closeEditModal() {
@@ -548,23 +628,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   closeEditModalBtn.addEventListener('click', closeEditModal);
   btnCancelEdit.addEventListener('click', closeEditModal);
-
-  // Quick duty tags
-  document.querySelectorAll('.duty-tag').forEach(tag => {
-    tag.addEventListener('click', () => {
-      const dutyToAdd = tag.getAttribute('data-duty');
-      const current = editDutyInput.value.trim();
-      if (!current) {
-        editDutyInput.value = dutyToAdd;
-      } else {
-        const parts = current.split(',').map(s => s.trim());
-        if (!parts.includes(dutyToAdd)) {
-          parts.push(dutyToAdd);
-          editDutyInput.value = parts.join(', ');
-        }
-      }
-    });
-  });
 
   // Auto format phone in modal
   editPhoneInput.addEventListener('input', (e) => {
