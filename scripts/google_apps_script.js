@@ -97,7 +97,7 @@ function doPost(e) {
         if (gSheet) {
           foundRow = findStudentRow(gSheet, studentId);
           if (foundRow > 0) {
-            updateStudentRow(gSheet, foundRow, activityTitle, phone, note);
+            updateStudentRow(gSheet, foundRow, activityTitle, phone, note, overwrite);
             updatedGrade = true;
             break;
           }
@@ -201,19 +201,28 @@ function updateStudentRow(sheet, rowNum, activityTitle, phone, note, overwrite) 
   var currentDuty = String(sheet.getRange(rowNum, 9).getValue() || "").trim();
   var duties = [];
 
-  if (!overwrite && currentDuty) {
-    duties = currentDuty.split(",").map(function(s) { return s.trim(); }).filter(function(d) {
-      return Boolean(d) && dirtyWords.indexOf(d) === -1;
-    });
-  }
-  
-  if (activityTitle) {
-    var newTitles = String(activityTitle).split(",").map(function(s) { return s.trim(); }).filter(function(d) {
-      return Boolean(d) && dirtyWords.indexOf(d) === -1;
-    });
-    for (var i = 0; i < newTitles.length; i++) {
-      if (duties.indexOf(newTitles[i]) === -1) {
-        duties.push(newTitles[i]);
+  if (overwrite) {
+    // โหมดแทนที่ค่า / ล้างหน้าที่ (เมื่อ activityTitle ว่าง ให้ล้างช่องหน้าที่เป็นค่าว่าง)
+    if (activityTitle && activityTitle !== "-" && activityTitle !== "ไม่มีหน้าที่") {
+      duties = String(activityTitle).split(",").map(function(s) { return s.trim(); }).filter(function(d) {
+        return Boolean(d) && dirtyWords.indexOf(d) === -1;
+      });
+    }
+  } else {
+    // โหมดต่อท้าย (Append)
+    if (currentDuty && currentDuty !== "-") {
+      duties = currentDuty.split(",").map(function(s) { return s.trim(); }).filter(function(d) {
+        return Boolean(d) && dirtyWords.indexOf(d) === -1;
+      });
+    }
+    if (activityTitle && activityTitle !== "-") {
+      var newTitles = String(activityTitle).split(",").map(function(s) { return s.trim(); }).filter(function(d) {
+        return Boolean(d) && dirtyWords.indexOf(d) === -1;
+      });
+      for (var i = 0; i < newTitles.length; i++) {
+        if (duties.indexOf(newTitles[i]) === -1) {
+          duties.push(newTitles[i]);
+        }
       }
     }
   }
@@ -226,15 +235,17 @@ function updateStudentRow(sheet, rowNum, activityTitle, phone, note, overwrite) 
     }
   }
   
-  sheet.getRange(rowNum, 9).setValue(uniqueDuties.join(", "));
+  // บันทึกค่าหน้าที่ (ถ้าว่างให้เป็นค่าว่าง "")
+  sheet.getRange(rowNum, 9).setValue(uniqueDuties.length > 0 ? uniqueDuties.join(", ") : "");
 
-  if (phone) {
+  if (overwrite) {
+    sheet.getRange(rowNum, 10).setValue(phone ? formatPhoneNumber(phone) : "");
+  } else if (phone) {
     sheet.getRange(rowNum, 10).setValue(formatPhoneNumber(phone));
   }
 
   if (note) {
     var currentNote = String(sheet.getRange(rowNum, 11).getValue() || "").trim();
-    // Deduplicate notes: only append if note is not already present
     var noteItems = currentNote ? currentNote.split("|").map(function(s) { return s.trim(); }).filter(Boolean) : [];
     if (noteItems.indexOf(note) === -1) {
       noteItems.push(note);

@@ -692,8 +692,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update local cache
-    if (cachedStaticStudents) {
-      const target = cachedStaticStudents.find(s => s.id === studentId);
+    if (typeof cachedAllStudents !== 'undefined' && Array.isArray(cachedAllStudents)) {
+      const target = cachedAllStudents.find(s => s.id === studentId);
       if (target) {
         target.duty = duty;
         target.phone = phone;
@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showToast(`บันทึกข้อมูลสำเร็จ! ${sheetSynced ? ' (ซิงค์ Google Sheets แล้ว ✅)' : ''}`, 'success');
     closeEditModal();
-    loadStudents();
+    applyStudentFilters();
     loadStats();
 
     btnSaveStudentEdit.disabled = false;
