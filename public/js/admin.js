@@ -1323,21 +1323,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!exportBox) {
       exportBox = document.createElement('div');
       exportBox.id = 'tempPdfExportWrapper';
-      exportBox.style.position = 'fixed';
+      exportBox.style.position = 'absolute';
       exportBox.style.left = '0';
       exportBox.style.top = '0';
       exportBox.style.width = '210mm';
       exportBox.style.background = '#ffffff';
       exportBox.style.zIndex = '-9999';
       exportBox.style.opacity = '1';
-      exportBox.style.pointerEvents = 'none';
       document.body.appendChild(exportBox);
     }
 
     exportBox.innerHTML = `
       <style>
         * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
-        .export-page { width: 210mm; min-height: 296mm; background: #fff; padding: 10mm 10mm; box-sizing: border-box; margin-bottom: 20px; }
+        .export-page { width: 210mm; min-height: 296mm; background: #ffffff; padding: 10mm 10mm; box-sizing: border-box; margin-bottom: 20px; }
         .pdf-header-card { background-color: #fff3e0; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; border-left: 6px solid #ea580c; }
         .pdf-badge-tag { display: inline-block; background-color: #ea580c; color: #ffffff; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 6px; margin-bottom: 6px; }
         .pdf-main-title { font-family: 'Prompt', sans-serif; font-size: 20px; font-weight: 800; color: #c2410c; margin: 0 0 2px 0; }
@@ -1378,12 +1377,12 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < pages.length; i++) {
           const pageElem = pages[i];
           const canvas = await html2canvas(pageElem, {
-            scale: 2,
+            scale: 1.5,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff'
           });
-          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const imgData = canvas.toDataURL('image/jpeg', 0.9);
           
           if (i > 0) pdf.addPage('a4', 'p');
           pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
@@ -1412,8 +1411,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         console.error('PDF Generation Error:', err);
         showToast('เกิดข้อผิดพลาดในการดาวน์โหลด PDF', 'error');
+        exportBox.innerHTML = '';
       }
-    }, 400);
+    }, 300);
   }
 
   // Initial check
