@@ -675,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
     welfare: {
       name: 'กลุ่ม LINE ฝ่ายสวัสดิการ คณะสีแสด 69',
       qr: 'images/qr_welfare.svg',
-      link: 'https://line.me'
+      link: 'https://line.me/ti/g/xMMcAWLH_6'
     },
     cheerleader: {
       name: '🧡 คัดหลีดสีแสด🧡🧡',
@@ -690,12 +690,12 @@ document.addEventListener('DOMContentLoaded', () => {
     drum_major: {
       name: 'กลุ่ม LINE ดรัมเมเยอร์ คณะสีแสด 69',
       qr: 'images/qr_drum.svg',
-      link: 'https://line.me'
+      link: 'https://line.me/R/ti/g/EFH7LThCnW'
     },
     colorguard: {
       name: 'กลุ่ม LINE คัลเลอร์การ์ด คณะสีแสด 69',
       qr: 'images/qr_drum.svg',
-      link: 'https://line.me'
+      link: 'https://line.me/ti/g/bx_CGTtSrH'
     },
     parade: {
       name: 'พร้อบ ม.4,ม.5 (คณะสีแสด 69)',
