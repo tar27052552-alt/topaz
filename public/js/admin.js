@@ -1390,7 +1390,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const safeFilename = `${title.replace(/[\/\\?%*:|"<>]/g, '_')}_2569.pdf`;
-        pdf.save(safeFilename);
+        
+        // 🌟 Universal Cross-Platform PDF Download (iOS Safari / iPad / Android / Desktop)
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = safeFilename;
+        downloadLink.target = '_blank';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(downloadLink);
+          URL.revokeObjectURL(blobUrl);
+        }, 1000);
         
         showToast('🎉 บันทึกและดาวน์โหลดไฟล์ PDF เรียบร้อยแล้ว!', 'success');
         exportBox.innerHTML = '';
