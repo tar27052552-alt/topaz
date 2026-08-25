@@ -690,6 +690,34 @@ input[type="tel"]:focus {
   box-shadow: 0 0 0 2px var(--primary-orange), var(--shadow-orange);
 }
 
+.dept-card.closed {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  opacity: 0.72;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+}
+
+.dept-card.closed:hover {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.dept-badge-closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
 .dept-card-top {
   display: flex;
   align-items: flex-start;

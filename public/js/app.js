@@ -698,6 +698,11 @@ document.addEventListener('DOMContentLoaded', () => {
       link: 'https://line.me/ti/g/bx_CGTtSrH'
     },
     parade: {
+      name: 'กลุ่ม LINE ขบวนพาเหรด คณะสีแสด 69',
+      qr: 'images/qr_parade.png',
+      link: 'https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default'
+    },
+    props: {
       name: 'พร้อบ ม.4,ม.5 (คณะสีแสด 69)',
       qr: 'images/qr_props.png',
       link: 'https://line.me/ti/g2/b-2h-ADgPThYMhI_-UFmXS-plBlweqx5yj5xTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default'
@@ -731,7 +736,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (t.includes('16 ขา') || t.includes('running16') || t.includes('r16')) return 'วิ่ง 16 ขา';
     if (t.includes('บอล') || t.includes('ฟุตบอล') || t.includes('football') || t.includes('fb_') || (t.includes('ทีม') && !t.includes('กรีฑา') && !t.includes('เปตอง') && !t.includes('วอลเลย์') && !t.includes('บาส') && !t.includes('16 ขา') && !t.includes('ตะกร้อ'))) return 'ฟุตบอล';
     if (t.includes('หลีด') || t.includes('ลีด') || t.includes('cheerleader')) return 'เชียร์ลีดเดอร์';
-    if (t.includes('ขบวน') || t.includes('พร็อพ') || t.includes('parade')) return 'ขบวนพาเหรด';
+    if (t.includes('พร็อพ') || t.includes('พร้อพ') || t.includes('พร็อบ') || t.includes('พร้อบ') || t.includes('props')) return 'ฝ่ายพร็อพ';
+    if (t.includes('ขบวน') || t.includes('parade') || t.includes('พาเหรด')) return 'ขบวนพาเหรด';
     if (t.includes('ดรัม')) return 'ดรัมเมเยอร์';
     if (t.includes('คัลเลอร์')) return 'คัลเลอร์การ์ด';
     if (t.includes('สวัสดิการ')) return 'สวัสดิการ';
@@ -750,7 +756,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stand cheer MUST be checked before cheerleader/cheer
     if (text.includes('สแตน') || text.includes('stand') || deptId === 'stand_cheer') return LINE_GROUPS.stand_cheer;
     if (text.includes('หลีด') || text.includes('ลีด') || text.includes('cheerleader') || deptId === 'cheerleader' || deptId === 'cheer') return LINE_GROUPS.cheerleader;
-    if (text.includes('ขบวน') || text.includes('parade') || text.includes('พาเหรด') || text.includes('พร็อพ') || text.includes('props')) return LINE_GROUPS.parade;
+    if (text.includes('พร็อพ') || text.includes('พร้อพ') || text.includes('พร็อบ') || text.includes('พร้อบ') || text.includes('props') || deptId === 'props') return LINE_GROUPS.props;
+    if (text.includes('ขบวน') || text.includes('parade') || text.includes('พาเหรด') || deptId === 'parade') return LINE_GROUPS.parade;
     if (text.includes('กรีฑา') || text.includes('athletics') || text.includes('at_')) return LINE_GROUPS.athletics;
     if (text.includes('เปตอง') || text.includes('petanque') || text.includes('pt_') || text.includes('pt')) return LINE_GROUPS.petanque;
     if (text.includes('ตะกร้อ') || text.includes('takraw') || text.includes('tk')) return LINE_GROUPS.takraw;
@@ -1019,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mustRegisterStaffFirst = isM5 && !hasStaff;
 
     const deptStatus = (state.systemStatus && state.systemStatus.departmentsStatus) || {};
-    let availableDepts = state.eligibleDepartments.filter(d => deptStatus[d.id] !== false);
+    let availableDepts = state.eligibleDepartments || [];
 
     if (mustRegisterStaffFirst) {
       // For M.5 who has not registered as staff yet, show only staff department with informative banner
@@ -1048,11 +1055,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return; // skip non-sport departments
       }
 
+      const isClosed = dept.isOpen === false || deptStatus[dept.id] === false;
+
       const card = document.createElement('div');
-      card.className = `dept-card ${state.selectedDepartment && state.selectedDepartment.id === dept.id ? 'selected' : ''}`;
+      card.className = `dept-card ${isClosed ? 'closed' : ''} ${state.selectedDepartment && state.selectedDepartment.id === dept.id ? 'selected' : ''}`;
       
       let quotaText = '';
-      if (dept.type === 'sports') {
+      if (isClosed) {
+        quotaText = '<span class="dept-badge-closed"><i class="fa-solid fa-lock"></i> ปิดรับสมัครแล้ว</span>';
+      } else if (dept.type === 'sports') {
         const totalMatchingSports = dept.items ? dept.items.length : 0;
         quotaText = `กีฬาที่เปิดรับ ${totalMatchingSports} ชนิด (เลือกได้ 1 กีฬา)`;
       } else {
@@ -1069,17 +1080,23 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="dept-card-footer">
           <span class="dept-quota">${quotaText}</span>
-          <div class="dept-check"><i class="fa-solid fa-check"></i></div>
+          <div class="dept-check">${isClosed ? '<i class="fa-solid fa-lock text-danger"></i>' : '<i class="fa-solid fa-check"></i>'}</div>
         </div>
       `;
 
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.dept-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        state.selectedDepartment = dept;
-        state.selectedSports = []; // reset sports selection if changing department
-        toStep3Btn.disabled = false;
-      });
+      if (!isClosed) {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.dept-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          state.selectedDepartment = dept;
+          state.selectedSports = []; // reset sports selection if changing department
+          toStep3Btn.disabled = false;
+        });
+      } else {
+        card.addEventListener('click', () => {
+          showToast(`ฝ่าย${dept.name.replace(/^ฝ่าย/, '')} ปิดรับสมัครเรียบร้อยแล้ว`, 'info');
+        });
+      }
 
       departmentsContainer.appendChild(card);
     });

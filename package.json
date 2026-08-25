@@ -6,13 +6,15 @@
     "build": "node scripts/build_all.js",
     "start": "node server.js",
     "dev": "node server.js",
-    "sync-sheet": "node scripts/sync_from_google_sheet_to_official_docs.js"
+    "sync-sheet": "node scripts/sync_from_google_sheet_to_official_docs.js",
+    "export-pdfs": "node scripts/generate_all_consolidated_pdfs.js"
   },
   "dependencies": {
     "cheerio": "^1.2.0",
     "cors": "^2.8.6",
     "exceljs": "^4.4.0",
     "express": "^5.2.1",
+    "pdf-lib": "^1.17.1",
     "pdf-parse": "^2.4.5",
     "puppeteer": "^25.9.0",
     "qrcode": "^1.5.4",

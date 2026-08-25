@@ -21,9 +21,13 @@ async function buildAll() {
     const sportsPdfGen = require('./generate_sports_pdf');
     await sportsPdfGen.main();
 
-    console.log('\n>>> [STEP 4/4] สร้างไฟล์ PDF รวมนักกีฬาทุกประเภท...');
+    console.log('\n>>> [STEP 4/5] สร้างไฟล์ PDF รวมนักกีฬาทุกประเภท...');
     const masterPdfGen = require('./generate_master_pdf');
     await masterPdfGen.main();
+
+    console.log('\n>>> [STEP 5/5] สร้างและรวบรวมไฟล์ PDF ทุกฝ่ายไว้ในโฟลเดอร์รวมพร้อมส่ง...');
+    const consolidatePdfGen = require('./generate_all_consolidated_pdfs');
+    await consolidatePdfGen.generateAllDeptPDFs();
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log('\n╔══════════════════════════════════════════════════════════════════╗');

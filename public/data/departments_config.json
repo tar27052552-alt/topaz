@@ -27,7 +27,7 @@
     "roleName": "ขบวนพาเหรด",
     "lineGroup": {
       "name": "กลุ่ม LINE ขบวนพาเหรด คณะสีแสด 69",
-      "qrImage": "images/qr_main.svg",
+      "qrImage": "images/qr_parade.png",
       "link": "https://line.me/ti/g2/zMDLLEMtlmLQO3BFmlJU3bKuuqPwUSiJP-ultA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
     }
   },
@@ -104,6 +104,7 @@
     "allowedGenders": ["ชาย", "หญิง"],
     "type": "single",
     "maxQuota": 25,
+    "isOpen": false,
     "roleName": "สวัสดิการ",
     "lineGroup": {
       "name": "กลุ่ม LINE ฝ่ายสวัสดิการ คณะสีแสด 69",

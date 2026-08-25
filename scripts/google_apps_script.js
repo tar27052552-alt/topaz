@@ -347,6 +347,20 @@ function cleanDuplicateDutiesInAllGradeSheets() {
       if (d) {
         var items = d.split(",").map(function(s) { return s.trim(); }).filter(function(item) {
           return Boolean(item) && dirtyWords.indexOf(item) === -1;
+        }).map(function(s) {
+          if (s === "ฝ่ายสแตนเชียร์") return "สแตนเชียร์";
+          if (s === "ฝ่ายขบวนพาเหรด" || s === "ฝ่ายขบวน") return "ขบวนพาเหรด";
+          if (s === "ฝ่ายอุปกรณ์และพร็อพ" || s === "ฝ่ายพร็อพ" || s === "พร้อบ" || s === "พร้อพ" || s === "อุปกรณ์และพร็อพ") return "พร็อพ";
+          if (s === "ฝ่ายเชียร์ลีดเดอร์" || s === "หลีด" || s === "ลีด") return "เชียร์ลีดเดอร์";
+          if (s === "ฝ่ายดรัมเมเยอร์") return "ดรัมเมเยอร์";
+          if (s === "ฝ่ายคัลเลอร์การ์ด") return "คัลเลอร์การ์ด";
+          if (s === "ฝ่ายสวัสดิการ") return "สวัสดิการ";
+          if (s === "สตาฟฝ่ายขบวนพาเหรด" || s === "สตาฟฝ่ายขบวน" || s === "สตาฟขบวน") return "สตาฟขบวนพาเหรด";
+          if (s === "สตาฟฝ่ายอุปกรณ์และพร็อพ" || s === "สตาฟฝ่ายพร็อพ") return "สตาฟพร็อพ";
+          if (s === "สตาฟฝ่ายเชียร์ลีดเดอร์" || s === "สตาฟหลีด") return "สตาฟเชียร์ลีดเดอร์";
+          if (s === "สตาฟฝ่ายสวัสดิการ") return "สตาฟสวัสดิการ";
+          if (s.indexOf("ฝ่าย") === 0) return s.substring(4).trim();
+          return s;
         });
         var uniqueItems = [];
         for (var i = 0; i < items.length; i++) {
@@ -354,7 +368,7 @@ function cleanDuplicateDutiesInAllGradeSheets() {
             uniqueItems.push(items[i]);
           }
         }
-        var cleanedD = uniqueItems.length > 0 ? uniqueItems.join(", ") : "-";
+        var cleanedD = uniqueItems.length > 0 ? uniqueItems.join(", ") : "";
         if (cleanedD !== d) {
           values[r][0] = cleanedD;
           changed = true;

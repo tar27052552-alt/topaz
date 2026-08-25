@@ -4,7 +4,7 @@
   "closeMessage": "ระบบรับสมัครกิจกรรม คณะสีแสด 2569 ปิดรับสมัครชั่วคราวเพื่อประมวลผลข้อมูล",
   "departmentsStatus": {
     "sports": true,
-    "welfare": true,
+    "welfare": false,
     "cheerleader": true,
     "drum_major": true,
     "colorguard": true,
