@@ -132,16 +132,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadStats() {
     try {
-      const [sRes, rRes] = await Promise.all([
-        fetch('data/students_master.json'),
-        fetch('data/registrations.json')
-      ]);
-      const sData = await sRes.json();
-      const rData = await rRes.json();
-      if (statSystemStatus) statSystemStatus.innerHTML = '<span style="color: #16a34a;">🟢 เปิดรับสมัคร</span>';
+      let sData = cachedAllStudents;
+      if (!sData || sData.length === 0) {
+        const sRes = await fetch('data/students_master.json');
+        sData = await sRes.json();
+      }
+
+      let totalOnline = 0;
+      let uniqueOnline = 0;
+
+      if (db) {
+        try {
+          const snap = await db.collection('registrations').get();
+          if (!snap.empty) {
+            totalOnline = snap.size;
+            const uSet = new Set();
+            snap.forEach(d => uSet.add(d.data().studentId));
+            uniqueOnline = uSet.size;
+          }
+        } catch (e) {}
+      }
+
+      if (totalOnline === 0) {
+        const assigned = (sData || []).filter(s => s.duty && s.duty !== '-' && s.duty !== 'ไม่มีหน้าที่');
+        totalOnline = assigned.length;
+        uniqueOnline = assigned.length;
+      }
+
+      if (statSystemStatus) {
+        const isOpen = (currentSettings && currentSettings.isRegistrationOpen !== false);
+        statSystemStatus.innerHTML = isOpen ? '<span style="color: #16a34a;">🟢 เปิดรับสมัคร</span>' : '<span style="color: #ef4444;">🔴 ปิดรับสมัคร</span>';
+      }
       if (statTotalStudents) statTotalStudents.textContent = sData.length || 492;
-      if (statOnlineRegs) statOnlineRegs.textContent = rData.length || 0;
-      if (statUniqueRegs) statUniqueRegs.textContent = new Set(rData.map(r => r.studentId)).size || 0;
+      if (statOnlineRegs) statOnlineRegs.textContent = totalOnline;
+      if (statUniqueRegs) statUniqueRegs.textContent = uniqueOnline;
     } catch (e) {
       if (statSystemStatus) statSystemStatus.innerHTML = '<span style="color: #16a34a;">🟢 เปิดรับสมัคร</span>';
       if (statTotalStudents) statTotalStudents.textContent = '492';
@@ -896,35 +920,91 @@ document.addEventListener('DOMContentLoaded', () => {
     registrationsTableBody.innerHTML = `
       <tr>
         <td colspan="8" style="text-align: center; padding: 24px; color: #94a3b8;">
-          <i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดรายการสมัคร...
+          <i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดรายการสมัครล่าสุด...
         </td>
       </tr>
     `;
 
-    // 1. Try Node backend API
-    try {
-      const res = await fetch('/api/admin/students/search');
-      const json = await res.json();
-      if (json.success) {
-        const allRegs = [];
-        json.data.forEach(st => {
-          if (st.registrations && st.registrations.length > 0) {
-            st.registrations.forEach(r => allRegs.push(r));
-          }
-        });
-        renderRegistrationsTable(allRegs);
-        return;
-      }
-    } catch (err) {}
+    let allRegs = [];
 
-    // 2. Static Fallback (GitHub Pages)
-    try {
-      const rRes = await fetch('data/registrations.json');
-      const rData = await rRes.json();
-      renderRegistrationsTable(rData);
-    } catch (e) {
-      registrationsTableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #f87171;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+    // 1. Try Real-Time Cloud Firestore
+    if (db) {
+      try {
+        const snap = await db.collection('registrations').get();
+        if (!snap.empty) {
+          snap.forEach(doc => {
+            const data = doc.data();
+            allRegs.push({
+              id: doc.id,
+              ...data
+            });
+          });
+        }
+      } catch (fErr) {
+        console.warn('Firestore load registrations warning:', fErr);
+      }
     }
+
+    // 2. Try Node backend API if local
+    if (allRegs.length === 0) {
+      try {
+        const res = await fetch('/api/admin/students/search');
+        const json = await res.json();
+        if (json.success) {
+          json.data.forEach(st => {
+            if (st.registrations && st.registrations.length > 0) {
+              st.registrations.forEach(r => allRegs.push(r));
+            }
+          });
+        }
+      } catch (err) {}
+    }
+
+    // 3. If still empty, load assigned students from cachedAllStudents / students_master.json
+    if (allRegs.length === 0) {
+      let sData = cachedAllStudents;
+      if (!sData || sData.length === 0) {
+        try {
+          const sRes = await fetch('data/students_master.json');
+          sData = await sRes.json();
+        } catch (e) {}
+      }
+
+      if (sData && sData.length > 0) {
+        const assigned = sData.filter(s => s.duty && s.duty !== '-' && s.duty !== 'ไม่มีหน้าที่');
+        assigned.forEach(s => {
+          allRegs.push({
+            studentId: s.id,
+            name: s.name,
+            roomFull: s.roomFull || `ม.${s.grade}/${s.room}`,
+            grade: s.grade,
+            departmentName: (s.duty.includes('บอล') || s.duty.includes('บาส') || s.duty.includes('วอลเลย์') || s.duty.includes('ตะกร้อ') || s.duty.includes('เปตอง') || s.duty.includes('กรีฑา') || s.duty.includes('16 ขา')) ? 'ฝ่ายกีฬา' : 'ฝ่ายกิจกรรม',
+            categoryTitle: s.duty,
+            roleName: s.duty,
+            phone: s.phone || '-',
+            createdAt: s.updatedAt || '2026-08-25T14:35:00.000Z'
+          });
+        });
+      }
+    }
+
+    // 4. Fallback to static registrations.json
+    if (allRegs.length === 0) {
+      try {
+        const rRes = await fetch('data/registrations.json');
+        const rData = await rRes.json();
+        allRegs = rData;
+      } catch (e) {}
+    }
+
+    // Sort by createdAt descending (latest first)
+    allRegs.sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      return dateB - dateA;
+    });
+
+    renderRegistrationsTable(allRegs);
   }
 
   function renderRegistrationsTable(regs) {
