@@ -159,19 +159,19 @@
     /* Stat Grid */
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
     }
 
     .stat-card {
       background: #ffffff;
       border: 1px solid rgba(230, 81, 0, 0.12);
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.04);
       transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -182,13 +182,14 @@
     }
 
     .stat-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 46px;
+      height: 46px;
+      min-width: 46px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       background: #fff7ed;
       color: #ea580c;
       border: 1px solid rgba(230, 81, 0, 0.15);
@@ -196,14 +197,16 @@
 
     .stat-val {
       font-family: 'Prompt', sans-serif;
-      font-size: 1.65rem;
+      font-size: 1.45rem;
       font-weight: 700;
       color: #0f172a;
+      line-height: 1.2;
     }
 
     .stat-lbl {
       color: #64748b;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
+      margin-top: 2px;
     }
 
     /* Tabs */
@@ -211,25 +214,24 @@
       display: flex;
       gap: 8px;
       margin-bottom: 20px;
-      border-bottom: 2px solid #e2e8f0;
+      border-bottom: 2px solid #fed7aa;
       padding-bottom: 12px;
-      overflow-x: auto;
+      flex-wrap: wrap;
     }
 
     .admin-tab-btn {
-      padding: 10px 18px;
-      border-radius: 12px;
+      padding: 9px 16px;
+      border-radius: 10px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
       color: #475569;
       font-family: 'Prompt', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
       transition: all 0.2s;
-      white-space: nowrap;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
@@ -834,74 +836,78 @@
     <!-- ========================================================= -->
     <!-- TAB 5: ส่งออกเอกสาร PDF ทางการ (Export PDF) -->
     <!-- ========================================================= -->
+    <!-- ========================================================= -->
+    <!-- TAB 2: ส่งออกเอกสาร PDF ทางการ (Export PDF) -->
+    <!-- ========================================================= -->
     <div id="tab-pdf" class="admin-tab-content hidden">
       <div class="admin-panel">
         <div class="panel-header">
           <div class="panel-title">
-            <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> ระบบจัดทำและพิมพ์เอกสาร PDF ทางการ คณะสีแสด 2569
+            <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> ระบบจัดทำและดาวน์โหลดเอกสาร PDF ทางการ คณะสีแสด 2569
           </div>
-          <span style="font-size: 0.88rem; color: #16a34a; background: #dcfce7; padding: 4px 12px; border-radius: 20px; font-weight: 600;">
-            <i class="fa-solid fa-bolt"></i> สร้าง PDF ในเครื่องทันที (Client-side Generator)
+          <span style="font-size: 0.88rem; color: #16a34a; background: #dcfce7; padding: 5px 14px; border-radius: 20px; font-weight: 700; border: 1px solid #bbf7d0;">
+            <i class="fa-solid fa-circle-check"></i> เอกสารความละเอียดสูงระดับ Vector PDF (คมชัด 100% ไม่เบียด)
           </span>
         </div>
 
         <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px;">
-          เลือกรุปแบบเอกสารทางการที่ต้องการพิมพ์ หรือบันทึกเป็นไฟล์ PDF เพื่อส่งครูที่ปรึกษา คณะกรรมการ หรือฝ่ายประสานงาน:
+          คลิกดาวน์โหลดเอกสารฉบับทางการ คมชัดสูงสุด ไม่เบียด พร้อมส่งครูที่ปรึกษา คณะกรรมการ หรือฝ่ายจัดการแข่งขัน:
         </p>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
           
-          <!-- Card 1: Master Summary -->
-          <div style="background: #fff; border: 1.5px solid #fed7aa; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+          <!-- Card 1: Master Merged 22-Page Book -->
+          <div style="background: #fff; border: 2px solid #fdba74; border-radius: 18px; padding: 22px; box-shadow: 0 6px 20px -3px rgba(234, 88, 12, 0.12); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: #fff7ed; color: #ea580c; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                  <i class="fa-solid fa-book"></i>
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                  <i class="fa-solid fa-book-bookmark"></i>
                 </div>
                 <div>
-                  <strong style="font-size: 1.05rem; color: #0f172a;">1. เล่มเอกสารทางการฉบับรวมสมบูรณ์</strong>
-                  <div style="font-size: 0.8rem; color: #64748b;">Master Official Report (492 คน)</div>
+                  <strong style="font-size: 1.1rem; color: #c2410c;">1. เอกสารรวมเล่มสมบูรณ์ (22 หน้า)</strong>
+                  <div style="font-size: 0.82rem; color: #64748b;">Master All-in-One Report (ทุกฝ่าย + กีฬา + หน้าปกสรุป)</div>
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
-                รวมรายชื่อนักเรียนคณะสีแสดทั้งหมด 492 คน แยกตามระดับชั้น ม.1–ม.6 แสดงหน้าที่และเบอร์โทรศัพท์ครบถ้วน
+                รวมเล่มแยกทุกฝ่าย (01-08) และกีฬาทุกประเภท (09-15) พร้อมหน้าปกสรุปยอด Dashboard และสารบัญเลขหน้า ครบถ้วน 22 หน้า
               </p>
             </div>
-            <button type="button" class="btn btn-orange w-full btn-generate-pdf" data-type="master">
-              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF ฉบับรวม
-            </button>
+            <a href="pdf/เอกสารรวมเล่ม_แยกทุกฝ่ายและกีฬา_คณะสีแสด_ปี69.pdf" download="เอกสารรวมเล่ม_แยกทุกฝ่ายและกีฬา_คณะสีแสด_ปี69.pdf" target="_blank" class="btn btn-orange w-full" style="text-decoration: none; padding: 12px; font-weight: 700; text-align: center;">
+              <i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลดเล่มรวมสมบูรณ์ (22 หน้า)
+            </a>
           </div>
 
           <!-- Card 2: By Department -->
           <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: #fdf2f8; color: #db2777; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #fdf2f8; color: #db2777; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid #fbcfe8;">
                   <i class="fa-solid fa-palette"></i>
                 </div>
                 <div>
                   <strong style="font-size: 1.05rem; color: #0f172a;">2. เอกสารรายชื่อแยกตามฝ่ายกิจกรรม</strong>
-                  <div style="font-size: 0.8rem; color: #64748b;">Department Roster Report</div>
+                  <div style="font-size: 0.82rem; color: #64748b;">Department Roster Reports (01-08)</div>
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
-                เลือกบันทึกรายชื่อเฉพาะฝ่าย เช่น ขบวนพาเหรด, สแตนเชียร์, เชียร์ลีดเดอร์, สตาฟ, สวัสดิการ
+                เลือกดาวน์โหลดเอกสาร PDF คมชัดเฉพาะฝ่ายที่ต้องการใช้งาน:
               </p>
               <div style="margin-bottom: 16px;">
-                <select id="pdfSelectDept" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
-                  <option value="ขบวนพาเหรด">🎨 ฝ่ายขบวนพาเหรด</option>
-                  <option value="พร็อพ">🖌️ ฝ่ายพร็อพ</option>
-                  <option value="สแตนเชียร์">🎪 ฝ่ายสแตนเชียร์ (ม.1 ทุกห้อง)</option>
-                  <option value="เชียร์ลีดเดอร์">📣 ฝ่ายเชียร์ลีดเดอร์</option>
-                  <option value="ดรัมเมเยอร์">🥁 ฝ่ายดรัมเมเยอร์</option>
-                  <option value="คัลเลอร์การ์ด">🚩 ฝ่ายคัลเลอร์การ์ด</option>
-                  <option value="สวัสดิการ">🍵 ฝ่ายสวัสดิการ</option>
-                  <option value="สตาฟ">🧡 ฝ่ายสตาฟ (ม.5)</option>
+                <select id="pdfSelectDeptFile" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.92rem; outline: none; background: #fafaf9;">
+                  <option value="pdf/01_รายชื่อฝ่ายสแตนเชียร์_คณะสีแสด_ปี69.pdf">🎪 01. ฝ่ายสแตนเชียร์ (ม.1)</option>
+                  <option value="pdf/02_รายชื่อฝ่ายขบวนพาเหรด_คณะสีแสด_ปี69.pdf">🚩 02. ฝ่ายขบวนพาเหรด</option>
+                  <option value="pdf/03_รายชื่อฝ่ายพร็อพ_คณะสีแสด_ปี69.pdf">🎨 03. ฝ่ายพร็อพ & อุปกรณ์</option>
+                  <option value="pdf/04_รายชื่อฝ่ายเชียร์ลีดเดอร์_คณะสีแสด_ปี69.pdf">📣 04. ฝ่ายเชียร์ลีดเดอร์</option>
+                  <option value="pdf/05_รายชื่อฝ่ายดรัมเมเยอร์_คณะสีแสด_ปี69.pdf">🥁 05. ฝ่ายดรัมเมเยอร์</option>
+                  <option value="pdf/06_รายชื่อฝ่ายคัลเลอร์การ์ด_คณะสีแสด_ปี69.pdf">🚩 06. ฝ่ายคัลเลอร์การ์ด</option>
+                  <option value="pdf/07_รายชื่อฝ่ายสวัสดิการ_คณะสีแสด_ปี69.pdf">🍵 07. ฝ่ายสวัสดิการ</option>
+                  <option value="pdf/08_รายชื่อฝ่ายสตาฟ_คณะสีแสด_ปี69.pdf">👑 08. ฝ่ายสตาฟและคณะกรรมการ ม.5</option>
+                  <option value="pdf/00_หน้าปกสรุปยอดแยกฝ่าย_คณะสีแสด_ปี69.pdf">📊 00. หน้าปกสรุปยอดรวมทุกฝ่าย</option>
                 </select>
               </div>
             </div>
-            <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="dept" style="color: #db2777; border-color: #fbcfe8;">
-              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF รายฝ่าย
+            <button type="button" id="btnDownloadDeptPdf" class="btn btn-secondary w-full" style="color: #db2777; border-color: #fbcfe8; padding: 12px; font-weight: 700;">
+              <i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลด PDF รายฝ่าย
             </button>
           </div>
 
@@ -909,87 +915,59 @@
           <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid #bfdbfe;">
                   <i class="fa-solid fa-volleyball"></i>
                 </div>
                 <div>
                   <strong style="font-size: 1.05rem; color: #0f172a;">3. เอกสารรายชื่อนักกีฬาแยกตามชนิดกีฬา</strong>
-                  <div style="font-size: 0.8rem; color: #64748b;">Sports Roster Report</div>
+                  <div style="font-size: 0.82rem; color: #64748b;">Sports Roster Reports (09-16)</div>
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
-                เลือกบันทึกรายชื่อนักกีฬาแต่ละประเภทสำหรับส่งฝ่ายจัดการแข่งขัน
+                เลือกดาวน์โหลดเอกสาร PDF รายชื่อนักกีฬาสำหรับส่งฝ่ายจัดการแข่งขัน:
               </p>
               <div style="margin-bottom: 16px;">
-                <select id="pdfSelectSport" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
-                  <option value="ฟุตบอล">⚽ กีฬาฟุตบอล</option>
-                  <option value="บาสเกตบอล">🏀 กีฬาบาสเกตบอล</option>
-                  <option value="วอลเลย์บอล">🏐 กีฬาวอลเลย์บอล</option>
-                  <option value="ตะกร้อ">🏸 กีฬาเซปักตะกร้อ</option>
-                  <option value="เปตอง">⚪ กีฬาเปตอง</option>
-                  <option value="กรีฑา">🏃 กรีฑา (ลู่/ลาน)</option>
-                  <option value="16 ขา">🏃‍♂️ กีฬาวิ่ง 16 ขา</option>
+                <select id="pdfSelectSportFile" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.92rem; outline: none; background: #fafaf9;">
+                  <option value="pdf/09_รายชื่อนักกีฬา_ฟุตบอล_คณะสีแสด_ปี69.pdf">⚽ 09. กีฬาฟุตบอล (ชาย ม.ต้น/ปลาย, หญิง)</option>
+                  <option value="pdf/10_รายชื่อนักกีฬา_บาสเกตบอล_คณะสีแสด_ปี69.pdf">🏀 10. กีฬาบาสเกตบอล (ชาย/หญิง)</option>
+                  <option value="pdf/11_รายชื่อนักกีฬา_วอลเลย์บอล_คณะสีแสด_ปี69.pdf">🏐 11. กีฬาวอลเลย์บอล (ชาย/หญิง)</option>
+                  <option value="pdf/12_รายชื่อนักกีฬา_ตะกร้อ_คณะสีแสด_ปี69.pdf">🏸 12. กีฬาเซปักตะกร้อ (ทีมชาย)</option>
+                  <option value="pdf/13_รายชื่อนักกีฬา_เปตอง_คณะสีแสด_ปี69.pdf">⚪ 13. กีฬาเปตอง (ม.ต้น/ปลาย)</option>
+                  <option value="pdf/14_รายชื่อนักกีฬา_กรีฑา_คณะสีแสด_ปี69.pdf">🏃 14. กรีฑา (ลู่/ลาน)</option>
+                  <option value="pdf/15_รายชื่อนักกีฬา_วิ่ง16ขา_คณะสีแสด_ปี69.pdf">🏃‍♂️ 15. กีฬาวิ่ง 16 ขา (ทีมผสม)</option>
+                  <option value="pdf/16_รายชื่อนักกีฬาทุกประเภท_คณะสีแสด_ปี69.pdf">🏆 16. เล่มรวมนักกีฬาทุกประเภท</option>
                 </select>
               </div>
             </div>
-            <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="sport" style="color: #2563eb; border-color: #bfdbfe;">
-              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF รายกีฬา
+            <button type="button" id="btnDownloadSportPdf" class="btn btn-secondary w-full" style="color: #2563eb; border-color: #bfdbfe; padding: 12px; font-weight: 700;">
+              <i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลด PDF รายกีฬา
             </button>
           </div>
 
-          <!-- Card 4: By Classroom -->
+          <!-- Card 4: Master All 492 Students -->
           <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                  <i class="fa-solid fa-chalkboard-user"></i>
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid #bbf7d0;">
+                  <i class="fa-solid fa-users-rectangle"></i>
                 </div>
                 <div>
-                  <strong style="font-size: 1.05rem; color: #0f172a;">4. เอกสารแยกตามระดับชั้น / ห้องเรียน</strong>
-                  <div style="font-size: 0.8rem; color: #64748b;">Classroom / Grade Report</div>
-                </div>
-              </div>
-              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
-                เลือกบันทึกรายชื่อนักเรียนเพื่อส่งคุณครูที่ปรึกษาประจำห้อง หรือดูรายระดับชั้น
-              </p>
-              <div style="margin-bottom: 16px;">
-                <select id="pdfSelectGrade" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.9rem; outline: none;">
-                  <option value="1">มัธยมศึกษาปีที่ 1 (ทุกห้อง)</option>
-                  <option value="2">มัธยมศึกษาปีที่ 2 (ทุกห้อง)</option>
-                  <option value="3">มัธยมศึกษาปีที่ 3 (ทุกห้อง)</option>
-                  <option value="4">มัธยมศึกษาปีที่ 4 (ทุกห้อง)</option>
-                  <option value="5">มัธยมศึกษาปีที่ 5 (ทุกห้อง - สตาฟ)</option>
-                  <option value="6">มัธยมศึกษาปีที่ 6 (ทุกห้อง)</option>
-                </select>
-              </div>
-            </div>
-            <button type="button" class="btn btn-secondary w-full btn-generate-pdf" data-type="grade" style="color: #16a34a; border-color: #bbf7d0;">
-              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF รายชั้น
-            </button>
-          </div>
-
-          <!-- Card 5: Unassigned Students -->
-          <div style="background: #fff; border: 1.5px solid #fecaca; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: #fef2f2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
-                  <i class="fa-solid fa-user-xmark"></i>
-                </div>
-                <div>
-                  <strong style="font-size: 1.05rem; color: #dc2626;">5. เอกสารนักเรียนที่ "ยังไม่มีหน้าที่"</strong>
-                  <div style="font-size: 0.8rem; color: #64748b;">Unassigned Students Follow-up</div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">4. เล่มรวมนักเรียนทั้งคณะ (492 คน)</strong>
+                  <div style="font-size: 0.82rem; color: #64748b;">Master Roster by Grade (ม.1 - ม.6)</div>
                 </div>
               </div>
               <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
-                บันทึกใบรายชื่อนักเรียนที่ยังไม่ได้รับมอบหมายหน้าที่ สำหรับคณะกรรมการใช้ติดตามตัวมาจัดสรรหน้าที่
+                รวมทำเนียบรายชื่อนักเรียนคณะสีแสดทั้งหมด 492 คน แยกตามระดับชั้น ม.1 ถึง ม.6 พร้อมแสดงหน้าที่และเบอร์โทรศัพท์
               </p>
             </div>
-            <button type="button" class="btn btn-danger w-full btn-generate-pdf" data-type="unassigned">
-              <i class="fa-solid fa-file-arrow-down"></i> บันทึกเป็น PDF คนที่ยังว่าง
-            </button>
+            <a href="pdf/00_รายชื่อคณะสีแสด_เล่มรวมทั้งหมด_ปี69.pdf" download="00_รายชื่อคณะสีแสด_เล่มรวมทั้งหมด_ปี69.pdf" target="_blank" class="btn btn-secondary w-full" style="color: #16a34a; border-color: #bbf7d0; text-decoration: none; padding: 12px; font-weight: 700; text-align: center;">
+              <i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลดเล่มรวม ม.1-ม.6 (PDF)
+            </a>
           </div>
 
         </div>
+      </div>
+    </div>
       </div>
     </div>
 

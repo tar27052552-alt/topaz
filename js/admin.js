@@ -1069,351 +1069,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 9. PDF Generation & Print Engine (Client-Side matching Official Folder Format)
+  // 9. PDF Direct Official Download Engine (High-Resolution Vector PDFs)
   // =========================================================================
-  const pdfSelectDept = document.getElementById('pdfSelectDept');
-  const pdfSelectSport = document.getElementById('pdfSelectSport');
-  const pdfSelectGrade = document.getElementById('pdfSelectGrade');
+  const pdfSelectDeptFile = document.getElementById('pdfSelectDeptFile');
+  const btnDownloadDeptPdf = document.getElementById('btnDownloadDeptPdf');
+  const pdfSelectSportFile = document.getElementById('pdfSelectSportFile');
+  const btnDownloadSportPdf = document.getElementById('btnDownloadSportPdf');
 
-  document.querySelectorAll('.btn-generate-pdf').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.getAttribute('data-type');
-      generateOfficialPDF(type);
+  if (btnDownloadDeptPdf && pdfSelectDeptFile) {
+    btnDownloadDeptPdf.addEventListener('click', () => {
+      const filePath = pdfSelectDeptFile.value;
+      if (!filePath) return;
+      downloadPdfFile(filePath);
     });
-  });
+  }
 
-  function generateOfficialPDF(type) {
-    if (!cachedAllStudents || cachedAllStudents.length === 0) {
-      showToast('กำลังเตรียมข้อมูลนักเรียน กรุณารอสักครู่...', 'info');
-      return;
-    }
-
-    let title = '';
-    let subtitle = '';
-    let studentsToPrint = [];
-    const isMaster = (type === 'master');
-
-    if (isMaster) {
-      title = 'ทำเนียบรายชื่อนักเรียน';
-      subtitle = 'คณะสีแสด (สีบุษราคัม) ประจำปีการศึกษา 2569';
-      studentsToPrint = [...cachedAllStudents];
-    } else if (type === 'dept') {
-      const dept = pdfSelectDept.value;
-      title = `รายชื่อฝ่าย${dept} — คณะสีแสด`;
-      subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
-      studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(dept));
-    } else if (type === 'sport') {
-      const sport = pdfSelectSport.value;
-      title = `รายชื่อนักกีฬา ฝ่าย${sport} — คณะสีแสด`;
-      subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
-      studentsToPrint = cachedAllStudents.filter(s => (s.duty || '').includes(sport));
-    } else if (type === 'grade') {
-      const g = pdfSelectGrade.value;
-      title = `รายชื่อนักเรียน คณะสีแสด — ระดับชั้นมัธยมศึกษาปีที่ ${g}`;
-      subtitle = `การแข่งขันกีฬาสีภายใน ประจำปีการศึกษา 2569 | โรงเรียนสรรพวิทยาคม`;
-      studentsToPrint = cachedAllStudents.filter(s => String(s.grade) === String(g));
-    } else if (type === 'unassigned') {
-      title = 'บัญชีรายชื่อนักเรียนที่ "ยังไม่มีหน้าที่" — คณะสีแสด';
-      subtitle = 'สำหรับคณะกรรมการใช้ติดตามตัวมาจัดสรรหน้าที่ ประจำปีการศึกษา 2569';
-      studentsToPrint = cachedAllStudents.filter(s => !s.duty || s.duty.trim() === '-' || s.duty.trim() === '');
-    }
-
-    // Sort by grade, room, classNo
-    studentsToPrint.sort((a, b) => {
-      if (a.grade !== b.grade) return (a.grade || 0) - (b.grade || 0);
-      if (a.room !== b.room) return (a.room || 0) - (b.room || 0);
-      return (parseInt(a.classNo) || 0) - (parseInt(a.classNo) || 0);
+  if (btnDownloadSportPdf && pdfSelectSportFile) {
+    btnDownloadSportPdf.addEventListener('click', () => {
+      const filePath = pdfSelectSportFile.value;
+      if (!filePath) return;
+      downloadPdfFile(filePath);
     });
+  }
 
-    const nowTh = new Date().toLocaleDateString('th-TH', {
-      year: 'numeric', month: 'long', day: 'numeric'
-    });
-
-    const totalStudents = cachedAllStudents.length;
-    const maleTotal = cachedAllStudents.filter(s => s.gender === 'ชาย').length;
-    const femaleTotal = cachedAllStudents.filter(s => s.gender === 'หญิง').length;
-    const assignedTotal = cachedAllStudents.filter(s => s.duty && s.duty.trim() !== '-' && s.duty.trim() !== '').length;
-
-    // Build Grade Breakdown for Cover Page
-    const gradeRowsSummaryHtml = [1, 2, 3, 4, 5, 6].map(g => {
-      const list = cachedAllStudents.filter(s => s.grade === g);
-      const m = list.filter(s => s.gender === 'ชาย').length;
-      const f = list.filter(s => s.gender === 'หญิง').length;
-      const assigned = list.filter(s => s.duty && s.duty.trim() !== '-' && s.duty.trim() !== '').length;
-      return `
-        <tr>
-          <td style="text-align: left; padding: 6px 12px; font-weight: 500;">มัธยมศึกษาปีที่ ${g}</td>
-          <td style="text-align: center; padding: 6px 8px; font-weight: 700;">${list.length}</td>
-          <td style="text-align: center; padding: 6px 8px;">${m}</td>
-          <td style="text-align: center; padding: 6px 8px;">${f}</td>
-          <td style="text-align: center; padding: 6px 8px; font-weight: 700; color: #ea580c;">${assigned}</td>
-        </tr>
-      `;
-    }).join('');
-
-    // Group students by Grade for printing
-    let pagesHtml = '';
-
-    if (isMaster) {
-      // 🌟 Page 1: EXACT MATCH Cover Summary Page
-      pagesHtml += `
-        <div class="pdf-page cover-page">
-          <!-- Header Banner -->
-          <div class="pdf-header-card">
-            <div class="pdf-badge-tag"><i class="fa-solid fa-clipboard-list"></i> ทำเนียบรายชื่อนักเรียน</div>
-            <h1 class="pdf-main-title">คณะสีแสด (สีบุษราคัม) ประจำปีการศึกษา 2569</h1>
-            <div class="pdf-sub-title">โรงเรียนสรรพวิทยาคม ตาก | การแข่งขันกีฬา-กรีฑาสีภายใน</div>
-          </div>
-
-          <!-- Stat KPI 4 Boxes Grid -->
-          <div class="pdf-stat-grid">
-            <div class="pdf-stat-box">
-              <div class="pdf-stat-num">${totalStudents}</div>
-              <div class="pdf-stat-lbl">นักเรียนทั้งหมด (คน)</div>
-            </div>
-            <div class="pdf-stat-box">
-              <div class="pdf-stat-num">${maleTotal}</div>
-              <div class="pdf-stat-lbl">นักเรียนชาย (คน)</div>
-            </div>
-            <div class="pdf-stat-box">
-              <div class="pdf-stat-num">${femaleTotal}</div>
-              <div class="pdf-stat-lbl">นักเรียนหญิง (คน)</div>
-            </div>
-            <div class="pdf-stat-box">
-              <div class="pdf-stat-num text-orange">${assignedTotal}</div>
-              <div class="pdf-stat-lbl">ผู้มีหน้าที่ / นักกีฬา / สตาฟ (คน)</div>
-            </div>
-          </div>
-
-          <!-- Grade Summary Table -->
-          <div class="pdf-section-title">
-            📊 สรุปยอดจำนวนนักเรียนแยกตามระดับชั้น
-          </div>
-          <table class="pdf-summary-table">
-            <thead>
-              <tr>
-                <th style="text-align: left; width: 30%;">ระดับชั้น</th>
-                <th style="width: 17%;">จำนวนนักเรียน (คน)</th>
-                <th style="width: 17%;">ชาย (คน)</th>
-                <th style="width: 17%;">หญิง (คน)</th>
-                <th style="width: 19%;">นักกีฬา / สตาฟ / ผู้มีหน้าที่ (คน)</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${gradeRowsSummaryHtml}
-              <tr class="pdf-summary-total-row">
-                <td style="text-align: left; font-weight: 700;">รวมทุกระดับชั้น</td>
-                <td style="text-align: center; font-weight: 700;">${totalStudents}</td>
-                <td style="text-align: center; font-weight: 700;">${maleTotal}</td>
-                <td style="text-align: center; font-weight: 700;">${femaleTotal}</td>
-                <td style="text-align: center; font-weight: 700; color: #ea580c;">${assignedTotal}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div style="margin-top: 40px; text-align: right; color: #94a3b8; font-size: 11px;">
-            เอกสารสรุปยอดอย่างเป็นทางการ คณะสีแสด 2569 • พิมพ์เมื่อ ${nowTh}
-          </div>
-        </div>
-      `;
-
-      // 🌟 Pages 2+: Grade by Grade List
-      [1, 2, 3, 4, 5, 6].forEach(g => {
-        const gradeStudents = cachedAllStudents.filter(s => s.grade === g);
-        if (gradeStudents.length === 0) return;
-
-        const gMale = gradeStudents.filter(s => s.gender === 'ชาย').length;
-        const gFemale = gradeStudents.filter(s => s.gender === 'หญิง').length;
-        const gAssigned = gradeStudents.filter(s => s.duty && s.duty.trim() !== '-' && s.duty.trim() !== '').length;
-
-        const rows = gradeStudents.map((s, idx) => `
-          <tr>
-            <td class="center font-bold">${idx + 1}</td>
-            <td class="center font-bold text-orange">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
-            <td class="center">${s.classNo || '-'}</td>
-            <td class="center font-mono">${s.id}</td>
-            <td class="left font-bold">${s.name}</td>
-            <td class="center">${s.gender || '-'}</td>
-            <td class="left text-orange font-bold">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#cbd5e1; font-weight:normal;">-</span>'}</td>
-            <td class="center font-mono">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
-          </tr>
-        `).join('');
-
-        pagesHtml += `
-          <div class="pdf-page">
-            <div class="pdf-grade-header">
-              <div>
-                <h2 class="pdf-grade-title">รายชื่อนักเรียน คณะสีแสด — ระดับชั้นมัธยมศึกษาปีที่ ${g}</h2>
-                <div class="pdf-grade-sub">จำนวนนักเรียน: ${gradeStudents.length} คน | ชาย ${gMale} คน | หญิง ${gFemale} คน | ผู้มีหน้าที่ ${gAssigned} คน</div>
-              </div>
-              <div class="pdf-grade-badge">ม.${g}</div>
-            </div>
-
-            <table class="pdf-roster-table">
-              <thead>
-                <tr>
-                  <th style="width: 5%;">ลำดับ</th>
-                  <th style="width: 8%;">ห้อง</th>
-                  <th style="width: 6%;">เลขที่</th>
-                  <th style="width: 11%;">รหัสประจำตัว</th>
-                  <th style="width: 26%; text-align: left; padding-left: 8px;">ชื่อ - นามสกุล</th>
-                  <th style="width: 7%;">เพศ</th>
-                  <th style="width: 23%; text-align: left; padding-left: 8px;">ฝ่าย / หน้าที่</th>
-                  <th style="width: 14%;">เบอร์โทรศัพท์</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rows}
-              </tbody>
-            </table>
-          </div>
-        `;
-      });
-
-    } else {
-      // Non-master (single page or filtered)
-      const rows = studentsToPrint.map((s, idx) => `
-        <tr>
-          <td class="center font-bold">${idx + 1}</td>
-          <td class="center font-bold text-orange">${s.roomFull || `ม.${s.grade}/${s.room || '-'}`}</td>
-          <td class="center">${s.classNo || '-'}</td>
-          <td class="center font-mono">${s.id}</td>
-          <td class="left font-bold">${s.name}</td>
-          <td class="center">${s.gender || '-'}</td>
-          <td class="left text-orange font-bold">${s.duty && s.duty !== '-' ? s.duty : '<span style="color:#cbd5e1; font-weight:normal;">-</span>'}</td>
-          <td class="center font-mono">${s.phone && s.phone !== '-' ? s.phone : '-'}</td>
-        </tr>
-      `).join('');
-
-      pagesHtml += `
-        <div class="pdf-page">
-          <div class="pdf-grade-header">
-            <div>
-              <h2 class="pdf-grade-title">${title}</h2>
-              <div class="pdf-grade-sub">${subtitle} • จำนวน: ${studentsToPrint.length} คน</div>
-            </div>
-            <div class="pdf-grade-badge">สีแสด</div>
-          </div>
-
-          <table class="pdf-roster-table">
-            <thead>
-              <tr>
-                <th style="width: 5%;">ลำดับ</th>
-                <th style="width: 8%;">ห้อง</th>
-                <th style="width: 6%;">เลขที่</th>
-                <th style="width: 11%;">รหัสประจำตัว</th>
-                <th style="width: 26%; text-align: left; padding-left: 8px;">ชื่อ - นามสกุล</th>
-                <th style="width: 7%;">เพศ</th>
-                <th style="width: 23%; text-align: left; padding-left: 8px;">ฝ่าย / หน้าที่</th>
-                <th style="width: 14%;">เบอร์โทรศัพท์</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    // 🚀 Direct 1-Click File Download (.pdf) - No Print Popup
-    showToast('⏳ กำลังประมวลผลและสร้างไฟล์ PDF...', 'info');
-
-    let exportBox = document.getElementById('tempPdfExportWrapper');
-    if (!exportBox) {
-      exportBox = document.createElement('div');
-      exportBox.id = 'tempPdfExportWrapper';
-      exportBox.style.position = 'absolute';
-      exportBox.style.left = '0';
-      exportBox.style.top = '0';
-      exportBox.style.width = '210mm';
-      exportBox.style.background = '#ffffff';
-      exportBox.style.zIndex = '-9999';
-      exportBox.style.opacity = '1';
-      document.body.appendChild(exportBox);
-    }
-
-    exportBox.innerHTML = `
-      <style>
-        * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
-        .export-page { width: 210mm; min-height: 296mm; background: #ffffff; padding: 10mm 10mm; box-sizing: border-box; margin-bottom: 20px; }
-        .pdf-header-card { background-color: #fff3e0; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; border-left: 6px solid #ea580c; }
-        .pdf-badge-tag { display: inline-block; background-color: #ea580c; color: #ffffff; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 6px; margin-bottom: 6px; }
-        .pdf-main-title { font-family: 'Prompt', sans-serif; font-size: 20px; font-weight: 800; color: #c2410c; margin: 0 0 2px 0; }
-        .pdf-sub-title { font-size: 12px; color: #78716c; }
-        .pdf-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-        .pdf-stat-box { background-color: #ffffff; border: 1.5px solid #fed7aa; border-radius: 10px; padding: 12px 8px; text-align: center; }
-        .pdf-stat-num { font-family: 'Prompt', sans-serif; font-size: 24px; font-weight: 800; color: #ea580c; line-height: 1; margin-bottom: 4px; }
-        .pdf-stat-lbl { font-size: 11px; color: #57534e; font-weight: 600; }
-        .pdf-section-title { font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; color: #292524; margin-bottom: 8px; }
-        .pdf-summary-table { width: 100%; border-collapse: collapse; }
-        .pdf-summary-table th { background-color: #ea580c; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700; padding: 6px 8px; border: 1px solid #c2410c; text-align: center; }
-        .pdf-summary-table td { border: 1px solid #e7e5e4; padding: 5px 8px; font-size: 11px; }
-        .pdf-summary-table tbody tr:nth-child(even) td { background-color: #fafaf9; }
-        .pdf-summary-total-row td { background-color: #ffedd5; border-top: 2px solid #ea580c; }
-        .pdf-grade-header { display: flex; justify-content: space-between; align-items: center; background-color: #fff3e0; padding: 8px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #ea580c; }
-        .pdf-grade-title { font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 800; color: #c2410c; margin: 0; }
-        .pdf-grade-sub { font-size: 11px; color: #78716c; margin-top: 1px; }
-        .pdf-grade-badge { background-color: #ea580c; color: #ffffff; font-family: 'Prompt', sans-serif; font-weight: 800; font-size: 14px; padding: 4px 12px; border-radius: 6px; }
-        .pdf-roster-table { width: 100%; border-collapse: collapse; }
-        .pdf-roster-table th { background-color: #ea580c; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 700; padding: 5px 4px; border: 1px solid #c2410c; text-align: center; }
-        .pdf-roster-table td { border: 1px solid #e7e5e4; padding: 4px 4px; font-size: 10.5px; vertical-align: middle; }
-        .pdf-roster-table tbody tr:nth-child(even) td { background-color: #fafaf9; }
-        .center { text-align: center; }
-        .left { text-align: left; }
-        .font-bold { font-weight: 700; }
-        .text-orange { color: #c2410c; }
-        .font-mono { font-family: monospace; font-size: 10.5px; }
-      </style>
-      ${pagesHtml.replace(/class="pdf-page/g, 'class="export-page')}
-    `;
-
-    setTimeout(async () => {
-      try {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pages = exportBox.querySelectorAll('.export-page');
-        
-        for (let i = 0; i < pages.length; i++) {
-          const pageElem = pages[i];
-          const canvas = await html2canvas(pageElem, {
-            scale: 1.5,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff'
-          });
-          const imgData = canvas.toDataURL('image/jpeg', 0.9);
-          
-          if (i > 0) pdf.addPage('a4', 'p');
-          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        }
-
-        const safeFilename = `${title.replace(/[\/\\?%*:|"<>]/g, '_')}_2569.pdf`;
-        
-        // 🌟 Universal Cross-Platform PDF Download (iOS Safari / iPad / Android / Desktop)
-        const pdfBlob = pdf.output('blob');
-        const blobUrl = URL.createObjectURL(pdfBlob);
-        
-        const downloadLink = document.createElement('a');
-        downloadLink.href = blobUrl;
-        downloadLink.download = safeFilename;
-        downloadLink.target = '_blank';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        
-        setTimeout(() => {
-          document.body.removeChild(downloadLink);
-          URL.revokeObjectURL(blobUrl);
-        }, 1000);
-        
-        showToast('🎉 บันทึกและดาวน์โหลดไฟล์ PDF เรียบร้อยแล้ว!', 'success');
-        exportBox.innerHTML = '';
-      } catch (err) {
-        console.error('PDF Generation Error:', err);
-        showToast('เกิดข้อผิดพลาดในการดาวน์โหลด PDF', 'error');
-        exportBox.innerHTML = '';
-      }
-    }, 300);
+  function downloadPdfFile(filePath) {
+    const filename = decodeURIComponent(filePath.split('/').pop());
+    const link = document.createElement('a');
+    link.href = filePath;
+    link.download = filename;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      document.body.removeChild(link);
+    }, 500);
+    showToast(`กำลังดาวน์โหลด: ${filename}`, 'success');
   }
 
   // Initial check
