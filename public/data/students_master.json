@@ -2052,13 +2052,13 @@
     "note": ""
   },
   {
-    "id": "34049",
-    "name": "เด็กหญิงพชรพร รอดสุด",
+    "id": "33629",
+    "name": "นายวีรภัทร มูลชัย",
     "grade": 3,
     "room": 1,
     "roomFull": "ม.3/1",
-    "classNo": 24,
-    "gender": "หญิง",
+    "classNo": 13,
+    "gender": "ชาย",
     "level": "junior",
     "note": "",
     "duty": ""
@@ -5125,13 +5125,13 @@
     "duty": ""
   },
   {
-    "id": "32128",
-    "name": "นายภูมินทร์ หลวงแสง",
+    "id": "32138",
+    "name": "นางสาวธนาภรณ์ ไชยเมืองชื่น",
     "grade": 6,
     "room": 1,
     "roomFull": "ม.6/1",
-    "classNo": 11,
-    "gender": "ชาย",
+    "classNo": 34,
+    "gender": "หญิง",
     "level": "senior",
     "note": "",
     "duty": ""
