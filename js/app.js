@@ -903,8 +903,8 @@ document.addEventListener('DOMContentLoaded', () => {
     studentProfileCard.classList.add('hidden');
     alreadyRegisteredCard.classList.add('hidden');
     partialRegAlert.classList.add('hidden');
-    phoneInputGroup.classList.remove('hidden');
-    step1Actions.classList.remove('hidden');
+    phoneInputGroup.classList.add('hidden');
+    step1Actions.classList.add('hidden');
     validateStep1();
   }
 
@@ -958,6 +958,16 @@ document.addEventListener('DOMContentLoaded', () => {
   searchStudentBtn.addEventListener('click', searchStudent);
   studentIdInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') searchStudent();
+  });
+
+  // Auto-search immediately when 5 digits are entered
+  studentIdInput.addEventListener('input', (e) => {
+    const val = e.target.value.replace(/[^\d]/g, '');
+    if (val.length === 5) {
+      searchStudent();
+    } else if (val.length < 5 && state.student) {
+      resetStudentProfile();
+    }
   });
 
   lockedResetBtn.addEventListener('click', () => {
