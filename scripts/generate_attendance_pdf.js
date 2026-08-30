@@ -67,11 +67,10 @@ function renderHTML(group, students) {
         .roster-table {
           width: 100%;
           table-layout: fixed;
-          border-collapse: separate;
-          border-spacing: 0;
-          border-top: 0.25pt solid #000000;
-          border-left: 0.25pt solid #000000;
+          border-collapse: collapse;
           page-break-inside: auto;
+          margin: 0;
+          padding: 0;
         }
         .roster-table thead {
           display: table-header-group;
@@ -80,29 +79,26 @@ function renderHTML(group, students) {
           page-break-inside: avoid;
           page-break-after: auto;
         }
-        .roster-table th, .roster-table td {
-          border-right: 0.25pt solid #000000;
-          border-bottom: 0.25pt solid #000000;
-          border-top: none;
-          border-left: none;
+        .roster-table th,
+        .roster-table td {
+          border: 0.5pt solid #000000 !important;
           vertical-align: middle;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          padding: 3.5px 3px;
+          font-size: 11px;
+          color: #000000;
         }
         .roster-table th {
-          padding: 4px 2px;
-          font-size: 11px;
           font-weight: 700;
           text-align: center;
           background-color: #ffffff;
-          color: #000000;
+          padding-top: 4px;
+          padding-bottom: 4px;
         }
         .roster-table td {
-          padding: 3.5px 3px;
-          font-size: 11px;
           font-weight: 400;
-          color: #000000;
         }
         .center { text-align: center; }
         .left { text-align: left; padding-left: 5px !important; }
@@ -155,7 +151,7 @@ function renderHTML(group, students) {
 
 async function generateAttendancePDFs() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (Zero-Doubling Single 0.25pt Hairline) ║');
+  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (เส้นคมชัดสม่ำเสมอเท่ากัน 100%)    ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   const browser = await puppeteer.launch({
@@ -164,7 +160,6 @@ async function generateAttendancePDFs() {
   });
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 1200, height: 1600, deviceScaleFactor: 2 });
 
   for (const group of attendanceGroups) {
     let students = studentsMaster.filter(group.filter);
