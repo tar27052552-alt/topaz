@@ -51,7 +51,7 @@ function renderHTML(group, students) {
         }
         body {
           background: #ffffff;
-          color: #1e293b;
+          color: #0f172a;
           font-size: 11px;
           line-height: 1.2;
           margin: 0;
@@ -61,19 +61,8 @@ function renderHTML(group, students) {
           text-align: center;
           font-size: 16px;
           font-weight: 700;
-          margin-bottom: ${group.mentorBox ? '6px' : '14px'};
+          margin-bottom: 12px;
           color: #0f172a;
-        }
-        .mentor-box {
-          display: flex;
-          justify-content: space-between;
-          border: 0.5px solid #64748b;
-          background: #f8fafc;
-          border-radius: 4px;
-          padding: 5px 10px;
-          font-size: 11px;
-          font-weight: 600;
-          margin-bottom: 10px;
         }
         .roster-table {
           width: 100%;
@@ -88,27 +77,26 @@ function renderHTML(group, students) {
           page-break-inside: avoid;
           page-break-after: auto;
         }
+        .roster-table th, .roster-table td {
+          border: 0.35pt solid #64748b;
+          vertical-align: middle;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         .roster-table th {
-          border: 0.5px solid #475569;
           padding: 4px 2px;
           font-size: 11px;
           font-weight: 700;
           text-align: center;
           background-color: #ffffff;
           color: #0f172a;
-          vertical-align: middle;
-          overflow: hidden;
         }
         .roster-table td {
-          border: 0.5px solid #64748b;
           padding: 3.5px 3px;
           font-size: 11px;
           font-weight: 400;
           color: #1e293b;
-          vertical-align: middle;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
         }
         .center { text-align: center; }
         .left { text-align: left; padding-left: 5px !important; }
@@ -118,13 +106,6 @@ function renderHTML(group, students) {
     </head>
     <body>
       <div class="header-title">${group.title}</div>
-      ${group.mentorBox ? `
-        <div class="mentor-box">
-          <div>👨‍🏫 พ่อครู/แม่ครู (ครูที่ปรึกษา): ................................................................</div>
-          <div>👑 พี่สตาฟผู้ดูแล: ................................................................</div>
-          <div>👥 รวม ${students.length} คน</div>
-        </div>
-      ` : ''}
       <table class="roster-table">
         <colgroup>
           <col style="width: 5%;">
@@ -168,7 +149,7 @@ function renderHTML(group, students) {
 
 async function generateAttendancePDFs() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (Fixed Table Layout คอลัมน์สมมาตร) ║');
+  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (เส้นบางคมชัดระดับ Hairline 0.35pt) ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   const browser = await puppeteer.launch({
