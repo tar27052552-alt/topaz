@@ -59,8 +59,10 @@ function renderHTML(group, students) {
         }
         .header-title {
           text-align: center;
-          font-size: 16px;
+          font-size: 17px;
           font-weight: 700;
+          line-height: 1.5;
+          padding-top: 4px;
           margin-bottom: 12px;
           color: #000000;
         }
