@@ -67,9 +67,10 @@ function renderHTML(group, students) {
         .roster-table {
           width: 100%;
           table-layout: fixed;
-          border-collapse: collapse;
+          border-collapse: separate;
           border-spacing: 0;
-          border: 0.25pt solid #000000;
+          border-top: 0.25pt solid #000000;
+          border-left: 0.25pt solid #000000;
           page-break-inside: auto;
         }
         .roster-table thead {
@@ -80,7 +81,10 @@ function renderHTML(group, students) {
           page-break-after: auto;
         }
         .roster-table th, .roster-table td {
-          border: 0.25pt solid #000000;
+          border-right: 0.25pt solid #000000;
+          border-bottom: 0.25pt solid #000000;
+          border-top: none;
+          border-left: none;
           vertical-align: middle;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -151,7 +155,7 @@ function renderHTML(group, students) {
 
 async function generateAttendancePDFs() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (เส้นบางสีดำสนิท 0.25pt Hairline)  ║');
+  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (Zero-Doubling Single 0.25pt Hairline) ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   const browser = await puppeteer.launch({
