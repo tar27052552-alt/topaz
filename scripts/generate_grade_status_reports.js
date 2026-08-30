@@ -36,10 +36,10 @@ function hasNoDuty(s) {
 }
 
 // -------------------------------------------------------------
-// 1. Generate Excel Files
+// 1. Generate Excel Files (Official Formal Style like ใบเช็คชื่อ)
 // -------------------------------------------------------------
 async function generateExcelFiles() {
-  console.log('📊 กำลังสร้างไฟล์ Excel แยกรายชั้น ม.1 - ม.6 (ไฮไลต์ผู้ไม่มีหน้าที่)...');
+  console.log('📊 กำลังสร้างไฟล์ Excel แยกรายชั้น ม.1 - ม.6 (รูปแบบทางการ)...');
 
   const masterWorkbook = new ExcelJS.Workbook();
   masterWorkbook.creator = 'คณะสีแสด (สีบุษราคัม)';
@@ -79,59 +79,52 @@ function setupExcelWorksheet(ws, cfg, students, hasDutyCount, noDutyCount) {
   ws.views = [{ showGridLines: true }];
 
   // Title Row 1
-  ws.mergeCells('A1:I1');
+  ws.mergeCells('A1:H1');
   const titleCell = ws.getCell('A1');
-  titleCell.value = `🧡 ${cfg.title}`;
-  titleCell.font = { name: 'TH Sarabun New', size: 16, bold: true, color: { argb: 'FFC2410C' } };
+  titleCell.value = `${cfg.title}`;
+  titleCell.font = { name: 'TH Sarabun New', size: 16, bold: true, color: { argb: 'FF000000' } };
   titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
-  ws.getRow(1).height = 28;
+  ws.getRow(1).height = 26;
 
-  // Stat Row 2
-  ws.mergeCells('A2:I2');
-  const statCell = ws.getCell('A2');
-  statCell.value = `👥 จำนวนสมาชิกทั้งหมด: ${students.length} คน   |   ✅ ได้รับมอบหมายหน้าที่แล้ว: ${hasDutyCount} คน   |   ⚠️ ยังไม่มีหน้าที่: ${noDutyCount} คน (ไฮไลต์แถบสีเหลือง)`;
-  statCell.font = { name: 'TH Sarabun New', size: 13, bold: true, color: { argb: 'FF1E293B' } };
-  statCell.alignment = { horizontal: 'center', vertical: 'middle' };
-  statCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFBEB' } };
-  ws.getRow(2).height = 22;
+  // Subtitle / Note Row 2
+  ws.mergeCells('A2:H2');
+  const subCell = ws.getCell('A2');
+  subCell.value = `(จำนวนสมาชิกทั้งหมด ${students.length} คน  |  มีหน้าที่แล้ว ${hasDutyCount} คน  |  ยังไม่มีหน้าที่ ${noDutyCount} คน)`;
+  subCell.font = { name: 'TH Sarabun New', size: 12, italic: true, color: { argb: 'FF333333' } };
+  subCell.alignment = { horizontal: 'center', vertical: 'middle' };
+  ws.getRow(2).height = 20;
 
-  // Blank Row 3
-  ws.getRow(3).height = 8;
-
-  // Headers Row 4
+  // Headers Row 3
   const headers = [
-    { header: 'ลำดับ', key: 'no', width: 8 },
-    { header: 'ชั้น/ห้อง', key: 'room', width: 12 },
-    { header: 'เลขที่', key: 'classNo', width: 9 },
-    { header: 'รหัสประจำตัว', key: 'id', width: 15 },
+    { header: 'ลำดับ', key: 'no', width: 7 },
+    { header: 'ชั้น/ห้อง', key: 'room', width: 11 },
+    { header: 'เลขที่', key: 'classNo', width: 8 },
+    { header: 'รหัสประจำตัว', key: 'id', width: 14 },
     { header: 'ชื่อ - นามสกุล', key: 'name', width: 28 },
-    { header: 'เพศ', key: 'gender', width: 8 },
-    { header: 'หน้าที่ / ฝ่ายงานที่ได้รับมอบหมาย', key: 'duty', width: 34 },
-    { header: 'สถานะการมีหน้าที่', key: 'status', width: 20 },
-    { header: 'เบอร์โทรศัพท์', key: 'phone', width: 18 }
+    { header: 'เพศ', key: 'gender', width: 7 },
+    { header: 'หน้าที่ / ฝ่ายงานที่ได้รับมอบหมาย', key: 'duty', width: 32 },
+    { header: 'เบอร์โทรศัพท์', key: 'phone', width: 16 }
   ];
 
-  const headerRow = ws.getRow(4);
-  headerRow.height = 26;
+  const headerRow = ws.getRow(3);
+  headerRow.height = 24;
   headers.forEach((h, idx) => {
     const colNum = idx + 1;
     ws.getColumn(colNum).width = h.width;
     const cell = headerRow.getCell(colNum);
     cell.value = h.header;
-    cell.font = { name: 'TH Sarabun New', size: 13, bold: true, color: { argb: 'FFFFFFFF' } };
-    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEA580C' } };
+    cell.font = { name: 'TH Sarabun New', size: 13, bold: true, color: { argb: 'FF000000' } };
     cell.alignment = { horizontal: 'center', vertical: 'middle' };
     cell.border = thinBorder;
   });
 
-  // Data Rows 5+
+  // Data Rows 4+
   students.forEach((st, idx) => {
-    const rowNum = 5 + idx;
+    const rowNum = 4 + idx;
     const row = ws.getRow(rowNum);
-    row.height = 21;
+    row.height = 20;
 
     const isNoDuty = hasNoDuty(st);
-    const statusText = isNoDuty ? '⚠️ ยังไม่มีหน้าที่' : '✅ มีหน้าที่แล้ว';
     const dutyText = isNoDuty ? '— (ยังไม่มีหน้าที่) —' : st.duty;
 
     row.values = [
@@ -142,7 +135,6 @@ function setupExcelWorksheet(ws, cfg, students, hasDutyCount, noDutyCount) {
       st.name || '',
       st.gender || (st.name && st.name.startsWith('เด็กหญิง') || st.name && st.name.startsWith('นางสาว') ? 'ญ' : 'ช'),
       dutyText,
-      statusText,
       st.phone || ''
     ];
 
@@ -155,55 +147,43 @@ function setupExcelWorksheet(ws, cfg, students, hasDutyCount, noDutyCount) {
     row.getCell(6).alignment = { horizontal: 'center', vertical: 'middle' };
     row.getCell(7).alignment = { horizontal: 'left', vertical: 'middle' };
     row.getCell(8).alignment = { horizontal: 'center', vertical: 'middle' };
-    row.getCell(9).alignment = { horizontal: 'center', vertical: 'middle' };
 
     // Styling & Highlight
-    for (let c = 1; c <= 9; c++) {
+    for (let c = 1; c <= 8; c++) {
       const cell = row.getCell(c);
       cell.border = thinBorder;
 
       if (isNoDuty) {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF08A' } }; // Soft Yellow Highlight
-        if (c === 7 || c === 8) {
-          cell.font = { name: 'TH Sarabun New', size: 12.5, bold: true, color: { argb: 'FFB45309' } }; // Amber Bold
-        } else {
-          cell.font = { name: 'TH Sarabun New', size: 12.5, color: { argb: 'FF000000' } };
-        }
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFDE7' } }; // Very Soft Light Yellow
+        cell.font = { name: 'TH Sarabun New', size: 12.5, bold: (c === 7), color: { argb: 'FF000000' } };
       } else {
         cell.font = { name: 'TH Sarabun New', size: 12.5, color: { argb: 'FF000000' } };
-        if (idx % 2 === 1) {
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFA' } };
-        }
       }
     }
   });
 
   // Enable AutoFilter
-  ws.autoFilter = `A4:I${4 + students.length}`;
+  ws.autoFilter = `A3:H${3 + students.length}`;
 }
 
 // -------------------------------------------------------------
-// 2. Generate PDF Files
+// 2. Generate PDF Files (Official Formal Style like ใบเช็คชื่อ)
 // -------------------------------------------------------------
 function renderPdfHtml(cfg, students, hasDutyCount, noDutyCount) {
   const rows = students.map((st, idx) => {
     const isNoDuty = hasNoDuty(st);
     const gender = st.gender || (st.name && st.name.startsWith('เด็กหญิง') || st.name && st.name.startsWith('นางสาว') ? 'ญ' : 'ช');
-    const dutyText = isNoDuty ? '<span class="text-noduty font-bold">⚠️ ยังไม่มีหน้าที่</span>' : (st.duty || '-');
-    const statusBadge = isNoDuty
-      ? '<span class="badge-noduty">ยังไม่มีหน้าที่</span>'
-      : '<span class="badge-hasduty">มีหน้าที่แล้ว</span>';
+    const dutyText = isNoDuty ? '<span class="font-bold">— (ยังไม่มีหน้าที่) —</span>' : (st.duty || '-');
 
     return `
-      <tr class="${isNoDuty ? 'row-noduty' : (idx % 2 === 1 ? 'row-even' : '')}">
+      <tr class="${isNoDuty ? 'row-noduty' : ''}">
         <td class="center font-mono">${idx + 1}</td>
         <td class="center font-bold">${st.roomFull || `ม.${st.grade}/${st.room || '-'}`}</td>
         <td class="center font-mono">${st.classNo || '-'}</td>
-        <td class="center font-mono font-bold">${st.id || ''}</td>
+        <td class="center font-mono">${st.id || ''}</td>
         <td class="left">${st.name || ''}</td>
         <td class="center">${gender}</td>
         <td class="left">${dutyText}</td>
-        <td class="center">${statusBadge}</td>
         <td class="center font-mono">${st.phone || ''}</td>
       </tr>
     `;
@@ -230,7 +210,7 @@ function renderPdfHtml(cfg, students, hasDutyCount, noDutyCount) {
         body {
           background: #ffffff;
           color: #000000;
-          font-size: 10.5px;
+          font-size: 11px;
           line-height: 1.2;
           margin: 0;
           padding: 0;
@@ -239,34 +219,17 @@ function renderPdfHtml(cfg, students, hasDutyCount, noDutyCount) {
           text-align: center;
           font-size: 16px;
           font-weight: 700;
-          line-height: 1.4;
-          padding-top: 2px;
-          margin-bottom: 6px;
-          color: #c2410c;
+          line-height: 1.5;
+          padding-top: 4px;
+          margin-bottom: 2px;
+          color: #000000;
         }
-        .kpi-banner {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: #fffbeb;
-          border: 1px solid #fde68a;
-          border-radius: 6px;
-          padding: 6px 12px;
+        .header-sub {
+          text-align: center;
+          font-size: 11px;
+          color: #444444;
           margin-bottom: 10px;
-          font-size: 11px;
-          font-weight: 600;
-          color: #1e293b;
         }
-        .kpi-tag {
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 700;
-        }
-        .tag-total { background: #e0f2fe; color: #0369a1; }
-        .tag-duty { background: #dcfce7; color: #15803d; }
-        .tag-noduty { background: #fef08a; color: #b45309; border: 1px solid #facc15; }
-
         .roster-table {
           width: 100%;
           table-layout: fixed;
@@ -290,68 +253,42 @@ function renderPdfHtml(cfg, students, hasDutyCount, noDutyCount) {
           text-overflow: ellipsis;
           white-space: nowrap;
           padding: 3.5px 3px;
-          font-size: 10.5px;
+          font-size: 11px;
           color: #000000;
         }
         .roster-table th {
           font-weight: 700;
           text-align: center;
-          background-color: #ea580c !important;
-          color: #ffffff !important;
+          background-color: #ffffff;
+          color: #000000;
           padding-top: 4px;
           padding-bottom: 4px;
-          font-size: 11px;
         }
-        .row-even td {
-          background-color: #fafafa;
+        .roster-table td {
+          font-weight: 400;
         }
         .row-noduty td {
-          background-color: #fef08a !important; /* Soft Yellow Highlight */
-        }
-        .text-noduty {
-          color: #b45309;
-        }
-        .badge-noduty {
-          display: inline-block;
-          background: #f59e0b;
-          color: #ffffff;
-          padding: 1px 5px;
-          border-radius: 3px;
-          font-size: 9.5px;
-          font-weight: 700;
-        }
-        .badge-hasduty {
-          display: inline-block;
-          background: #10b981;
-          color: #ffffff;
-          padding: 1px 5px;
-          border-radius: 3px;
-          font-size: 9.5px;
-          font-weight: 600;
+          background-color: #fffde7 !important; /* Soft Gentle Tint for No Duty */
         }
         .center { text-align: center; }
         .left { text-align: left; padding-left: 5px !important; }
         .font-bold { font-weight: 700; }
-        .font-mono { font-family: monospace; font-size: 10px; }
+        .font-mono { font-family: monospace; font-size: 10.5px; }
       </style>
     </head>
     <body>
       <div class="header-title">${cfg.title}</div>
-      <div class="kpi-banner">
-        <div>👥 รวมทั้งหมด: <span class="kpi-tag tag-total">${students.length} คน</span></div>
-        <div>✅ มีหน้าที่แล้ว: <span class="kpi-tag tag-duty">${hasDutyCount} คน</span></div>
-        <div>⚠️ ยังไม่มีหน้าที่: <span class="kpi-tag tag-noduty">${noDutyCount} คน</span></div>
-      </div>
+      <div class="header-sub">(รวม ${students.length} คน  |  มีหน้าที่แล้ว ${hasDutyCount} คน  |  ยังไม่มีหน้าที่ ${noDutyCount} คน)</div>
       <table class="roster-table">
         <colgroup>
           <col style="width: 5%;">
-          <col style="width: 8.5%;">
+          <col style="width: 9%;">
           <col style="width: 6%;">
           <col style="width: 12%;">
-          <col style="width: 25%;">
-          <col style="width: 5.5%;">
-          <col style="width: 23%;">
-          <col style="width: 15%;">
+          <col style="width: 29%;">
+          <col style="width: 6%;">
+          <col style="width: 21%;">
+          <col style="width: 12%;">
         </colgroup>
         <thead>
           <tr>
@@ -361,8 +298,8 @@ function renderPdfHtml(cfg, students, hasDutyCount, noDutyCount) {
             <th>รหัสประจำตัว</th>
             <th style="text-align: left; padding-left: 6px;">ชื่อ - นามสกุล</th>
             <th>เพศ</th>
-            <th style="text-align: left; padding-left: 6px;">หน้าที่ / ฝ่ายที่ได้รับมอบหมาย</th>
-            <th>สถานะ</th>
+            <th style="text-align: left; padding-left: 6px;">หน้าที่ / ฝ่ายงานที่ได้รับมอบหมาย</th>
+            <th>เบอร์โทรศัพท์</th>
           </tr>
         </thead>
         <tbody>
@@ -375,7 +312,7 @@ function renderPdfHtml(cfg, students, hasDutyCount, noDutyCount) {
 }
 
 async function generatePdfFiles() {
-  console.log('📕 กำลังสร้างไฟล์ PDF แยกรายชั้น ม.1 - ม.6 (ไฮไลต์ผู้ไม่มีหน้าที่)...');
+  console.log('📕 กำลังสร้างไฟล์ PDF แยกรายชั้น ม.1 - ม.6 (รูปแบบทางการ)...');
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -443,7 +380,7 @@ async function mergeGradePDFs() {
 
 async function run() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 🌟 เริ่มต้นสร้างเอกสารรายชื่อ ม.1-ม.6 ไฮไลต์ผู้ที่ยังไม่มีหน้าที่    ║');
+  console.log('║ 🌟 เริ่มต้นสร้างเอกสารรายชื่อ ม.1-ม.6 (รูปแบบทางการเหมือนใบเช็คชื่อ) ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   await generateExcelFiles();
