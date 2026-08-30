@@ -70,7 +70,13 @@ async function main() {
       const [_, num, id, pdfName, roomFull, gStr, rStr, remark] = m;
       const grade = parseInt(gStr);
       const room = parseInt(rStr);
-      const xls = xlsMap.get(id);
+
+      let correctedId = id;
+      if (id === '34317' && grade === 2 && room === 7) {
+        correctedId = '34517'; // Fix typo in PDF: เด็กชายวชิรวิชญ์ เงินงามมีสุข ม.2/7
+      }
+
+      const xls = xlsMap.get(correctedId);
 
       let finalName = xls ? xls.name : pdfName.trim();
       finalName = finalName.replace(/\s*-\s*$/, '').trim();
@@ -83,7 +89,7 @@ async function main() {
       }
 
       const student = {
-        stdId: id,
+        stdId: correctedId,
         pdfNo: parseInt(num),
         name: finalName,
         grade: grade,
@@ -96,7 +102,7 @@ async function main() {
         remark: remark ? remark.trim() : ''
       };
 
-      studentMap.set(id, student);
+      studentMap.set(correctedId, student);
       if (gradeStudents[grade]) {
         gradeStudents[grade].push(student);
       }

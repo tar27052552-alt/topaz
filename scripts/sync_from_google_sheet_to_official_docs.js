@@ -66,15 +66,25 @@ async function fetchPrimaryGradeSheet(gradeName) {
       const cols = line.split('","').map(c => c.replace(/^"|"$/g, '').trim());
       if (cols.length < 8) continue;
 
-      const studentId = cols[5] ? cols[5].replace(/[^\d]/g, '') : '';
+      let studentId = cols[5] ? cols[5].replace(/[^\d]/g, '') : '';
       if (!studentId || studentId.length !== 5) continue;
+
+      let studentName = cols[6] || '';
+      let roomFull = cols[3] || `${gradeName}/-`;
+      let classNo = cols[4] || '-';
+
+      // Fix known ID typo in PDF/Sheet: ม.2/7 เลขที่ 11 is เด็กชายวชิรวิชญ์ เงินงามมีสุข (34517)
+      if (studentId === '34317' && (roomFull.includes('2/7') || roomFull === 'ม.2/7')) {
+        studentId = '34517';
+        studentName = 'เด็กชายวชิรวิชญ์ เงินงามมีสุข';
+      }
 
       students.push({
         id: studentId,
-        name: cols[6] || '',
+        name: studentName,
         gender: cols[7] || '',
-        roomFull: cols[3] || `${gradeName}/-`,
-        classNo: cols[4] || '-',
+        roomFull: roomFull,
+        classNo: classNo,
         duty: deduplicateDuty(cols[8] || ''),
         phone: formatPhone(cols[9] || ''),
         note: cols[10] || ''
