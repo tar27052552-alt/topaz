@@ -51,7 +51,7 @@ function renderHTML(group, students) {
         }
         body {
           background: #ffffff;
-          color: #0f172a;
+          color: #000000;
           font-size: 11px;
           line-height: 1.2;
           margin: 0;
@@ -62,12 +62,14 @@ function renderHTML(group, students) {
           font-size: 16px;
           font-weight: 700;
           margin-bottom: 12px;
-          color: #0f172a;
+          color: #000000;
         }
         .roster-table {
           width: 100%;
           table-layout: fixed;
           border-collapse: collapse;
+          border-spacing: 0;
+          border: 0.25pt solid #000000;
           page-break-inside: auto;
         }
         .roster-table thead {
@@ -78,7 +80,7 @@ function renderHTML(group, students) {
           page-break-after: auto;
         }
         .roster-table th, .roster-table td {
-          border: 0.35pt solid #64748b;
+          border: 0.25pt solid #000000;
           vertical-align: middle;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -90,13 +92,13 @@ function renderHTML(group, students) {
           font-weight: 700;
           text-align: center;
           background-color: #ffffff;
-          color: #0f172a;
+          color: #000000;
         }
         .roster-table td {
           padding: 3.5px 3px;
           font-size: 11px;
           font-weight: 400;
-          color: #1e293b;
+          color: #000000;
         }
         .center { text-align: center; }
         .left { text-align: left; padding-left: 5px !important; }
@@ -149,7 +151,7 @@ function renderHTML(group, students) {
 
 async function generateAttendancePDFs() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (เส้นบางคมชัดระดับ Hairline 0.35pt) ║');
+  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (เส้นบางสีดำสนิท 0.25pt Hairline)  ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   const browser = await puppeteer.launch({
@@ -158,6 +160,7 @@ async function generateAttendancePDFs() {
   });
 
   const page = await browser.newPage();
+  await page.setViewport({ width: 1200, height: 1600, deviceScaleFactor: 2 });
 
   for (const group of attendanceGroups) {
     let students = studentsMaster.filter(group.filter);
