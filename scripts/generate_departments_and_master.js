@@ -78,11 +78,18 @@ async function main() {
 
       const xls = xlsMap.get(correctedId);
 
+      const finalGrade = xls ? xls.grade : grade;
+      const finalRoom = xls ? xls.room : room;
+      const finalRoomFull = xls ? xls.roomFull : `ม.${grade}/${room}`;
+      const finalClassNo = xls ? xls.classNo : '-';
+
       let finalName = xls ? xls.name : pdfName.trim();
-      finalName = finalName.replace(/\s*-\s*$/, '').trim();
+      finalName = finalName.trim();
 
       let gender = '-';
-      if (finalName.startsWith('เด็กชาย') || finalName.startsWith('นาย')) {
+      if (xls && xls.gender) {
+        gender = xls.gender;
+      } else if (finalName.startsWith('เด็กชาย') || finalName.startsWith('นาย')) {
         gender = 'ชาย';
       } else if (finalName.startsWith('เด็กหญิง') || finalName.startsWith('นางสาว') || finalName.startsWith('น.ส.')) {
         gender = 'หญิง';
@@ -92,10 +99,10 @@ async function main() {
         stdId: correctedId,
         pdfNo: parseInt(num),
         name: finalName,
-        grade: grade,
-        room: room,
-        roomFull: `ม.${grade}/${room}`,
-        classNo: xls ? xls.classNo : '-',
+        grade: finalGrade,
+        room: finalRoom,
+        roomFull: finalRoomFull,
+        classNo: finalClassNo,
         gender: gender,
         roles: [],
         phone: '',
@@ -103,8 +110,8 @@ async function main() {
       };
 
       studentMap.set(correctedId, student);
-      if (gradeStudents[grade]) {
-        gradeStudents[grade].push(student);
+      if (gradeStudents[finalGrade]) {
+        gradeStudents[finalGrade].push(student);
       }
     }
   });
