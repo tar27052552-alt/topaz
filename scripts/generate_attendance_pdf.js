@@ -17,17 +17,17 @@ const { attendanceGroups } = require('./generate_attendance_excel');
 function renderHTML(group, students) {
   const rows = students.map((st, idx) => `
     <tr>
-      <td class="center">${idx + 1}</td>
-      <td class="center">${st.roomFull || `ม.${st.grade}/${st.room || '-'}`}</td>
-      <td class="center">${st.id || ''}</td>
+      <td class="center font-mono">${idx + 1}</td>
+      <td class="center font-bold">${st.roomFull || `ม.${st.grade}/${st.room || '-'}`}</td>
+      <td class="center font-mono">${st.id || ''}</td>
       <td class="left">${st.name || ''}</td>
-      <td class="center">${st.phone || ''}</td>
+      <td class="center font-mono">${st.phone || ''}</td>
       <td class="center"></td>
-      <td class="check-col"></td>
-      <td class="check-col"></td>
-      <td class="check-col"></td>
-      <td class="check-col"></td>
-      <td class="check-col"></td>
+      <td class="center"></td>
+      <td class="center"></td>
+      <td class="center"></td>
+      <td class="center"></td>
+      <td class="center"></td>
     </tr>
   `).join('');
 
@@ -52,7 +52,7 @@ function renderHTML(group, students) {
         body {
           background: #ffffff;
           color: #1e293b;
-          font-size: 11.5px;
+          font-size: 11px;
           line-height: 1.2;
           margin: 0;
           padding: 0;
@@ -77,6 +77,7 @@ function renderHTML(group, students) {
         }
         .roster-table {
           width: 100%;
+          table-layout: fixed;
           border-collapse: collapse;
           page-break-inside: auto;
         }
@@ -96,18 +97,23 @@ function renderHTML(group, students) {
           background-color: #ffffff;
           color: #0f172a;
           vertical-align: middle;
+          overflow: hidden;
         }
         .roster-table td {
           border: 0.5px solid #64748b;
-          padding: 3.5px 4px;
+          padding: 3.5px 3px;
           font-size: 11px;
           font-weight: 400;
           color: #1e293b;
           vertical-align: middle;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
         .center { text-align: center; }
-        .left { text-align: left; padding-left: 6px !important; }
-        .check-col { width: 4.8%; text-align: center; }
+        .left { text-align: left; padding-left: 5px !important; }
+        .font-bold { font-weight: 700; }
+        .font-mono { font-family: monospace; font-size: 10.5px; }
       </style>
     </head>
     <body>
@@ -120,22 +126,35 @@ function renderHTML(group, students) {
         </div>
       ` : ''}
       <table class="roster-table">
+        <colgroup>
+          <col style="width: 5%;">
+          <col style="width: 9%;">
+          <col style="width: 12%;">
+          <col style="width: 29%;">
+          <col style="width: 15%;">
+          <col style="width: 10%;">
+          <col style="width: 4%;">
+          <col style="width: 4%;">
+          <col style="width: 4%;">
+          <col style="width: 4%;">
+          <col style="width: 4%;">
+        </colgroup>
         <thead>
           <tr>
-            <th style="width: 5.5%;" rowspan="2">ลำดับ</th>
-            <th style="width: 8.5%;" rowspan="2">ชั้น/ห้อง</th>
-            <th style="width: 12.5%;" rowspan="2">รหัสประจำตัว</th>
-            <th style="width: 31%; text-align: left; padding-left: 8px;" rowspan="2">ชื่อ - นามสกุล</th>
-            <th style="width: 14.5%;" rowspan="2">เบอร์โทรศัพท์</th>
-            <th style="width: 9%;" rowspan="2">ชื่อเล่น</th>
-            <th style="width: 24%;" colspan="5">เช็คชื่อ</th>
+            <th rowspan="2">ลำดับ</th>
+            <th rowspan="2">ชั้น/ห้อง</th>
+            <th rowspan="2">รหัสประจำตัว</th>
+            <th style="text-align: left; padding-left: 6px;" rowspan="2">ชื่อ - นามสกุล</th>
+            <th rowspan="2">เบอร์โทรศัพท์</th>
+            <th rowspan="2">ชื่อเล่น</th>
+            <th colspan="5">เช็คชื่อ</th>
           </tr>
           <tr>
-            <th class="check-col">1</th>
-            <th class="check-col">2</th>
-            <th class="check-col">3</th>
-            <th class="check-col">4</th>
-            <th class="check-col">5</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
           </tr>
         </thead>
         <tbody>
@@ -149,7 +168,7 @@ function renderHTML(group, students) {
 
 async function generateAttendancePDFs() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (ฟอนต์ Sarabun เส้นคมบาง 0.5px)   ║');
+  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (Fixed Table Layout คอลัมน์สมมาตร) ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   const browser = await puppeteer.launch({
