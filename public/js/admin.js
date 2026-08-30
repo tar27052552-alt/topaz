@@ -1193,6 +1193,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Grade Status (Highlight No Duty) Download Handlers
+  const selectGradeStatusFile = document.getElementById('selectGradeStatusFile');
+  const btnDownloadGradeStatusPdf = document.getElementById('btnDownloadGradeStatusPdf');
+  const btnDownloadGradeStatusExcel = document.getElementById('btnDownloadGradeStatusExcel');
+
+  if (btnDownloadGradeStatusPdf && selectGradeStatusFile) {
+    btnDownloadGradeStatusPdf.addEventListener('click', () => {
+      const baseName = selectGradeStatusFile.value;
+      if (!baseName) return;
+      downloadPdfFile(`grade_duty_status/pdf/${baseName}.pdf`);
+    });
+  }
+
+  if (btnDownloadGradeStatusExcel && selectGradeStatusFile) {
+    btnDownloadGradeStatusExcel.addEventListener('click', () => {
+      const baseName = selectGradeStatusFile.value;
+      if (!baseName) return;
+      downloadPdfFile(`grade_duty_status/excel/${baseName}.xlsx`);
+    });
+  }
+
   function downloadPdfFile(filePath) {
     const filename = decodeURIComponent(filePath.split('/').pop());
     const link = document.createElement('a');

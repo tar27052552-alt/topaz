@@ -1048,6 +1048,68 @@
             </div>
           </div>
 
+          <!-- Card 7: Master Consolidated Grade Status (12 Pages / 6 Sheets) Highlighted -->
+          <div style="background: #fff; border: 2px solid #f59e0b; border-radius: 18px; padding: 22px; box-shadow: 0 6px 20px -3px rgba(245, 158, 11, 0.15); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                  <i class="fa-solid fa-user-xmark"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.1rem; color: #d97706;">7. เล่มรวม ม.1 - ม.6 ไฮไลต์ผู้ไม่มีหน้าที่ (12 หน้า)</strong>
+                  <div style="font-size: 0.82rem; color: #64748b;">Master Grade Duty Status (แถบไฮไลต์สีเหลืองชัดเจน)</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+                เอกสารรายชื่อนักเรียนแยกตามห้อง ม.1 - ม.6 พร้อม <strong>แถบสีเหลืองและป้ายกำกับเตือนสำหรับผู้ที่ยังไม่ได้รับมอบหมายหน้าที่</strong> เพื่อให้คณะกรรมการติดตามงานได้ทันที
+              </p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <a href="grade_duty_status/pdf/00_ไฟล์รวมเล่ม_รายชื่อนักเรียนม1ถึงม6_ไฮไลต์สถานะหน้าที่_ปี69.pdf" download="00_ไฟล์รวมเล่ม_รายชื่อนักเรียนม1ถึงม6_ไฮไลต์สถานะหน้าที่_ปี69.pdf" target="_blank" class="btn w-full" style="background: #f59e0b; color: #fff; text-decoration: none; padding: 11px; font-weight: 700; text-align: center; border-radius: 10px;">
+                <i class="fa-solid fa-file-pdf"></i> โหลด PDF เล่มรวม (12 หน้า)
+              </a>
+              <a href="grade_duty_status/excel/00_ไฟล์รวมเล่ม_รายชื่อนักเรียนม1ถึงม6_ไฮไลต์สถานะหน้าที่_ปี69.xlsx" download="00_ไฟล์รวมเล่ม_รายชื่อนักเรียนม1ถึงม6_ไฮไลต์สถานะหน้าที่_ปี69.xlsx" target="_blank" class="btn btn-secondary w-full" style="color: #16a34a; border-color: #bbf7d0; text-decoration: none; padding: 11px; font-weight: 700; text-align: center; border-radius: 10px;">
+                <i class="fa-solid fa-file-excel"></i> โหลด Excel (6 ชีต)
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 8: Grade Status by Grade (Dropdown M.1 - M.6) -->
+          <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid #fde68a;">
+                  <i class="fa-solid fa-filter-circle-xmark"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">8. รายชื่อไฮไลต์สถานะหน้าที่ แยกรายชั้น ม.1 - ม.6</strong>
+                  <div style="font-size: 0.82rem; color: #64748b;">Individual Grade Status Reports (6 ระดับชั้น)</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
+                เลือกดาวน์โหลดเอกสารไฮไลต์คนไม่มีหน้าที่เฉพาะระดับชั้นที่ต้องการ
+              </p>
+              <div style="margin-bottom: 16px;">
+                <select id="selectGradeStatusFile" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.92rem; outline: none; background: #fafaf9;">
+                  <option value="01_รายชื่อสมาชิก_ม1_คณะสีแสด_ปี69">01. สมาชิกสีแสด ม.1 (ไม่มีหน้าที่ 0 คน)</option>
+                  <option value="02_รายชื่อสมาชิก_ม2_คณะสีแสด_ปี69">02. สมาชิกสีแสด ม.2 (ไม่มีหน้าที่ 11 คน)</option>
+                  <option value="03_รายชื่อสมาชิก_ม3_คณะสีแสด_ปี69">03. สมาชิกสีแสด ม.3 (ไม่มีหน้าที่ 14 คน)</option>
+                  <option value="04_รายชื่อสมาชิก_ม4_คณะสีแสด_ปี69">04. สมาชิกสีแสด ม.4 (ไม่มีหน้าที่ 12 คน)</option>
+                  <option value="05_รายชื่อสมาชิก_ม5_คณะสีแสด_ปี69">05. สมาชิกสีแสด ม.5 (ไม่มีหน้าที่ 4 คน)</option>
+                  <option value="06_รายชื่อสมาชิก_ม6_คณะสีแสด_ปี69">06. สมาชิกสีแสด ม.6 (ไม่มีหน้าที่ 78 คน)</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" id="btnDownloadGradeStatusPdf" class="btn w-full" style="background: #ef4444; color: #fff; padding: 11px; font-weight: 700; border-radius: 10px;">
+                <i class="fa-solid fa-file-pdf"></i> โหลด PDF
+              </button>
+              <button type="button" id="btnDownloadGradeStatusExcel" class="btn btn-secondary w-full" style="color: #16a34a; border-color: #bbf7d0; padding: 11px; font-weight: 700; border-radius: 10px;">
+                <i class="fa-solid fa-file-excel"></i> โหลด Excel
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

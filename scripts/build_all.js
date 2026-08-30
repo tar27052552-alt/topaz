@@ -29,13 +29,17 @@ async function buildAll() {
     const consolidatePdfGen = require('./generate_all_consolidated_pdfs');
     await consolidatePdfGen.generateAllDeptPDFs();
 
-    console.log('\n>>> [STEP 6/7] สร้างไฟล์ Excel และ PDF ใบเช็คชื่อ (ทุกฝ่าย/ทุกม./ทุกกลุ่มพ่อครูแม่ครู)...');
+    console.log('\n>>> [STEP 6/8] สร้างไฟล์ Excel และ PDF ใบเช็คชื่อ (ทุกฝ่าย / ทุก ม.1-ม.6)...');
     const attendanceExcelGen = require('./generate_attendance_excel');
     await attendanceExcelGen.generateAttendanceExcel();
     const attendancePdfGen = require('./generate_attendance_pdf');
     await attendancePdfGen.generateAttendancePDFs();
 
-    console.log('\n>>> [STEP 7/7] อัปโหลดข้อมูลและเอกสารขึ้น Firebase Cloud Firestore และ Public Web...');
+    console.log('\n>>> [STEP 7/8] สร้างไฟล์แยกรายชั้น ม.1 - ม.6 ไฮไลต์ผู้ที่ยังไม่มีหน้าที่ (PDF & Excel)...');
+    const gradeStatusGen = require('./generate_grade_status_reports');
+    await gradeStatusGen.run();
+
+    console.log('\n>>> [STEP 8/8] อัปโหลดข้อมูลและเอกสารขึ้น Firebase Cloud Firestore และ Public Web...');
     const rootDir = path.resolve(__dirname, '..');
     const sourceConsolidated = path.join(rootDir, 'เอกสารและรายชื่อคณะสีแสด_ปี69', 'รวมไฟล์PDF_พร้อมส่ง');
     const pubPdf = path.join(rootDir, 'public', 'pdf');
