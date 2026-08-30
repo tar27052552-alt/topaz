@@ -127,10 +127,11 @@ async function main() {
       categories: [
         {
           title: 'ทีมชาย มัธยมศึกษาตอนต้น',
+          gender: 'ชาย',
+          level: 'junior',
           students: [
             getStd('34361', '', ''),
             getStd('34625', '', ''),
-            getStd('34607', '', ''),
             getStd('34631', '', ''),
             getStd('34547', '', ''),
             getStd('34277', '', ''),
@@ -147,6 +148,8 @@ async function main() {
         },
         {
           title: 'ทีมชาย มัธยมศึกษาตอนปลาย',
+          gender: 'ชาย',
+          level: 'senior',
           students: [
             getStd('33340', '', ''),
             getStd('33005', '', ''),
@@ -161,7 +164,10 @@ async function main() {
         },
         {
           title: 'ทีมหญิง มัธยมศึกษาตอนต้น',
+          gender: 'หญิง',
+          level: 'junior',
           students: [
+            getStd('34607', '', ''),
             getStd('33725', '061 983 7797', ''),
             getStd('34079', '090 285 1181', ''),
             getStd('34673', '062-320-5140', ''),
@@ -177,6 +183,8 @@ async function main() {
         },
         {
           title: 'ทีมหญิง มัธยมศึกษาตอนปลาย',
+          gender: 'หญิง',
+          level: 'senior',
           students: [
             getStd('32631', '080-887-7109', ''),
             getStd('32510', '061-553-0671', ''),
@@ -192,11 +200,12 @@ async function main() {
       categories: [
         {
           title: 'ทีมชาย มัธยมศึกษาตอนต้น',
+          gender: 'ชาย',
+          level: 'junior',
           students: [
             getStd('33785', '', ''),
             getStd('34283', '', ''),
             getStd('33623', '', ''),
-            getStd('33683', '', ''),
             getStd('33737', '', ''),
             getStd('33941', '090-324-8827', ''),
             getStd('34061', '', ''),
@@ -206,18 +215,29 @@ async function main() {
         },
         {
           title: 'ทีมชาย มัธยมศึกษาตอนปลาย',
+          gender: 'ชาย',
+          level: 'senior',
           students: [
             getStd('35512', '', ''),
             getStd('33000', '', '')
           ]
         },
         {
-          title: 'ทีมหญิง (ม.ต้น)',
+          title: 'ทีมหญิง มัธยมศึกษาตอนต้น',
+          gender: 'หญิง',
+          level: 'junior',
           students: [
+            getStd('33683', '', ''),
             getStd('34445', '', ''),
             getStd('34451', '', ''),
             getStd('34529', '', '')
           ]
+        },
+        {
+          title: 'ทีมหญิง มัธยมศึกษาตอนปลาย',
+          gender: 'หญิง',
+          level: 'senior',
+          students: []
         }
       ]
     },
@@ -227,6 +247,8 @@ async function main() {
       categories: [
         {
           title: 'ทีมชาย มัธยมศึกษาตอนต้น',
+          gender: 'ชาย',
+          level: 'junior',
           students: [
             getStd('34391', '', ''),
             getStd('34397', '', ''),
@@ -238,6 +260,8 @@ async function main() {
         },
         {
           title: 'ทีมหญิง มัธยมศึกษาตอนต้น',
+          gender: 'หญิง',
+          level: 'junior',
           students: [
             getStd('35088', '', ''),
             getStd('34331', '', ''),
@@ -251,6 +275,8 @@ async function main() {
         },
         {
           title: 'ทีมชาย มัธยมศึกษาตอนปลาย',
+          gender: 'ชาย',
+          level: 'senior',
           students: [
             getStd('35407', '', ''),
             getStd('35506', '', ''),
@@ -260,6 +286,8 @@ async function main() {
         },
         {
           title: 'ทีมหญิง มัธยมศึกษาตอนปลาย',
+          gender: 'หญิง',
+          level: 'senior',
           students: [
             getStd('35490', '', ''),
             getStd('35521', '065-003-4526', '')
@@ -273,6 +301,8 @@ async function main() {
       categories: [
         {
           title: 'ทีมชาย มัธยมศึกษาตอนต้น',
+          gender: 'ชาย',
+          level: 'junior',
           students: [
             getStd('34475', '061-913-7083', ''),
             getStd('34481', '093-196-2875', '')
@@ -280,6 +310,8 @@ async function main() {
         },
         {
           title: 'ทีมชาย มัธยมศึกษาตอนปลาย',
+          gender: 'ชาย',
+          level: 'senior',
           students: [
             getStd('35506', '095-935-5206', ''),
             getStd('32651', '085-2676036', ''),
@@ -294,6 +326,8 @@ async function main() {
       categories: [
         {
           title: 'ทีม มัธยมศึกษาตอนต้น (ชาย/หญิง)',
+          gender: 'all',
+          level: 'junior',
           students: [
             getStd('34349', '', ''),
             getStd('34493', '', ''),
@@ -308,6 +342,8 @@ async function main() {
         },
         {
           title: 'ทีม มัธยมศึกษาตอนปลาย',
+          gender: 'all',
+          level: 'senior',
           students: [
             getStd('33160', '', '')
           ]
@@ -320,6 +356,8 @@ async function main() {
       categories: [
         {
           title: 'ทีม มัธยมศึกษาตอนต้น (ชาย/หญิง)',
+          gender: 'all',
+          level: 'junior',
           students: [
             getStd('34271', '065 982 2715', ''),
             getStd('34355', '093 572 8163', ''),
@@ -333,6 +371,8 @@ async function main() {
         },
         {
           title: 'ทีม มัธยมศึกษาตอนปลาย (ชาย/หญิง)',
+          gender: 'all',
+          level: 'senior',
           students: [
             getStd('35521', '065-003-4526', ''),
             getStd('33439', '099 462 8457', '')
@@ -346,8 +386,9 @@ async function main() {
       categories: [
         {
           title: 'ทีมชาย มัธยมศึกษาตอนปลาย',
+          gender: 'ชาย',
+          level: 'senior',
           students: [
-            getStd('35461', '0924150997', ''),
             getStd('33369', '096 663 3965', ''),
             getStd('35537', '093 952 7843', ''),
             getStd('33399', '093-329-6478', '')
@@ -355,7 +396,10 @@ async function main() {
         },
         {
           title: 'ทีมหญิง มัธยมศึกษาตอนปลาย',
+          gender: 'หญิง',
+          level: 'senior',
           students: [
+            getStd('35461', '0924150997', ''),
             getStd('33261', '099 303 8547', ''),
             getStd('33214', '091 046 7584', ''),
             getStd('35521', '065-003-4526', ''),
@@ -366,6 +410,34 @@ async function main() {
     }
   };
 
+  // Helper for smart category routing by exact level and gender
+  function routeStudentToCategory(categories, st) {
+    const isFemale = st.gender === 'หญิง' || (st.name && (st.name.startsWith('เด็กหญิง') || st.name.startsWith('นางสาว') || st.name.startsWith('น.ส.') || st.name.startsWith('ด.ญ.') || st.name.startsWith('นี้.ส')));
+    const isSenior = (st.grade && st.grade >= 4) || (st.roomFull && (st.roomFull.startsWith('ม.4') || st.roomFull.startsWith('ม.5') || st.roomFull.startsWith('ม.6')));
+
+    // 1. Try exact match on both level and gender
+    let matched = categories.find(c => {
+      const matchLevel = isSenior ? (c.title.includes('ปลาย') || c.level === 'senior') : (c.title.includes('ต้น') || c.level === 'junior');
+      const matchGender = isFemale ? (c.title.includes('หญิง') || c.gender === 'หญิง') : (c.title.includes('ชาย') || c.gender === 'ชาย');
+      return matchLevel && matchGender;
+    });
+    if (matched) return matched;
+
+    // 2. Try match gender-inclusive category (ชาย/หญิง or all)
+    matched = categories.find(c => {
+      const matchLevel = isSenior ? (c.title.includes('ปลาย') || c.level === 'senior') : (c.title.includes('ต้น') || c.level === 'junior');
+      const isInclusive = c.title.includes('ชาย/หญิง') || c.title.includes('ชาย หญิง') || c.gender === 'all';
+      return matchLevel && isInclusive;
+    });
+    if (matched) return matched;
+
+    // 3. Fallback: match gender only
+    matched = categories.find(c => isFemale ? (c.title.includes('หญิง') || c.gender === 'หญิง') : (c.title.includes('ชาย') || c.gender === 'ชาย'));
+    if (matched) return matched;
+
+    return categories[0];
+  }
+
   // 1. Merge live registrations into sportsData
   const regPath = path.join(rootDir, 'data', 'registrations.json');
   if (fs.existsSync(regPath)) {
@@ -373,15 +445,7 @@ async function main() {
     regs.forEach(r => {
       const sportKey = Object.keys(sportsData).find(k => sportsData[k].name === r.sportName);
       if (sportKey) {
-        let cat = sportsData[sportKey].categories.find(c => c.title.includes(r.categoryTitle) || r.categoryTitle?.includes(c.title.replace('มัธยมศึกษาตอน', 'ม.')));
-        if (!cat && sportsData[sportKey].categories.length > 0) {
-          if (r.categoryTitle?.includes('ม.ปลาย') || r.grade >= 4) {
-            cat = sportsData[sportKey].categories.find(c => c.title.includes('ปลาย') && (r.gender === 'หญิง' ? c.title.includes('หญิง') : c.title.includes('ชาย')));
-          } else {
-            cat = sportsData[sportKey].categories.find(c => c.title.includes('ต้น') && (r.gender === 'หญิง' ? c.title.includes('หญิง') : c.title.includes('ชาย')));
-          }
-          if (!cat) cat = sportsData[sportKey].categories[0];
-        }
+        const cat = routeStudentToCategory(sportsData[sportKey].categories, r);
         if (cat) {
           if (!cat.students.some(s => s.stdId === r.studentId)) {
             cat.students.push(getStd(r.studentId, r.phone || '', r.note || ''));
@@ -411,13 +475,7 @@ async function main() {
         if (matchedSportName) {
           const sportKey = Object.keys(sportsData).find(k => sportsData[k].name === matchedSportName);
           if (sportKey) {
-            let cat = null;
-            if (st.grade >= 4) {
-              cat = sportsData[sportKey].categories.find(c => c.title.includes('ปลาย') && (st.gender === 'หญิง' ? c.title.includes('หญิง') : c.title.includes('ชาย')));
-            } else {
-              cat = sportsData[sportKey].categories.find(c => c.title.includes('ต้น') && (st.gender === 'หญิง' ? c.title.includes('หญิง') : c.title.includes('ชาย')));
-            }
-            if (!cat) cat = sportsData[sportKey].categories[0];
+            const cat = routeStudentToCategory(sportsData[sportKey].categories, st);
             if (cat && !cat.students.some(s => s.stdId === st.id)) {
               cat.students.push(getStd(st.id, st.phone || '', ''));
             }
@@ -444,6 +502,42 @@ async function main() {
         }
         return true;
       });
+    });
+  });
+
+  // 4. Strict Gender Integrity Check & Auto Re-routing
+  Object.keys(sportsData).forEach(sportKey => {
+    const sport = sportsData[sportKey];
+    const maleJunior = sport.categories.find(c => (c.title.includes('ชาย') && !c.title.includes('หญิง')) && c.title.includes('ต้น'));
+    const maleSenior = sport.categories.find(c => (c.title.includes('ชาย') && !c.title.includes('หญิง')) && c.title.includes('ปลาย'));
+    const femaleJunior = sport.categories.find(c => c.title.includes('หญิง') && !c.title.includes('ชาย') && c.title.includes('ต้น'));
+    const femaleSenior = sport.categories.find(c => c.title.includes('หญิง') && !c.title.includes('ชาย') && c.title.includes('ปลาย'));
+
+    sport.categories.forEach(cat => {
+      const isMaleCategory = cat.title.includes('ชาย') && !cat.title.includes('หญิง') && !cat.title.includes('ชาย/หญิง') && !cat.title.includes('ชาย หญิง');
+      const isFemaleCategory = cat.title.includes('หญิง') && !cat.title.includes('ชาย') && !cat.title.includes('ชาย/หญิง') && !cat.title.includes('ชาย หญิง');
+
+      const validStudents = [];
+      cat.students.forEach(st => {
+        const isFemale = st.gender === 'หญิง' || (st.name && (st.name.startsWith('เด็กหญิง') || st.name.startsWith('นางสาว') || st.name.startsWith('น.ส.') || st.name.startsWith('ด.ญ.') || st.name.startsWith('นี้.ส')));
+        const isMale = st.gender === 'ชาย' || (st.name && (st.name.startsWith('เด็กชาย') || st.name.startsWith('นาย') || st.name.startsWith('ด.ช.')));
+        const isSenior = st.roomFull && (st.roomFull.startsWith('ม.4') || st.roomFull.startsWith('ม.5') || st.roomFull.startsWith('ม.6'));
+
+        if (isFemale && isMaleCategory) {
+          const targetCat = isSenior ? (femaleSenior || femaleJunior) : (femaleJunior || femaleSenior);
+          if (targetCat && !targetCat.students.some(s => s.stdId === st.stdId)) {
+            targetCat.students.push(st);
+          }
+        } else if (isMale && isFemaleCategory) {
+          const targetCat = isSenior ? (maleSenior || maleJunior) : (maleJunior || maleSenior);
+          if (targetCat && !targetCat.students.some(s => s.stdId === st.stdId)) {
+            targetCat.students.push(st);
+          }
+        } else {
+          validStudents.push(st);
+        }
+      });
+      cat.students = validStudents;
     });
   });
 

@@ -2,6 +2,18 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
+function getThaiDateString() {
+  const thaiMonths = [
+    'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  const now = new Date();
+  const d = now.getDate();
+  const m = thaiMonths[now.getMonth()];
+  const y = now.getFullYear() + 543;
+  return `${d} ${m} ${y}`;
+}
+
 async function generateCoverSummaryPDF() {
   const rootDir = path.resolve(__dirname, '..');
   const masterPath = path.join(rootDir, 'data', 'students_master.json');
@@ -23,15 +35,16 @@ async function generateCoverSummaryPDF() {
 
   const sportCounts = [
     { no: '09', icon: '⚽', name: 'ฟุตบอล (ชาย ม.ต้น/ปลาย, หญิง)', count: students.filter(s => (s.duty || '').includes('ฟุตบอล')).length, page: '13-15' },
-    { no: '10', icon: '🏀', name: 'บาสเกตบอล (ชาย/หญิง)', count: students.filter(s => (s.duty || '').includes('บาสเกตบอล')).length, page: '16' },
-    { no: '11', icon: '🏐', name: 'วอลเลย์บอล (ชาย/หญิง)', count: students.filter(s => (s.duty || '').includes('วอลเลย์บอล')).length, page: '17-18' },
-    { no: '12', icon: '🏸', name: 'ตะกร้อ (ทีมชาย)', count: students.filter(s => (s.duty || '').includes('ตะกร้อ')).length, page: '19' },
-    { no: '13', icon: '⚪', name: 'เปตอง (ม.ต้น / ม.ปลาย)', count: students.filter(s => (s.duty || '').includes('เปตอง')).length, page: '20' },
-    { no: '14', icon: '🏃', name: 'กรีฑา (ลู่/ลาน)', count: students.filter(s => (s.duty || '').includes('กรีฑา')).length, page: '21' },
-    { no: '15', icon: '🏃‍♂️', name: 'วิ่ง 16 ขา (ทีมผสม)', count: students.filter(s => (s.duty || '').includes('16 ขา')).length, page: '22' }
+    { no: '10', icon: '🏀', name: 'บาสเกตบอล (ชาย/หญิง)', count: students.filter(s => (s.duty || '').includes('บาสเกตบอล')).length, page: '16-17' },
+    { no: '11', icon: '🏐', name: 'วอลเลย์บอล (ชาย/หญิง)', count: students.filter(s => (s.duty || '').includes('วอลเลย์บอล')).length, page: '18-19' },
+    { no: '12', icon: '🏸', name: 'ตะกร้อ (ทีมชาย)', count: students.filter(s => (s.duty || '').includes('ตะกร้อ')).length, page: '20' },
+    { no: '13', icon: '⚪', name: 'เปตอง (ม.ต้น / ม.ปลาย)', count: students.filter(s => (s.duty || '').includes('เปตอง')).length, page: '21' },
+    { no: '14', icon: '🏃', name: 'กรีฑา (ลู่/ลาน)', count: students.filter(s => (s.duty || '').includes('กรีฑา')).length, page: '22' },
+    { no: '15', icon: '🏃‍♂️', name: 'วิ่ง 16 ขา (ทีมผสม)', count: students.filter(s => (s.duty || '').includes('16 ขา')).length, page: '23' }
   ];
 
   const totalSportsPersons = sportCounts.reduce((sum, item) => sum + item.count, 0);
+  const thaiDate = getThaiDateString();
 
   const html = `
     <!DOCTYPE html>
@@ -159,7 +172,7 @@ async function generateCoverSummaryPDF() {
                 <tr style="background: #fff7ed; font-weight: bold;">
                   <td colspan="2" style="text-align: right; padding-right: 8px; color: #c2410c;">รวมนักกีฬาทุกประเภท:</td>
                   <td class="count" style="color: #c2410c;">${totalSportsPersons}</td>
-                  <td class="page">น. 13-22</td>
+                  <td class="page">น. 13-23</td>
                 </tr>
               </tbody>
             </table>
@@ -170,7 +183,7 @@ async function generateCoverSummaryPDF() {
         <!-- Footer -->
         <div class="footer-banner">
           <div>📌 <span class="footer-bold">ระบบรับสมัครและจัดการรายชื่อออนไลน์ คณะสีแสด 69</span> | โรงเรียนสรรพวิทยาคม</div>
-          <div>อัปเดตข้อมูลล่าสุด: <span class="footer-bold">25 ส.ค. 2569</span> • เอกสารรวมทั้งหมด 22 หน้า</div>
+          <div>อัปเดตข้อมูลล่าสุด: <span class="footer-bold">${thaiDate}</span> • เอกสารรวมทั้งหมด 23 หน้า</div>
         </div>
 
       </div>
