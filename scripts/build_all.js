@@ -9,25 +9,52 @@ async function buildAll() {
   const startTime = Date.now();
 
   try {
-    console.log('>>> [STEP 1/4] สร้างไฟล์รายชื่อรวมหลัก ม.1-ม.6 และไฟล์แยกฝ่าย (สวัสดิการ/ดรัมเมเยอร์/สแตนเชียร์/สตาฟ)...');
+    console.log('>>> [STEP 1/6] สร้างไฟล์รายชื่อรวมหลัก ม.1-ม.6 และไฟล์แยกฝ่าย (สวัสดิการ/ดรัมเมเยอร์/สแตนเชียร์/สตาฟ)...');
     const masterGen = require('./generate_departments_and_master');
     await masterGen.main();
 
-    console.log('\n>>> [STEP 2/4] สร้างไฟล์ Excel กีฬาทุกประเภท...');
+    console.log('\n>>> [STEP 2/6] สร้างไฟล์ Excel กีฬาทุกประเภท...');
     const sportsExcelGen = require('./generate_sports_excel');
     await sportsExcelGen.main();
 
-    console.log('\n>>> [STEP 3/4] สร้างไฟล์ PDF กีฬาแยกรายชนิด 7 ไฟล์...');
+    console.log('\n>>> [STEP 3/6] สร้างไฟล์ PDF กีฬาแยกรายชนิด 7 ไฟล์...');
     const sportsPdfGen = require('./generate_sports_pdf');
     await sportsPdfGen.main();
 
-    console.log('\n>>> [STEP 4/5] สร้างไฟล์ PDF รวมนักกีฬาทุกประเภท...');
+    console.log('\n>>> [STEP 4/6] สร้างไฟล์ PDF รวมนักกีฬาทุกประเภท...');
     const masterPdfGen = require('./generate_master_pdf');
     await masterPdfGen.main();
 
-    console.log('\n>>> [STEP 5/5] สร้างและรวบรวมไฟล์ PDF ทุกฝ่ายไว้ในโฟลเดอร์รวมพร้อมส่ง...');
+    console.log('\n>>> [STEP 5/6] สร้างและรวบรวมไฟล์ PDF ทุกฝ่ายไว้ในโฟลเดอร์รวมพร้อมส่ง...');
     const consolidatePdfGen = require('./generate_all_consolidated_pdfs');
     await consolidatePdfGen.generateAllDeptPDFs();
+
+    console.log('\n>>> [STEP 6/6] อัปโหลดข้อมูลและเอกสารขึ้น Firebase Cloud Firestore และ Public Web...');
+    const rootDir = path.resolve(__dirname, '..');
+    const sourceConsolidated = path.join(rootDir, 'เอกสารและรายชื่อคณะสีแสด_ปี69', 'รวมไฟล์PDF_พร้อมส่ง');
+    const pubPdf = path.join(rootDir, 'public', 'pdf');
+    const mainPdf = path.join(rootDir, 'pdf');
+    const pubData = path.join(rootDir, 'public', 'data');
+    const mainData = path.join(rootDir, 'data');
+
+    if (!fs.existsSync(pubPdf)) fs.mkdirSync(pubPdf, { recursive: true });
+    if (!fs.existsSync(mainPdf)) fs.mkdirSync(mainPdf, { recursive: true });
+    if (!fs.existsSync(pubData)) fs.mkdirSync(pubData, { recursive: true });
+
+    // Copy PDFs
+    fs.readdirSync(sourceConsolidated).filter(f => f.endsWith('.pdf')).forEach(f => {
+      fs.copyFileSync(path.join(sourceConsolidated, f), path.join(pubPdf, f));
+      fs.copyFileSync(path.join(sourceConsolidated, f), path.join(mainPdf, f));
+    });
+
+    // Copy Data
+    fs.readdirSync(mainData).filter(f => f.endsWith('.json')).forEach(f => {
+      fs.copyFileSync(path.join(mainData, f), path.join(pubData, f));
+    });
+
+    // Sync Firestore
+    const { syncToCloudFirestore } = require('./upload_to_firestore_headless');
+    await syncToCloudFirestore();
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log('\n╔══════════════════════════════════════════════════════════════════╗');
