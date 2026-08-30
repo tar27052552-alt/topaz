@@ -17,11 +17,11 @@ const { attendanceGroups } = require('./generate_attendance_excel');
 function renderHTML(group, students) {
   const rows = students.map((st, idx) => `
     <tr>
-      <td class="center font-bold">${idx + 1}</td>
-      <td class="center font-bold">${st.roomFull || `ม.${st.grade}/${st.room || '-'}`}</td>
-      <td class="center font-mono">${st.id || ''}</td>
-      <td class="left font-name">${st.name || ''}</td>
-      <td class="center font-mono font-phone">${st.phone || ''}</td>
+      <td class="center">${idx + 1}</td>
+      <td class="center">${st.roomFull || `ม.${st.grade}/${st.room || '-'}`}</td>
+      <td class="center">${st.id || ''}</td>
+      <td class="left">${st.name || ''}</td>
+      <td class="center">${st.phone || ''}</td>
       <td class="center"></td>
       <td class="check-col"></td>
       <td class="check-col"></td>
@@ -37,7 +37,7 @@ function renderHTML(group, students) {
     <head>
       <meta charset="UTF-8">
       <title>${group.title}</title>
-      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Prompt:wght@600;700;800&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
       <style>
         @page {
           size: A4 portrait;
@@ -45,15 +45,15 @@ function renderHTML(group, students) {
         }
         * {
           box-sizing: border-box;
-          font-family: 'Sarabun', sans-serif;
+          font-family: 'Sarabun', 'TH Sarabun New', sans-serif;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
         body {
           background: #ffffff;
-          color: #000000;
-          font-size: 11px;
-          line-height: 1.25;
+          color: #1e293b;
+          font-size: 11.5px;
+          line-height: 1.2;
           margin: 0;
           padding: 0;
         }
@@ -62,18 +62,18 @@ function renderHTML(group, students) {
           font-size: 16px;
           font-weight: 700;
           margin-bottom: ${group.mentorBox ? '6px' : '14px'};
-          color: #000000;
+          color: #0f172a;
         }
         .mentor-box {
           display: flex;
           justify-content: space-between;
-          border: 1px dashed #64748b;
+          border: 0.5px solid #64748b;
           background: #f8fafc;
-          border-radius: 6px;
-          padding: 6px 12px;
-          font-size: 10.5px;
+          border-radius: 4px;
+          padding: 5px 10px;
+          font-size: 11px;
           font-weight: 600;
-          margin-bottom: 12px;
+          margin-bottom: 10px;
         }
         .roster-table {
           width: 100%;
@@ -88,26 +88,25 @@ function renderHTML(group, students) {
           page-break-after: auto;
         }
         .roster-table th {
-          border: 1px solid #000000;
+          border: 0.5px solid #475569;
           padding: 4px 2px;
-          font-size: 10.5px;
+          font-size: 11px;
           font-weight: 700;
           text-align: center;
           background-color: #ffffff;
+          color: #0f172a;
           vertical-align: middle;
         }
         .roster-table td {
-          border: 1px solid #000000;
-          padding: 4px 4px;
-          font-size: 10.5px;
+          border: 0.5px solid #64748b;
+          padding: 3.5px 4px;
+          font-size: 11px;
+          font-weight: 400;
+          color: #1e293b;
           vertical-align: middle;
         }
         .center { text-align: center; }
         .left { text-align: left; padding-left: 6px !important; }
-        .font-bold { font-weight: 700; }
-        .font-name { font-weight: 500; }
-        .font-mono { font-family: monospace; font-size: 10.5px; }
-        .font-phone { font-size: 10px; }
         .check-col { width: 4.8%; text-align: center; }
       </style>
     </head>
@@ -150,13 +149,15 @@ function renderHTML(group, students) {
 
 async function generateAttendancePDFs() {
   console.log('╔══════════════════════════════════════════════════════════════════╗');
-  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ ทุกฝ่าย ทุก ม. ทุกกลุ่มพ่อครูแม่ครู ║');
+  console.log('║ 📕 เริ่มต้นสร้างไฟล์ PDF ใบเช็คชื่อ (ฟอนต์ Sarabun เส้นคมบาง 0.5px)   ║');
   console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
   const browser = await puppeteer.launch({
     headless: 'new',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
+
+  const page = await browser.newPage();
 
   for (const group of attendanceGroups) {
     let students = studentsMaster.filter(group.filter);
@@ -171,19 +172,18 @@ async function generateAttendancePDFs() {
     const html = renderHTML(group, students);
     const outPdfPath = path.join(outPdfDir, group.pdfFileName);
 
-    const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
     const pdfBuf = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: { top: '12mm', right: '10mm', bottom: '12mm', left: '10mm' }
     });
-    await page.close();
 
     fs.writeFileSync(outPdfPath, pdfBuf);
-    console.log(`  ✅ สร้างไฟล์ PDF สำเร็จ: ${group.pdfFileName} (${students.length} คน) -> ${(pdfBuf.length / 1024).toFixed(1)} KB`);
+    console.log(`  ✅ สร้างไฟล์ PDF สำเร็จ: ${group.pdfFileName} (${students.length} คน)`);
   }
 
+  await page.close();
   await browser.close();
 
   // Merge into single booklet
