@@ -1172,6 +1172,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Attendance Sheet Download Handlers
+  const selectAttendanceFile = document.getElementById('selectAttendanceFile');
+  const btnDownloadAttPdf = document.getElementById('btnDownloadAttPdf');
+  const btnDownloadAttExcel = document.getElementById('btnDownloadAttExcel');
+
+  if (btnDownloadAttPdf && selectAttendanceFile) {
+    btnDownloadAttPdf.addEventListener('click', () => {
+      const baseName = selectAttendanceFile.value;
+      if (!baseName) return;
+      downloadPdfFile(`pdf/attendance/${baseName}.pdf`);
+    });
+  }
+
+  if (btnDownloadAttExcel && selectAttendanceFile) {
+    btnDownloadAttExcel.addEventListener('click', () => {
+      const baseName = selectAttendanceFile.value;
+      if (!baseName) return;
+      downloadPdfFile(`excel/attendance/${baseName}.xlsx`);
+    });
+  }
+
   function downloadPdfFile(filePath) {
     const filename = decodeURIComponent(filePath.split('/').pop());
     const link = document.createElement('a');

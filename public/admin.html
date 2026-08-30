@@ -965,6 +965,97 @@
             </a>
           </div>
 
+          <!-- Card 5: Master Consolidated Attendance Sheet (43 Pages) -->
+          <div style="background: #fff; border: 2px solid #8b5cf6; border-radius: 18px; padding: 22px; box-shadow: 0 6px 20px -3px rgba(139, 92, 246, 0.12); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                  <i class="fa-solid fa-clipboard-user"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.1rem; color: #6d28d9;">5. เล่มรวมใบเช็คชื่อทุกชุด (43 หน้า)</strong>
+                  <div style="font-size: 0.82rem; color: #64748b;">Master Attendance Booklet (ทุกฝ่าย + ทุก ม. + พ่อครูแม่ครู)</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+                ใบเช็คชื่อแบบฟอร์ม 5 ช่องติ๊ก พร้อมเบอร์โทรและช่องชื่อเล่น รวมครบ 27 ชุด (ฝ่ายกิจกรรม, กีฬา, ราย ม.1-ม.6, และกลุ่มพ่อครูแม่ครู)
+              </p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <a href="pdf/attendance/00_ไฟล์รวมเล่ม_ใบเช็คชื่อทุกฝ่ายและทุกระดับชั้น_ปี69.pdf" download="00_ไฟล์รวมเล่ม_ใบเช็คชื่อทุกฝ่ายและทุกระดับชั้น_ปี69.pdf" target="_blank" class="btn w-full" style="background: #8b5cf6; color: #fff; text-decoration: none; padding: 11px; font-weight: 700; text-align: center; border-radius: 10px;">
+                <i class="fa-solid fa-file-pdf"></i> โหลด PDF เล่มรวม (43 หน้า)
+              </a>
+              <a href="excel/attendance/00_ไฟล์รวมเล่ม_ใบเช็คชื่อทุกฝ่ายและทุกระดับชั้น_ปี69.xlsx" download="00_ไฟล์รวมเล่ม_ใบเช็คชื่อทุกฝ่ายและทุกระดับชั้น_ปี69.xlsx" target="_blank" class="btn btn-secondary w-full" style="color: #16a34a; border-color: #bbf7d0; text-decoration: none; padding: 11px; font-weight: 700; text-align: center; border-radius: 10px;">
+                <i class="fa-solid fa-file-excel"></i> โหลด Excel (27 ชีต)
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 6: Attendance Sheets by Category (Select Dropdown) -->
+          <div style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 22px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #f5f3ff; color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid #ddd6fe;">
+                  <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                  <strong style="font-size: 1.05rem; color: #0f172a;">6. ใบเช็คชื่อแยกเฉพาะชุดที่ต้องการ</strong>
+                  <div style="font-size: 0.82rem; color: #64748b;">Individual Attendance Sheets (27 ชุด)</div>
+                </div>
+              </div>
+              <p style="color: #475569; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
+                เลือกชุดใบเช็คชื่อที่ต้องการดาวน์โหลด (มีทั้ง PDF และ Excel):
+              </p>
+              <div style="margin-bottom: 16px;">
+                <select id="selectAttendanceFile" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.92rem; outline: none; background: #fafaf9;">
+                  <optgroup label="🎪 ฝ่ายกิจกรรมหลัก (01-08)">
+                    <option value="01_ใบเช็คชื่อ_ฝ่ายสแตนเชียร์_คณะสีแสด_ปี69">01. ฝ่ายสแตนเชียร์ (ม.1)</option>
+                    <option value="02_ใบเช็คชื่อ_ฝ่ายขบวนพาเหรด_คณะสีแสด_ปี69">02. ฝ่ายขบวนพาเหรด</option>
+                    <option value="03_ใบเช็คชื่อ_ฝ่ายพร็อพและอุปกรณ์_คณะสีแสด_ปี69">03. ฝ่ายพร็อพ & อุปกรณ์</option>
+                    <option value="04_ใบเช็คชื่อ_ฝ่ายเชียร์ลีดเดอร์_คณะสีแสด_ปี69">04. ฝ่ายเชียร์ลีดเดอร์</option>
+                    <option value="05_ใบเช็คชื่อ_ฝ่ายดรัมเมเยอร์_คณะสีแสด_ปี69">05. ฝ่ายดรัมเมเยอร์</option>
+                    <option value="06_ใบเช็คชื่อ_ฝ่ายคัลเลอร์การ์ด_คณะสีแสด_ปี69">06. ฝ่ายคัลเลอร์การ์ด</option>
+                    <option value="07_ใบเช็คชื่อ_ฝ่ายสวัสดิการ_คณะสีแสด_ปี69">07. ฝ่ายสวัสดิการ</option>
+                    <option value="08_ใบเช็คชื่อ_ฝ่ายสตาฟ_คณะสีแสด_ปี69">08. ฝ่ายสตาฟและคณะกรรมการ (ม.5)</option>
+                  </optgroup>
+                  <optgroup label="⚽ ประเภทกีฬา (09-15)">
+                    <option value="09_ใบเช็คชื่อ_กีฬาฟุตบอล_คณะสีแสด_ปี69">09. กีฬาฟุตบอล</option>
+                    <option value="10_ใบเช็คชื่อ_กีฬาบาสเกตบอล_คณะสีแสด_ปี69">10. กีฬาบาสเกตบอล</option>
+                    <option value="11_ใบเช็คชื่อ_กีฬาวอลเลย์บอล_คณะสีแสด_ปี69">11. กีฬาวอลเลย์บอล</option>
+                    <option value="12_ใบเช็คชื่อ_กีฬาเซปักตะกร้อ_คณะสีแสด_ปี69">12. กีฬาเซปักตะกร้อ</option>
+                    <option value="13_ใบเช็คชื่อ_กีฬาเปตอง_คณะสีแสด_ปี69">13. กีฬาเปตอง</option>
+                    <option value="14_ใบเช็คชื่อ_กีฬากรีฑา_คณะสีแสด_ปี69">14. กีฬากรีฑา</option>
+                    <option value="15_ใบเช็คชื่อ_กีฬาวิ่ง16ขา_คณะสีแสด_ปี69">15. กีฬาวิ่ง 16 ขา</option>
+                  </optgroup>
+                  <optgroup label="🏫 สมาชิกตามระดับชั้น (16-21)">
+                    <option value="16_ใบเช็คชื่อ_สมาชิกคณะสีแสด_ม1_ปี69">16. สมาชิกสีแสด ม.1</option>
+                    <option value="17_ใบเช็คชื่อ_สมาชิกคณะสีแสด_ม2_ปี69">17. สมาชิกสีแสด ม.2</option>
+                    <option value="18_ใบเช็คชื่อ_สมาชิกคณะสีแสด_ม3_ปี69">18. สมาชิกสีแสด ม.3</option>
+                    <option value="19_ใบเช็คชื่อ_สมาชิกคณะสีแสด_ม4_ปี69">19. สมาชิกสีแสด ม.4</option>
+                    <option value="20_ใบเช็คชื่อ_สมาชิกคณะสีแสด_ม5_ปี69">20. สมาชิกสีแสด ม.5</option>
+                    <option value="21_ใบเช็คชื่อ_สมาชิกคณะสีแสด_ม6_ปี69">21. สมาชิกสีแสด ม.6</option>
+                  </optgroup>
+                  <optgroup label="👨‍🏫 กลุ่มพ่อครูแม่ครู / พี่ดูแล (22-27)">
+                    <option value="22_ใบเช็คชื่อ_กลุ่มพ่อครูแม่ครู_ม1_ปี69">22. พ่อครูแม่ครู / พี่ดูแล ม.1</option>
+                    <option value="23_ใบเช็คชื่อ_กลุ่มพ่อครูแม่ครู_ม2_ปี69">23. พ่อครูแม่ครู / พี่ดูแล ม.2</option>
+                    <option value="24_ใบเช็คชื่อ_กลุ่มพ่อครูแม่ครู_ม3_ปี69">24. พ่อครูแม่ครู / พี่ดูแล ม.3</option>
+                    <option value="25_ใบเช็คชื่อ_กลุ่มพ่อครูแม่ครู_ม4_ปี69">25. พ่อครูแม่ครู / พี่ดูแล ม.4</option>
+                    <option value="26_ใบเช็คชื่อ_กลุ่มพ่อครูแม่ครู_ม5_ปี69">26. พ่อครูแม่ครู / คณะทำงาน ม.5</option>
+                    <option value="27_ใบเช็คชื่อ_กลุ่มพ่อครูแม่ครู_ม6_ปี69">27. พ่อครูแม่ครู / พี่ใหญ่ ม.6</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" id="btnDownloadAttPdf" class="btn w-full" style="background: #ef4444; color: #fff; padding: 11px; font-weight: 700; border-radius: 10px;">
+                <i class="fa-solid fa-file-pdf"></i> โหลด PDF
+              </button>
+              <button type="button" id="btnDownloadAttExcel" class="btn btn-secondary w-full" style="color: #16a34a; border-color: #bbf7d0; padding: 11px; font-weight: 700; border-radius: 10px;">
+                <i class="fa-solid fa-file-excel"></i> โหลด Excel
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
